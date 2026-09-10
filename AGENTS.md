@@ -7,3 +7,20 @@ This version has breaking changes — APIs, conventions, and file structure may 
 This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
 
 <!-- END:nextjs-agent-rules -->
+## Project rules
+
+Travelar is a **multi-tenant B2B SaaS**: each travel agency is a tenant, and the
+API scopes every business row on `agencyId`. The API lives in
+[travelar_backend](https://github.com/Arifur999/travelar_backend).
+
+- **Layering is `component → _action → service → httpClient`.** A component never imports `httpClient`. Mutations go through an `_action.ts` colocated with the route; it catches, normalizes via `getActionErrorMessage`, and returns `ApiResponse<T> | ApiErrorResponse` — so a component never needs a try/catch.
+- `"use server"` on every `services/*.services.ts` and every `_action.ts`.
+- **Server Component prefetches, Client Component consumes**: `page.tsx` is async, builds a `QueryClient`, `prefetchQuery`s, and wraps the client table in `<HydrationBoundary>`. The query key must match on both sides.
+- Feature components live in `src/components/modules/<Domain>/<Feature>/`. `app/` holds only `page.tsx`, `layout.tsx`, `loading.tsx`, `_action.ts`.
+- **Two zod schemas per entity**: `<Verb><Entity>FormZodSchema` (all strings, for `form.Field` validators) and `<Verb><Entity>ServerZodSchema` (coerced, re-validated inside the action).
+- After a successful mutation, all six in order: `toast.success` → close dialog → `form.reset()` → `invalidateQueries` → `refetchQueries({ type: "active" })` → `router.refresh()`.
+- Route protection is `src/proxy.ts` (Next 16's rename of `middleware.ts`); the route-ownership table lives in `src/lib/authUtils.ts`. `SUPER_ADMIN` gets `/admin/dashboard`; agency roles share `/dashboard`.
+- `JWT_ACCESS_SECRET` must equal the backend's `ACCESS_TOKEN_SECRET`, or every protected route silently bounces to `/login`.
+- shadcn primitives in `src/components/ui/` are generated — `pnpm dlx shadcn@latest add <name>`, never hand-written.
+- Theme: deep teal `--primary` with a gold `--accent`, defined as CSS variables in `globals.css`. Read the variables — never hard-code hex in a component or a chart, or dark mode breaks.
+- Tailwind v4: there is no `tailwind.config.js`. Tokens live in `@theme inline`.

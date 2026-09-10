@@ -1,26 +1,177 @@
 @import "tailwindcss";
+@import "tw-animate-css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@custom-variant dark (&:is(.dark *));
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  --font-sans: var(--font-work-sans);
+  --font-display: var(--font-fraunces);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* Travelar brand: deep teal primary, gold accent. Every token is defined here
+   first; .dark below only overrides, so nothing can go undefined in one theme. */
+:root {
+  --radius: 0.375rem;
+
+  --background: #fbfdfc;
+  --foreground: #16211e;
+
+  --card: #ffffff;
+  --card-foreground: #16211e;
+  --popover: #ffffff;
+  --popover-foreground: #16211e;
+
+  --primary: #0b6e4f;
+  --primary-foreground: #f4fbf8;
+  --secondary: #cfe8dd;
+  --secondary-foreground: #0b3d2c;
+
+  --muted: #eef5f2;
+  --muted-foreground: #5b6b66;
+
+  --accent: #d4a017;
+  --accent-foreground: #2a1f04;
+
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: #fdf2f2;
+
+  --border: #e0eae6;
+  --input: #e0eae6;
+  --ring: #0b6e4f;
+
+  --chart-1: #0b6e4f;
+  --chart-2: #d4a017;
+  --chart-3: #cfe8dd;
+  --chart-4: oklch(0.627 0.194 149.214);
+  --chart-5: oklch(0.723 0.174 76.045);
+
+  --sidebar: #ffffff;
+  --sidebar-foreground: #16211e;
+  --sidebar-primary: #0b6e4f;
+  --sidebar-primary-foreground: #f4fbf8;
+  --sidebar-accent: #eef5f2;
+  --sidebar-accent-foreground: #0b3d2c;
+  --sidebar-border: #e0eae6;
+  --sidebar-ring: #0b6e4f;
+}
+
+/* Roles swap rather than simply darkening: primary becomes the light mint so
+   it stays legible on a dark ground. */
+.dark {
+  --background: #0c1512;
+  --foreground: #e8f1ed;
+
+  --card: #131f1b;
+  --card-foreground: #e8f1ed;
+  --popover: #131f1b;
+  --popover-foreground: #e8f1ed;
+
+  --primary: #7fd3b2;
+  --primary-foreground: #06251a;
+  --secondary: #144534;
+  --secondary-foreground: #d7f0e5;
+
+  --muted: #1a2a25;
+  --muted-foreground: #9db3ab;
+
+  --accent: #e5b93f;
+  --accent-foreground: #2a1f04;
+
+  --destructive: oklch(0.704 0.191 22.216);
+  --destructive-foreground: #fdf2f2;
+
+  --border: rgba(232, 241, 237, 0.12);
+  --input: rgba(232, 241, 237, 0.16);
+  --ring: #7fd3b2;
+
+  --chart-1: #7fd3b2;
+  --chart-2: #e5b93f;
+  --chart-3: #144534;
+
+  --sidebar: #131f1b;
+  --sidebar-foreground: #e8f1ed;
+  --sidebar-primary: #7fd3b2;
+  --sidebar-primary-foreground: #06251a;
+  --sidebar-accent: #1a2a25;
+  --sidebar-accent-foreground: #d7f0e5;
+  --sidebar-border: rgba(232, 241, 237, 0.12);
+  --sidebar-ring: #7fd3b2;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+  /* Pure-CSS orbit spinner, sized through an inline --loader-size custom
+     property so one component covers every size without a class per variant. */
+  .app-loader {
+    --loader-size: 32px;
+    --loader-color-1: var(--primary);
+    --loader-color-2: var(--accent);
+
+    display: inline-block;
+    width: var(--loader-size);
+    height: var(--loader-size);
+    border-radius: 50%;
+    border: calc(var(--loader-size) / 10) solid var(--loader-color-1);
+    border-top-color: var(--loader-color-2);
+    animation: app-loader-spin 0.7s linear infinite;
+  }
+
+  .app-loader--on-dark {
+    --loader-color-1: rgba(255, 255, 255, 0.35);
+    --loader-color-2: #ffffff;
+  }
+}
+
+@keyframes app-loader-spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
