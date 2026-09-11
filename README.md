@@ -13,7 +13,7 @@ cp .env.example .env.local     # then fill in the values
 pnpm dev                       # http://localhost:3000
 ```
 
-Needs the backend running on port 5000. `JWT_ACCESS_SECRET` here must be the
+Needs the backend running on port 5050. `JWT_ACCESS_SECRET` here must be the
 **exact** same value as the backend's `ACCESS_TOKEN_SECRET`.
 
 ## Structure
