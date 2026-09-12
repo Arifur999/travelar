@@ -27,4 +27,18 @@ export interface ApiErrorResponse {
   message: string;
 }
 
+/**
+ * A Prisma `Decimal` column as it arrives over the wire.
+ *
+ * Verified against the running API: a raw Prisma row serializes Decimal as a
+ * **string** (`amount: "12500"`), because a JS number cannot hold the full
+ * range safely. Endpoints that aggregate in the service layer run the value
+ * through `toNumber()` first and send a real number.
+ *
+ * So the same concept arrives as either type depending on the endpoint. Always
+ * read one through `toNumber()` from `lib/format` — never do arithmetic on it
+ * directly, or `a.amount + b.amount` silently concatenates two strings.
+ */
+export type Money = number | string;
+
 export type ActionResult<TData = unknown> = ApiResponse<TData> | ApiErrorResponse;

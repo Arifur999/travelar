@@ -1,3 +1,4 @@
+import { type Money } from "./api.types";
 import { type CashAccountCategory, type PostingSource } from "./enums.types";
 
 /**
@@ -86,7 +87,8 @@ export interface IBalanceTransfer {
   fromAccount: IAccountRef;
   toAccountId: string;
   toAccount: IAccountRef;
-  amount: number;
+  /** Raw Prisma row, so this is a Decimal string. Read it through toNumber(). */
+  amount: Money;
   date: string;
   note?: string | null;
   transferredById?: string | null;
