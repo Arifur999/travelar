@@ -13,7 +13,6 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
 } from "@/components/ui/select";
 import {
   hasFilterValue,
@@ -283,17 +282,30 @@ const DataTableFilters = ({
             );
           }
 
+          const selectedValue = typeof value === "string" && value ? value : ALL_VALUE;
+          const selectedLabel =
+            config.options.find((option) => option.value === selectedValue)?.label ?? "All";
+
           return (
             <Select
               key={config.filterId}
-              value={typeof value === "string" && value ? value : ALL_VALUE}
+              value={selectedValue}
               disabled={disabled}
               onValueChange={(next) =>
                 onFilterChange(config.filterId, next === ALL_VALUE ? undefined : next)
               }
             >
               <SelectTrigger className="h-9 w-auto min-w-36" aria-label={config.label}>
-                <SelectValue placeholder={config.label} />
+                {/* The trigger text is rendered here rather than through
+                    <SelectValue>. Radix resolves a value to its item's text by
+                    looking at the items, which live in a portal that is not
+                    mounted during SSR — so <SelectValue> renders an empty
+                    trigger until hydration. Naming the filter alongside the
+                    selection also makes the control self-describing: a bare
+                    "Cash in hand" never says which side it filters. */}
+                <span className="truncate">
+                  <span className="text-muted-foreground">{config.label}:</span> {selectedLabel}
+                </span>
               </SelectTrigger>
               <SelectContent>
                 {/* Radix Select forbids an empty-string value, so "all" needs a
