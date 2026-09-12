@@ -24,6 +24,11 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
 
+  --color-visa: var(--visa);
+  --color-hajj: var(--hajj);
+  --color-expense: var(--expense);
+  --color-ledger: var(--ledger);
+
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
   --color-chart-3: var(--chart-3);
@@ -48,94 +53,108 @@
   --radius-xl: calc(var(--radius) + 4px);
 }
 
-/* Travelar brand: deep teal primary, gold accent. Every token is defined here
-   first; .dark below only overrides, so nothing can go undefined in one theme. */
+/* Travelar brand: blue primary on white, carried over from the app this
+   replaces. Every token is defined here first; .dark below only overrides, so
+   nothing can be left undefined in one theme. */
 :root {
-  --radius: 0.375rem;
+  --radius: 0.625rem;
 
-  --background: #fbfdfc;
-  --foreground: #16211e;
+  --background: #f9fafb;
+  --foreground: #1f2937;
 
   --card: #ffffff;
-  --card-foreground: #16211e;
+  --card-foreground: #1f2937;
   --popover: #ffffff;
-  --popover-foreground: #16211e;
+  --popover-foreground: #1f2937;
 
-  --primary: #0b6e4f;
-  --primary-foreground: #f4fbf8;
-  --secondary: #cfe8dd;
-  --secondary-foreground: #0b3d2c;
+  --primary: #2563eb;
+  --primary-foreground: #eff6ff;
+  --secondary: #dbeafe;
+  --secondary-foreground: #1e40af;
 
-  --muted: #eef5f2;
-  --muted-foreground: #5b6b66;
+  --muted: #f3f4f6;
+  --muted-foreground: #6b7280;
 
-  --accent: #d4a017;
-  --accent-foreground: #2a1f04;
+  --accent: #eff6ff;
+  --accent-foreground: #1d4ed8;
 
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: #fdf2f2;
+  --destructive: #dc2626;
+  --destructive-foreground: #fef2f2;
 
-  --border: #e0eae6;
-  --input: #e0eae6;
-  --ring: #0b6e4f;
+  --border: #e5e7eb;
+  --input: #e5e7eb;
+  --ring: #2563eb;
 
-  --chart-1: #0b6e4f;
-  --chart-2: #d4a017;
-  --chart-3: #cfe8dd;
-  --chart-4: oklch(0.627 0.194 149.214);
-  --chart-5: oklch(0.723 0.174 76.045);
+  /* Per-module accents. Used for stat tiles, badges and module headers; the
+     core chrome stays blue and white so the app reads as one product. */
+  --visa: #9333ea;
+  --hajj: #059669;
+  --expense: #ea580c;
+  --ledger: #4f46e5;
+
+  --chart-1: #2563eb;
+  --chart-2: #9333ea;
+  --chart-3: #059669;
+  --chart-4: #ea580c;
+  --chart-5: #4f46e5;
 
   --sidebar: #ffffff;
-  --sidebar-foreground: #16211e;
-  --sidebar-primary: #0b6e4f;
-  --sidebar-primary-foreground: #f4fbf8;
-  --sidebar-accent: #eef5f2;
-  --sidebar-accent-foreground: #0b3d2c;
-  --sidebar-border: #e0eae6;
-  --sidebar-ring: #0b6e4f;
+  --sidebar-foreground: #1f2937;
+  --sidebar-primary: #2563eb;
+  --sidebar-primary-foreground: #eff6ff;
+  --sidebar-accent: #eff6ff;
+  --sidebar-accent-foreground: #1d4ed8;
+  --sidebar-border: #e5e7eb;
+  --sidebar-ring: #2563eb;
 }
 
-/* Roles swap rather than simply darkening: primary becomes the light mint so
-   it stays legible on a dark ground. */
 .dark {
-  --background: #0c1512;
-  --foreground: #e8f1ed;
+  --background: #0b1120;
+  --foreground: #e5e7eb;
 
-  --card: #131f1b;
-  --card-foreground: #e8f1ed;
-  --popover: #131f1b;
-  --popover-foreground: #e8f1ed;
+  --card: #131c2e;
+  --card-foreground: #e5e7eb;
+  --popover: #131c2e;
+  --popover-foreground: #e5e7eb;
 
-  --primary: #7fd3b2;
-  --primary-foreground: #06251a;
-  --secondary: #144534;
-  --secondary-foreground: #d7f0e5;
+  /* Roles swap: the light blue carries on the dark ground. */
+  --primary: #93c5fd;
+  --primary-foreground: #0b1120;
+  --secondary: #1e3a8a;
+  --secondary-foreground: #dbeafe;
 
-  --muted: #1a2a25;
-  --muted-foreground: #9db3ab;
+  --muted: #1b2537;
+  --muted-foreground: #9aa5b8;
 
-  --accent: #e5b93f;
-  --accent-foreground: #2a1f04;
+  --accent: #1b2537;
+  --accent-foreground: #dbeafe;
 
-  --destructive: oklch(0.704 0.191 22.216);
-  --destructive-foreground: #fdf2f2;
+  --destructive: #f87171;
+  --destructive-foreground: #0b1120;
 
-  --border: rgba(232, 241, 237, 0.12);
-  --input: rgba(232, 241, 237, 0.16);
-  --ring: #7fd3b2;
+  --border: rgba(229, 231, 235, 0.12);
+  --input: rgba(229, 231, 235, 0.16);
+  --ring: #93c5fd;
 
-  --chart-1: #7fd3b2;
-  --chart-2: #e5b93f;
-  --chart-3: #144534;
+  --visa: #c084fc;
+  --hajj: #34d399;
+  --expense: #fb923c;
+  --ledger: #818cf8;
 
-  --sidebar: #131f1b;
-  --sidebar-foreground: #e8f1ed;
-  --sidebar-primary: #7fd3b2;
-  --sidebar-primary-foreground: #06251a;
-  --sidebar-accent: #1a2a25;
-  --sidebar-accent-foreground: #d7f0e5;
-  --sidebar-border: rgba(232, 241, 237, 0.12);
-  --sidebar-ring: #7fd3b2;
+  --chart-1: #93c5fd;
+  --chart-2: #c084fc;
+  --chart-3: #34d399;
+  --chart-4: #fb923c;
+  --chart-5: #818cf8;
+
+  --sidebar: #131c2e;
+  --sidebar-foreground: #e5e7eb;
+  --sidebar-primary: #93c5fd;
+  --sidebar-primary-foreground: #0b1120;
+  --sidebar-accent: #1b2537;
+  --sidebar-accent-foreground: #dbeafe;
+  --sidebar-border: rgba(229, 231, 235, 0.12);
+  --sidebar-ring: #93c5fd;
 }
 
 @layer base {
@@ -152,8 +171,8 @@
      property so one component covers every size without a class per variant. */
   .app-loader {
     --loader-size: 32px;
-    --loader-color-1: var(--primary);
-    --loader-color-2: var(--accent);
+    --loader-color-1: var(--border);
+    --loader-color-2: var(--primary);
 
     display: inline-block;
     width: var(--loader-size);

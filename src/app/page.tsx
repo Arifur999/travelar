@@ -8,8 +8,11 @@ export default function Home() {
       className="flex min-h-screen flex-col items-center justify-center gap-6 px-6 text-center"
     >
       <p className="font-display text-5xl font-semibold tracking-tight">
+        {/* --accent is a near-white tint in this palette, so the second half
+            uses the ledger token — the two read as one wordmark and both stay
+            legible in dark mode. */}
         <span className="text-primary">Trav</span>
-        <span className="text-accent">elar</span>
+        <span className="text-ledger">elar</span>
       </p>
 
       <p className="max-w-xl text-muted-foreground">

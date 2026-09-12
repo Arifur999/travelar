@@ -22,5 +22,5 @@ API scopes every business row on `agencyId`. The API lives in
 - Route protection is `src/proxy.ts` (Next 16's rename of `middleware.ts`); the route-ownership table lives in `src/lib/authUtils.ts`. `SUPER_ADMIN` gets `/admin/dashboard`; agency roles share `/dashboard`.
 - `JWT_ACCESS_SECRET` must equal the backend's `ACCESS_TOKEN_SECRET`, or every protected route silently bounces to `/login`.
 - shadcn primitives in `src/components/ui/` are generated — `pnpm dlx shadcn@latest add <name>`, never hand-written.
-- Theme: deep teal `--primary` with a gold `--accent`, defined as CSS variables in `globals.css`. Read the variables — never hard-code hex in a component or a chart, or dark mode breaks.
+- Theme: blue `--primary` on white, with four per-module accent tokens — `--visa`, `--hajj`, `--expense`, `--ledger` — exposed to Tailwind as `bg-visa`, `text-hajj` and so on. (The accounts accent is `ledger`, not `balance`: `text-balance` is already a Tailwind core utility for `text-wrap: balance`, so that name would collide.) All defined as CSS variables in `globals.css`. Read the variables — never hard-code hex in a component or a chart, or dark mode breaks.
 - Tailwind v4: there is no `tailwind.config.js`. Tokens live in `@theme inline`.

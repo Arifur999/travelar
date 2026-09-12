@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Fraunces, Work_Sans } from "next/font/google";
-import { Toaster } from "sonner";
+import { Toaster } from "@/components/ui/sonner";
 import QueryProviders from "./providers/QueryProvider";
 import ThemeProvider from "./providers/ThemeProvider";
 import "./globals.css";
