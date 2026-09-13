@@ -19,7 +19,6 @@ import {
   Route,
   ScrollText,
   Settings,
-  Tags,
   Target,
   Truck,
   Users,
@@ -134,12 +133,6 @@ export const agencyNavGroups: NavGroup[] = [
     items: [
       { title: "Airlines", href: "/dashboard/airlines", icon: PlaneTakeoff, feature: "TICKETING" },
       { title: "Routes", href: "/dashboard/routes", icon: Route, feature: "TICKETING" },
-      {
-        title: "Expense categories",
-        href: "/dashboard/expense-categories",
-        icon: Tags,
-        feature: "EXPENSE",
-      },
       {
         title: "Agency profile",
         href: "/dashboard/settings",
