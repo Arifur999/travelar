@@ -23,7 +23,10 @@ export const platformProtectedRoutes: RouteConfig = {
 
 /** The agency workspace, shared by AGENCY_ADMIN and AGENCY_STAFF. */
 export const agencyProtectedRoutes: RouteConfig = {
-  exact: ["/billing/success", "/billing/failed", "/billing/cancelled"],
+  // Where SSLCommerz sends the browser back to. The backend redirects to
+  // /billing/payment-result?status=...&tran_id=... — one route carrying the
+  // outcome as a param, not three separate paths.
+  exact: ["/billing/payment-result"],
   pattern: [/^\/dashboard/],
 };
 
