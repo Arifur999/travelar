@@ -1,0 +1,18 @@
+# Installed and built inside the image; host copies are for another OS.
+node_modules
+.next
+out
+build
+coverage
+tsconfig.tsbuildinfo
+
+# Secrets never go into an image layer — they arrive as runtime env.
+.env
+.env.*
+!.env.example
+
+.git
+.gitignore
+*.log
+.DS_Store
+.vercel

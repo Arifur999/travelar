@@ -3,13 +3,9 @@ import axios from "axios";
 import { cookies, headers } from "next/headers";
 import { getNewTokensWithRefreshToken } from "@/services/auth.services";
 import { ApiResponse } from "@/types/api.types";
+import { getApiBaseUrl } from "../apiBaseUrl";
+import { getForwardedForHeader } from "../forwardedFor";
 import { isTokenExpiringSoon } from "../tokenUtils";
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
-
-if (!API_BASE_URL) {
-  throw new Error("NEXT_PUBLIC_API_BASE_URL is not defined in environment variables");
-}
 
 async function tryRefreshToken(accessToken: string, refreshToken: string): Promise<void> {
   if (!(await isTokenExpiringSoon(accessToken))) return;
@@ -47,9 +43,13 @@ const axiosInstance = async () => {
   }
 
   return axios.create({
-    baseURL: API_BASE_URL,
+    baseURL: getApiBaseUrl(),
     timeout: 30000,
-    headers: { "Content-Type": "application/json", Cookie: await buildCookieHeader() },
+    headers: {
+      "Content-Type": "application/json",
+      Cookie: await buildCookieHeader(),
+      ...(await getForwardedForHeader()),
+    },
   });
 };
 
@@ -63,10 +63,10 @@ const multipartAxiosInstance = async () => {
   }
 
   return axios.create({
-    baseURL: API_BASE_URL,
+    baseURL: getApiBaseUrl(),
     timeout: 30000,
     // No Content-Type on purpose — axios must set the multipart boundary.
-    headers: { Cookie: await buildCookieHeader() },
+    headers: { Cookie: await buildCookieHeader(), ...(await getForwardedForHeader()) },
   });
 };
 

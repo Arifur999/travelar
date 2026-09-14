@@ -3,6 +3,8 @@
 import { cache } from "react";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { getApiBaseUrl } from "@/lib/apiBaseUrl";
+import { getForwardedForHeader } from "@/lib/forwardedFor";
 import { setTokenInCookies } from "@/lib/tokenUtils";
 import { deleteCookie } from "@/lib/cookiesUtils";
 import { type ApiResponse } from "@/types/api.types";
@@ -15,8 +17,6 @@ import {
   type IRegisterResponse,
   type IUser,
 } from "@/types/user.types";
-
-const BASE_API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 /**
  * Every function in this file uses raw fetch, NOT httpClient.
@@ -66,7 +66,7 @@ export const getUserInfo = cache(async (): Promise<IUser | null> => {
   if (!cookieStore.get("accessToken")?.value) return null;
 
   try {
-    const res = await fetch(`${BASE_API_URL}/auth/me`, {
+    const res = await fetch(`${getApiBaseUrl()}/auth/me`, {
       method: "GET",
       headers: await buildAuthHeader(),
       cache: "no-store",
@@ -96,7 +96,7 @@ export const getMyFeatures = cache(async (): Promise<IMyFeatures | null> => {
   if (!cookieStore.get("accessToken")?.value) return null;
 
   try {
-    const res = await fetch(`${BASE_API_URL}/auth/my-features`, {
+    const res = await fetch(`${getApiBaseUrl()}/auth/my-features`, {
       method: "GET",
       headers: await buildAuthHeader(),
       cache: "no-store",
@@ -113,7 +113,7 @@ export const getMyFeatures = cache(async (): Promise<IMyFeatures | null> => {
 });
 
 export async function getNewTokensWithRefreshToken(refreshToken: string): Promise<boolean> {
-  const res = await fetch(`${BASE_API_URL}/auth/refresh-token`, {
+  const res = await fetch(`${getApiBaseUrl()}/auth/refresh-token`, {
     method: "POST",
     headers: { "Content-Type": "application/json", Cookie: `refreshToken=${refreshToken}` },
     cache: "no-store",
@@ -135,9 +135,10 @@ export async function getNewTokensWithRefreshToken(refreshToken: string): Promis
  * ("Invalid email or password", "This account has been deactivated").
  */
 export async function loginUser(payload: ILoginPayload): Promise<ApiResponse<ILoginResponse>> {
-  const res = await fetch(`${BASE_API_URL}/auth/login`, {
+  const res = await fetch(`${getApiBaseUrl()}/auth/login`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    // The API rate-limits this route per client address; see forwardedFor.ts.
+    headers: { "Content-Type": "application/json", ...(await getForwardedForHeader()) },
     body: JSON.stringify(payload),
     cache: "no-store",
   });
@@ -156,9 +157,10 @@ export async function loginUser(payload: ILoginPayload): Promise<ApiResponse<ILo
 export async function registerAgency(
   payload: IRegisterPayload,
 ): Promise<ApiResponse<IRegisterResponse>> {
-  const res = await fetch(`${BASE_API_URL}/auth/register`, {
+  const res = await fetch(`${getApiBaseUrl()}/auth/register`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    // The API rate-limits this route per client address; see forwardedFor.ts.
+    headers: { "Content-Type": "application/json", ...(await getForwardedForHeader()) },
     body: JSON.stringify(payload),
     cache: "no-store",
   });
@@ -184,7 +186,7 @@ export async function registerAgency(
 export async function changePassword(
   payload: IChangePasswordPayload,
 ): Promise<ApiResponse<{ message: string }>> {
-  const res = await fetch(`${BASE_API_URL}/auth/change-password`, {
+  const res = await fetch(`${getApiBaseUrl()}/auth/change-password`, {
     method: "POST",
     headers: await buildAuthHeader(),
     body: JSON.stringify(payload),
@@ -211,7 +213,7 @@ export async function logoutAction() {
     const cookieStore = await cookies();
     const accessToken = cookieStore.get("accessToken")?.value;
 
-    await fetch(`${BASE_API_URL}/auth/logout`, {
+    await fetch(`${getApiBaseUrl()}/auth/logout`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
