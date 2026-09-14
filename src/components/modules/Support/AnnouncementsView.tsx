@@ -12,19 +12,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { formatDateTime } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { getMyAnnouncements } from "@/services/support.services";
-import {
-  ANNOUNCEMENT_TYPE_LABELS,
-  type AnnouncementType,
-  type BadgeTone,
-} from "@/types/enums.types";
-
-/** Announcement type to badge tone. Warnings read as warnings. */
-const TYPE_TONES: Record<AnnouncementType, BadgeTone> = {
-  INFO: "info",
-  FEATURE: "success",
-  MAINTENANCE: "warning",
-  WARNING: "danger",
-};
+import { ANNOUNCEMENT_TYPE_LABELS, ANNOUNCEMENT_TYPE_TONES } from "@/types/enums.types";
 
 const AnnouncementsView = () => {
   const queryClient = useQueryClient();
@@ -94,7 +82,7 @@ const AnnouncementsView = () => {
                 <div className="flex flex-wrap items-center gap-2">
                   <StatusBadge
                     label={ANNOUNCEMENT_TYPE_LABELS[announcement.type]}
-                    tone={TYPE_TONES[announcement.type]}
+                    tone={ANNOUNCEMENT_TYPE_TONES[announcement.type]}
                   />
                   <span className="flex-1 text-sm font-medium">{announcement.title}</span>
                   <span className="text-xs text-muted-foreground">

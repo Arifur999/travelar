@@ -335,6 +335,20 @@ export const SUPPORT_STATUS_TONES: Record<SupportStatus, BadgeTone> = {
   CLOSED: "neutral",
 };
 
+export const SUPPORT_PRIORITY_TONES: Record<SupportPriority, BadgeTone> = {
+  LOW: "neutral",
+  MEDIUM: "warning",
+  HIGH: "danger",
+};
+
+/** Announcement type to badge tone. Warnings read as warnings. */
+export const ANNOUNCEMENT_TYPE_TONES: Record<AnnouncementType, BadgeTone> = {
+  INFO: "info",
+  FEATURE: "success",
+  MAINTENANCE: "warning",
+  WARNING: "danger",
+};
+
 export const SUBSCRIPTION_ORDER_STATUS_TONES: Record<SubscriptionOrderStatus, BadgeTone> = {
   PENDING: "warning",
   SUCCESS: "success",
