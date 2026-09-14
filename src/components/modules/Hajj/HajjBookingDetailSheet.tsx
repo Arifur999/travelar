@@ -13,6 +13,7 @@ import {
   setHajjDocumentStatusAction,
 } from "@/app/(dashboardLayout)/dashboard/hajj/_action";
 import ConfirmDialog from "@/components/shared/ConfirmDialog";
+import InvoiceButton from "@/components/shared/InvoiceButton";
 import Loader from "@/components/shared/Loader";
 import AppField from "@/components/shared/form/AppField";
 import AppSubmitButton from "@/components/shared/form/AppSubmitButton";
@@ -315,6 +316,7 @@ const HajjBookingDetailSheet = ({
                 <RefreshCcw className="size-4" aria-hidden="true" />
                 Change status
               </Button>
+              <InvoiceButton kind="hajj" id={current.id} />
             </div>
 
             {isFinal && (

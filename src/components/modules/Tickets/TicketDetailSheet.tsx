@@ -7,6 +7,7 @@ import { CalendarSync, HandCoins, RefreshCcw, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { deleteTicketPaymentAction } from "@/app/(dashboardLayout)/dashboard/tickets/_action";
 import ConfirmDialog from "@/components/shared/ConfirmDialog";
+import InvoiceButton from "@/components/shared/InvoiceButton";
 import Loader from "@/components/shared/Loader";
 import StatusBadge from "@/components/shared/cell/StatusBadge";
 import { Badge } from "@/components/ui/badge";
@@ -177,6 +178,7 @@ const TicketDetailSheet = ({
                 <RefreshCcw className="size-4" aria-hidden="true" />
                 Change status
               </Button>
+              <InvoiceButton kind="ticket" id={current.id} />
             </div>
 
             {isFinal && (

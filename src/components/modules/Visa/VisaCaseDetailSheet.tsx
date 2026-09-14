@@ -12,6 +12,7 @@ import {
   setVisaDocumentStatusAction,
 } from "@/app/(dashboardLayout)/dashboard/visa/_action";
 import ConfirmDialog from "@/components/shared/ConfirmDialog";
+import InvoiceButton from "@/components/shared/InvoiceButton";
 import Loader from "@/components/shared/Loader";
 import StatusBadge from "@/components/shared/cell/StatusBadge";
 import { Badge } from "@/components/ui/badge";
@@ -175,6 +176,7 @@ const VisaCaseDetailSheet = ({
                 <RefreshCcw className="size-4" aria-hidden="true" />
                 Move forward
               </Button>
+              <InvoiceButton kind="visa" id={current.id} />
             </div>
 
             {isFinal && (

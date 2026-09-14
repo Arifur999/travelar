@@ -16,9 +16,9 @@ runs a separate console.
 |---|---|---|
 | Overview | Dashboard, Goals | — |
 | | Reports | `REPORTS` |
-| Sales | Tickets (payments, date changes, refunds) | `TICKETING` |
-| | Visa cases (documents, status, payments) | `VISA` |
-| | Hajj & Umrah (packages, batches, rooms, bookings) | `HAJJ_UMRAH` |
+| Sales | Tickets (payments, date changes, refunds, PDF invoice) | `TICKETING` |
+| | Visa cases (documents, status, payments, PDF invoice) | `VISA` |
+| | Hajj & Umrah (packages, batches, rooms, bookings, PDF invoice) | `HAJJ_UMRAH` |
 | People | Customers (with a full statement), Collections | — |
 | | Suppliers, Supplier payments, Employees¹ | `EXPENSE` |
 | Money | Cash accounts, Transfers, Expenses, Capital¹ | `EXPENSE` |
@@ -96,6 +96,8 @@ src/
     (authLayout)/                login, register
     (dashboardLayout)/
       dashboard/<feature>/       agency workspace: page, loading, _action
+      dashboard/invoices/[kind]/[id]/route.ts
+                                 streams a PDF invoice from the API
       admin/dashboard/<feature>/ platform console
       billing/payment-result/    where the payment gateway returns
       my-profile/  change-password/

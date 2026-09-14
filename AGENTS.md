@@ -16,7 +16,7 @@ API scopes every business row on `agencyId`. The API lives in
 - **Layering is `component → _action → service → httpClient`.** A component never imports `httpClient`. Mutations go through an `_action.ts` colocated with the route; it catches, normalizes via `getActionErrorMessage`, and returns `ApiResponse<T> | ApiErrorResponse` — so a component never needs a try/catch.
 - `"use server"` on every `services/*.services.ts` and every `_action.ts`.
 - **Server Component prefetches, Client Component consumes**: `page.tsx` is async, builds a `QueryClient`, `prefetchQuery`s, and wraps the client table in `<HydrationBoundary>`. The query key must match on both sides.
-- Feature components live in `src/components/modules/<Domain>/<Feature>/`. `app/` holds only `page.tsx`, `layout.tsx`, `loading.tsx`, `_action.ts`.
+- Feature components live in `src/components/modules/<Domain>/<Feature>/`. `app/` holds only `page.tsx`, `layout.tsx`, `loading.tsx`, `_action.ts` — plus a `route.ts` where the answer is a file rather than a page (e.g. `dashboard/invoices/[kind]/[id]/route.ts` streams PDFs). Keep those under `/dashboard` so `proxy.ts` guards them.
 - **Two zod schemas per entity**: `<Verb><Entity>FormZodSchema` (all strings, for `form.Field` validators) and `<Verb><Entity>ServerZodSchema` (coerced, re-validated inside the action).
 - After a successful mutation, all six in order: `toast.success` → close dialog → `form.reset()` → `invalidateQueries` → `refetchQueries({ type: "active" })` → `router.refresh()`.
 - Route protection is `src/proxy.ts` (Next 16's rename of `middleware.ts`); the route-ownership table lives in `src/lib/authUtils.ts`. `SUPER_ADMIN` gets `/admin/dashboard`; agency roles share `/dashboard`.

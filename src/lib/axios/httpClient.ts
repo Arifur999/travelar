@@ -199,8 +199,44 @@ const httpPatchFormData = async <TData>(
   }
 };
 
+export interface ApiFile {
+  data: ArrayBuffer;
+  contentType: string;
+  contentDisposition: string | null;
+}
+
+/**
+ * A binary response (a generated PDF) instead of the JSON envelope. On a 4xx
+ * the API still answers with its JSON error, which axios hands back as bytes
+ * here — so it is decoded into `response.data` before rethrowing, and
+ * getActionErrorMessage reads the message exactly as it does for JSON calls.
+ */
+const httpGetFile = async (endpoint: string): Promise<ApiFile> => {
+  try {
+    const instance = await axiosInstance();
+    const response = await instance.get<ArrayBuffer>(endpoint, { responseType: "arraybuffer" });
+    return {
+      data: response.data,
+      contentType: String(response.headers["content-type"] ?? "application/octet-stream"),
+      contentDisposition: (response.headers["content-disposition"] as string | undefined) ?? null,
+    };
+  } catch (error: any) {
+    const raw = error?.response?.data;
+    if (raw instanceof ArrayBuffer || ArrayBuffer.isView(raw)) {
+      try {
+        error.response.data = JSON.parse(new TextDecoder().decode(raw as ArrayBuffer));
+      } catch {
+        // Not JSON — leave the bytes; the caller falls back to its own message.
+      }
+    }
+    console.error(`GET file request to ${endpoint} failed:`, error?.response?.status ?? error);
+    throw error;
+  }
+};
+
 export const httpClient = {
   get: httpGet,
+  getFile: httpGetFile,
   post: httpPost,
   put: httpPut,
   patch: httpPatch,
