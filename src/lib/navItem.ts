@@ -21,6 +21,7 @@ import {
   Settings,
   Target,
   Truck,
+  UserCog,
   Users,
   Wallet,
   type LucideIcon,
@@ -62,7 +63,8 @@ export interface NavGroup {
  *   EXPENSE    → /accounts, /balance-transfers, /suppliers,
  *                /supplier-transactions, /expenses, /capital, /employees
  *   REPORTS    → /dashboard/custom, /monthly, /yearly, /cash-flow
- *   (none)     → /customers, /due-received, /dashboard/summary, /dashboard/goals
+ *   (none)     → /customers, /due-received, /dashboard/summary, /dashboard/goals,
+ *                /team, /agency/profile
  *
  * Note: the backend PlanFeature enum also has CRM, but no router gates on it —
  * customers and collections are base features on purpose, since every other
@@ -133,6 +135,9 @@ export const agencyNavGroups: NavGroup[] = [
     items: [
       { title: "Airlines", href: "/dashboard/airlines", icon: PlaneTakeoff, feature: "TICKETING" },
       { title: "Routes", href: "/dashboard/routes", icon: Route, feature: "TICKETING" },
+      // Visible to staff too: they can see who their teammates are, and the
+      // page hides every change they are not allowed to make.
+      { title: "Team", href: "/dashboard/team", icon: UserCog },
       {
         title: "Agency profile",
         href: "/dashboard/settings",

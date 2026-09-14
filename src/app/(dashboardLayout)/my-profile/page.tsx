@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import UpdateNameForm from "@/components/modules/Settings/UpdateNameForm";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -16,6 +17,7 @@ import {
   AGENCY_STATUS_LABELS,
   PLAN_FEATURE_LABELS,
   USER_ROLE_LABELS,
+  USER_STATUS_LABELS,
 } from "@/types/enums.types";
 
 export const metadata: Metadata = { title: "My profile" };
@@ -48,13 +50,17 @@ const MyProfilePage = async () => {
         </CardHeader>
 
         <CardContent>
+          <UpdateNameForm currentName={userInfo.name} />
+
+          <Separator className="my-4" />
+
           <dl className="divide-y">
             <Row label="Role" value={USER_ROLE_LABELS[userInfo.role]} />
             <Row
               label="Email verified"
               value={userInfo.emailVerified ? "Yes" : "No"}
             />
-            <Row label="Account status" value={userInfo.status} />
+            <Row label="Account status" value={USER_STATUS_LABELS[userInfo.status]} />
           </dl>
         </CardContent>
       </Card>

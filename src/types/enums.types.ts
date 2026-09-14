@@ -94,6 +94,12 @@ export const USER_ROLE_LABELS: Record<UserRole, string> = {
   AGENCY_STAFF: "Staff",
 };
 
+export const USER_STATUS_LABELS: Record<UserStatus, string> = {
+  ACTIVE: "Active",
+  BLOCKED: "Blocked",
+  DELETED: "Removed",
+};
+
 export const AGENCY_STATUS_LABELS: Record<AgencyStatus, string> = {
   TRIAL: "Trial",
   ACTIVE: "Active",
@@ -290,6 +296,16 @@ export const EMPLOYEE_PAYOUT_TYPE_OPTIONS = toSelectOptions(EMPLOYEE_PAYOUT_TYPE
 export const ATTENDANCE_STATUS_OPTIONS = toSelectOptions(ATTENDANCE_STATUS_LABELS);
 export const PLAN_FEATURE_OPTIONS = toSelectOptions(PLAN_FEATURE_LABELS);
 
+/** The roles an agency can hand out itself — SUPER_ADMIN never appears here. */
+export const TEAM_ROLE_OPTIONS: SelectOption<"AGENCY_ADMIN" | "AGENCY_STAFF">[] = [
+  { value: "AGENCY_STAFF", label: USER_ROLE_LABELS.AGENCY_STAFF },
+  { value: "AGENCY_ADMIN", label: USER_ROLE_LABELS.AGENCY_ADMIN },
+];
+export const TEAM_STATUS_OPTIONS: SelectOption<"ACTIVE" | "BLOCKED">[] = [
+  { value: "ACTIVE", label: USER_STATUS_LABELS.ACTIVE },
+  { value: "BLOCKED", label: USER_STATUS_LABELS.BLOCKED },
+];
+
 /* ------------------------------------------------------------------------ *
  * Badge tones
  *
@@ -319,6 +335,12 @@ export const HAJJ_BOOKING_STATUS_TONES: Record<HajjBookingStatus, BadgeTone> = {
   CONFIRMED: "success",
   CANCELLED: "danger",
   COMPLETED: "info",
+};
+
+export const USER_STATUS_TONES: Record<UserStatus, BadgeTone> = {
+  ACTIVE: "success",
+  BLOCKED: "danger",
+  DELETED: "neutral",
 };
 
 export const AGENCY_STATUS_TONES: Record<AgencyStatus, BadgeTone> = {
