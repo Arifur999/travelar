@@ -13,7 +13,7 @@ import {
 import { formatCurrency, formatDate } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { getCustomerLedger } from "@/services/customer.services";
-import { type ICustomer, type ICustomerLedgerRow } from "@/types/customer.types";
+import { type CustomerLedgerRowType, type ICustomer } from "@/types/customer.types";
 
 interface CustomerLedgerSheetProps {
   open: boolean;
@@ -21,31 +21,38 @@ interface CustomerLedgerSheetProps {
   customer: ICustomer;
 }
 
-const TYPE_LABELS: Record<ICustomerLedgerRow["type"], string> = {
+const TYPE_LABELS: Record<CustomerLedgerRowType, string> = {
   opening: "Opening",
   ticket: "Ticket",
-  payment: "Payment",
+  "ticket-payment": "Payment",
+  visa: "Visa",
+  "visa-payment": "Payment",
+  hajj: "Hajj",
+  "hajj-payment": "Payment",
   "due-received": "Collection",
   discount: "Discount",
 };
 
-const TYPE_TONES: Record<ICustomerLedgerRow["type"], string> = {
+/**
+ * Sales take their module's accent, so a mixed statement reads at a glance;
+ * every kind of money in is green, whichever module it was paid against.
+ */
+const TYPE_TONES: Record<CustomerLedgerRowType, string> = {
   opening: "bg-muted text-muted-foreground",
-  ticket: "bg-warning/10 text-warning",
-  payment: "bg-success/10 text-success",
+  ticket: "bg-primary/10 text-primary",
+  "ticket-payment": "bg-success/10 text-success",
+  visa: "bg-visa/10 text-visa",
+  "visa-payment": "bg-success/10 text-success",
+  hajj: "bg-hajj/10 text-hajj",
+  "hajj-payment": "bg-success/10 text-success",
   "due-received": "bg-success/10 text-success",
   discount: "bg-info/10 text-info",
 };
 
 /**
- * The statement behind the due figure.
- *
- * Note what it does NOT yet include: visa cases and Hajj bookings contribute to
- * `currentDue` (the API sums all three modules), but the ledger endpoint only
- * lists tickets, payments, collections and discounts. So on a customer with
- * visa or Hajj sales, the final running total will be lower than the headline.
- * That gap is in the API, not here — the sheet says so rather than quietly
- * showing two numbers that disagree.
+ * The statement behind the due figure: tickets, visa cases, Hajj bookings,
+ * the payments against each, collections and discounts — everything that
+ * feeds `currentDue`, so the running total ends on it.
  */
 const CustomerLedgerSheet = ({ open, onOpenChange, customer }: CustomerLedgerSheetProps) => {
   const { data, isLoading } = useQuery({
@@ -57,8 +64,11 @@ const CustomerLedgerSheet = ({ open, onOpenChange, customer }: CustomerLedgerShe
   const rows = data?.data.rows ?? [];
   const current = data?.data.customer ?? customer;
 
+  // Kept as a guard even though the API now builds both from the same rows:
+  // if the two derivations ever drift again, say so instead of showing two
+  // numbers that silently disagree.
   const lastRunning = rows.length > 0 ? rows[rows.length - 1]!.runningDue : null;
-  const statementIsPartial =
+  const statementDisagrees =
     lastRunning !== null && Math.abs(lastRunning - current.currentDue) > 0.01;
 
   return (
@@ -112,12 +122,11 @@ const CustomerLedgerSheet = ({ open, onOpenChange, customer }: CustomerLedgerShe
             </div>
           </dl>
 
-          {statementIsPartial && (
+          {statementDisagrees && (
             <p className="mb-3 rounded-md border border-warning/30 bg-warning/10 p-3 text-xs">
-              This statement lists tickets, payments, collections and discounts. Visa and Hajj
-              sales are counted in the balance above but are not itemised here, so the running
-              total ends at {formatCurrency(lastRunning)} rather than{" "}
-              {formatCurrency(current.currentDue)}.
+              This statement ends at {formatCurrency(lastRunning)}, but the balance above is{" "}
+              {formatCurrency(current.currentDue)}. One of the two is out of date — please report
+              it to support.
             </p>
           )}
 

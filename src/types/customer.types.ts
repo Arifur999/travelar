@@ -49,10 +49,24 @@ export interface ICustomerDashboard {
   };
 }
 
-/** Debit increases what is owed; credit reduces it. */
+export type CustomerLedgerRowType =
+  | "opening"
+  | "ticket"
+  | "ticket-payment"
+  | "visa"
+  | "visa-payment"
+  | "hajj"
+  | "hajj-payment"
+  | "due-received"
+  | "discount";
+
+/**
+ * Debit increases what is owed; credit reduces it. The rows cover every module
+ * that feeds `currentDue`, so the last `runningDue` equals it.
+ */
 export interface ICustomerLedgerRow {
   date: string;
-  type: "opening" | "ticket" | "payment" | "due-received" | "discount";
+  type: CustomerLedgerRowType;
   description: string;
   debit: number;
   credit: number;
