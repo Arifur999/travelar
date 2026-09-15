@@ -21,6 +21,7 @@ const LoginPage = async ({
 }) => {
   const params = await searchParams;
   const redirectParam = typeof params.redirect === "string" ? params.redirect : undefined;
+  const justReset = params.reset === "success";
 
   return (
     <Card>
@@ -30,6 +31,12 @@ const LoginPage = async ({
       </CardHeader>
 
       <CardContent className="space-y-6">
+        {justReset && (
+          <p role="status" className="rounded-md border border-success/30 bg-success/10 p-3 text-sm">
+            Your password was reset and you were signed out everywhere. Sign in with the new one.
+          </p>
+        )}
+
         <LoginForm redirectTo={redirectParam} />
 
         <p className="text-center text-sm text-muted-foreground">

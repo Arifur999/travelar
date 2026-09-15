@@ -43,6 +43,8 @@ pnpm dev                       # http://localhost:3000
 
 Needs the backend running (see its README). Then register an agency at
 `/register`, or sign in as the operator the backend seeds on first boot.
+Forgotten passwords are recovered at `/forgot-password`; locally, with no SMTP
+configured, the reset link is printed to the API's console.
 
 | Variable | What it is |
 |---|---|
@@ -93,7 +95,7 @@ src/
   app/
     layout.tsx                   fonts, providers, Toaster
     globals.css                  Tailwind v4 theme tokens (incl. module accents)
-    (authLayout)/                login, register
+    (authLayout)/                login, register, forgot-password, reset-password
     (dashboardLayout)/
       dashboard/<feature>/       agency workspace: page, loading, _action
       dashboard/invoices/[kind]/[id]/route.ts

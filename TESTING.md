@@ -16,6 +16,7 @@ pnpm test:watch    # while working
 | `src/lib/authUtils.test.ts` | The route-ownership table `proxy.ts` enforces, and `?redirect=` validation. A wrong row is a hole or a lockout. |
 | `src/lib/teamPermissions.test.ts` | Must mirror the API's owner/admin/staff rules, or the UI offers what the API refuses. Temporary passwords avoid look-alike characters. |
 | `src/lib/format.test.ts` | Money in ৳ and lakh/crore, margins that are `null` (not 0%) without revenue, dates, "1 day left" rounding. |
+| `src/zod/auth.validation.test.ts` | Password recovery: email normalization, matching passwords, token and length bounds that mirror the API. |
 | `src/zod/team.validation.test.ts` | Email normalization, blank-means-null for the agency profile, roles an agency cannot grant. |
 
 Not tested here, on purpose: components, pages, services and actions. They are

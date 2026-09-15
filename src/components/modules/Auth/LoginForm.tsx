@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "@tanstack/react-form";
 import { useMutation } from "@tanstack/react-query";
@@ -107,6 +108,12 @@ const LoginForm = ({ redirectTo }: { redirectTo?: string }) => {
           />
         )}
       </form.Field>
+
+      <div className="-mt-2 flex justify-end">
+        <Link href="/forgot-password" className="text-sm font-medium text-primary hover:underline">
+          Forgot password?
+        </Link>
+      </div>
 
       <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting] as const}>
         {([canSubmit, isSubmitting]) => (

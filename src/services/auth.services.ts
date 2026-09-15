@@ -10,11 +10,13 @@ import { deleteCookie } from "@/lib/cookiesUtils";
 import { type ApiResponse } from "@/types/api.types";
 import {
   type IChangePasswordPayload,
+  type IForgotPasswordPayload,
   type ILoginPayload,
   type ILoginResponse,
   type IMyFeatures,
   type IRegisterPayload,
   type IRegisterResponse,
+  type IResetPasswordPayload,
   type IUser,
 } from "@/types/user.types";
 
@@ -200,6 +202,48 @@ export async function changePassword(
   }
 
   return body as ApiResponse<{ message: string }>;
+}
+
+/**
+ * Always resolves the same way for any well-formed address — the API never says
+ * whether an account exists. Only a rate limit or an outage throws.
+ */
+export async function requestPasswordReset(
+  payload: IForgotPasswordPayload,
+): Promise<ApiResponse<null>> {
+  const res = await fetch(`${getApiBaseUrl()}/auth/forgot-password`, {
+    method: "POST",
+    // Rate-limited per client address and per email; see forwardedFor.ts.
+    headers: { "Content-Type": "application/json", ...(await getForwardedForHeader()) },
+    body: JSON.stringify(payload),
+    cache: "no-store",
+  });
+
+  const body = await res.json();
+
+  if (!res.ok || !body?.success) {
+    throw new Error(body?.message ?? "Could not send a reset link");
+  }
+
+  return body as ApiResponse<null>;
+}
+
+/** Throws with the API's message — typically "invalid or has expired". */
+export async function resetPassword(payload: IResetPasswordPayload): Promise<ApiResponse<null>> {
+  const res = await fetch(`${getApiBaseUrl()}/auth/reset-password`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...(await getForwardedForHeader()) },
+    body: JSON.stringify(payload),
+    cache: "no-store",
+  });
+
+  const body = await res.json();
+
+  if (!res.ok || !body?.success) {
+    throw new Error(body?.message ?? "Could not reset your password");
+  }
+
+  return body as ApiResponse<null>;
 }
 
 export async function clearAuthCookies() {

@@ -80,6 +80,16 @@ export interface IChangePasswordPayload {
   newPassword: string;
 }
 
+export interface IForgotPasswordPayload {
+  email: string;
+}
+
+export interface IResetPasswordPayload {
+  /** From the ?token= of the emailed link. */
+  token: string;
+  newPassword: string;
+}
+
 /* -------------------------- auth response payloads ------------------------ */
 
 /**

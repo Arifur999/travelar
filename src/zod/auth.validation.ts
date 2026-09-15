@@ -1,5 +1,11 @@
 import { z } from "zod";
-import { type IChangePasswordPayload, type ILoginPayload, type IRegisterPayload } from "@/types/user.types";
+import {
+  type IChangePasswordPayload,
+  type IForgotPasswordPayload,
+  type ILoginPayload,
+  type IRegisterPayload,
+  type IResetPasswordPayload,
+} from "@/types/user.types";
 
 /**
  * Two schemas per entity.
@@ -101,3 +107,35 @@ export const changePasswordServerZodSchema = z.object({
   currentPassword: z.string().min(1, "Current password is required"),
   newPassword: z.string().min(8, "New password must be at least 8 characters"),
 }) satisfies z.ZodType<IChangePasswordPayload>;
+
+/* --------------------------- password recovery --------------------------- */
+
+export const forgotPasswordFormZodSchema = z.object({
+  email: z.email("Enter a valid email address"),
+});
+
+export type IForgotPasswordFormValues = z.infer<typeof forgotPasswordFormZodSchema>;
+
+export const forgotPasswordServerZodSchema = z.object({
+  email: z.string().trim().toLowerCase().pipe(z.email("Enter a valid email address")),
+}) satisfies z.ZodType<IForgotPasswordPayload>;
+
+export const resetPasswordFieldsZodSchema = z.object({
+  newPassword: z
+    .string("New password is required")
+    .min(8, "New password must be at least 8 characters")
+    .max(128, "New password must be at most 128 characters"),
+  confirmPassword: z.string("Confirm your new password").min(1, "Confirm your new password"),
+});
+
+export type IResetPasswordFormValues = z.infer<typeof resetPasswordFieldsZodSchema>;
+
+export const resetPasswordFormZodSchema = resetPasswordFieldsZodSchema.refine(
+  (values) => values.newPassword === values.confirmPassword,
+  { message: "Passwords do not match", path: ["confirmPassword"] },
+);
+
+export const resetPasswordServerZodSchema = z.object({
+  token: z.string("This reset link is incomplete").min(10, "This reset link is incomplete").max(200),
+  newPassword: z.string().min(8, "New password must be at least 8 characters").max(128),
+}) satisfies z.ZodType<IResetPasswordPayload>;
