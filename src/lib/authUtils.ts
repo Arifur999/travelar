@@ -18,7 +18,8 @@ export const commonProtectedRoutes: RouteConfig = {
 /** The platform operator's console — agencies must never reach it. */
 export const platformProtectedRoutes: RouteConfig = {
   exact: [],
-  pattern: [/^\/admin\/dashboard/],
+  // Whole path segments only: a bare prefix also claimed /admin/dashboardx.
+  pattern: [/^\/admin\/dashboard(?:\/|$)/],
 };
 
 /** The agency workspace, shared by AGENCY_ADMIN and AGENCY_STAFF. */
@@ -27,7 +28,7 @@ export const agencyProtectedRoutes: RouteConfig = {
   // /billing/payment-result?status=...&tran_id=... — one route carrying the
   // outcome as a param, not three separate paths.
   exact: ["/billing/payment-result"],
-  pattern: [/^\/dashboard/],
+  pattern: [/^\/dashboard(?:\/|$)/],
 };
 
 export const isRouteMatches = (pathname: string, routes: RouteConfig) => {
