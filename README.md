@@ -73,6 +73,11 @@ configured, the reset link is printed to the API's console.
 - The client's address is forwarded to the API in `X-Forwarded-For`, because
   the API rate-limits logins per address and would otherwise see only this
   server's.
+- **Security headers.** Every page gets a Content-Security-Policy with a fresh
+  nonce (set in `proxy.ts`): only this request's scripts run, nothing can frame
+  the app, and the browser may only connect back to it. Static headers
+  (`nosniff`, `X-Frame-Options`, `Referrer-Policy`, `Permissions-Policy`, HSTS in
+  production) come from `next.config.ts`.
 
 ## Production image
 

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import { Fraunces, Work_Sans } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import QueryProviders from "./providers/QueryProvider";
@@ -17,9 +18,13 @@ export const metadata: Metadata = {
     "Multi-tenant travel agency management: ticketing, visa processing, Hajj & Umrah, and billing in one place.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  // Set by proxy.ts for this request. next-themes writes an inline script to
+  // apply the theme before paint, and the CSP only lets it run with the nonce.
+  const nonce = (await headers()).get("x-nonce") ?? undefined;
+
   return (
     // suppressHydrationWarning is required by next-themes, which writes the
     // theme class onto <html> before React hydrates.
@@ -32,7 +37,7 @@ export default function RootLayout({
           Skip to main content
         </a>
 
-        <ThemeProvider>
+        <ThemeProvider nonce={nonce}>
           <QueryProviders>
             {children}
             <Toaster richColors position="top-center" />
