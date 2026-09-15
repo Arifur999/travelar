@@ -13,6 +13,7 @@ import {
   deactivatePlan,
   deleteAgency,
   extendTrial,
+  runSubscriptionLifecycle,
   updateAgencyStatus,
   updatePlan,
 } from "@/services/admin.services";
@@ -30,7 +31,7 @@ import {
   updateTicketStatusServerZodSchema,
 } from "@/zod/support.validation";
 import { type ApiErrorResponse, type ApiResponse } from "@/types/api.types";
-import { type IAdminPlan } from "@/types/admin.types";
+import { type IAdminPlan, type ILifecycleRunSummary } from "@/types/admin.types";
 import { type IAnnouncement, type ISupportTicketDetail } from "@/types/support.types";
 
 /** Every action here is SUPER_ADMIN on the API; the proxy keeps agencies out. */
@@ -157,6 +158,20 @@ export const deleteAgencyAction = async (
     return await deleteAgency(id);
   } catch (error: unknown) {
     return { success: false, message: getActionErrorMessage(error, "Failed to delete the agency") };
+  }
+};
+
+/* ---------------------------------- jobs --------------------------------- */
+
+export const runSubscriptionLifecycleAction = async (): Promise<
+  ApiResponse<ILifecycleRunSummary> | ApiErrorResponse
+> => {
+  try {
+    // Safe to run any number of times: expiring is idempotent and each email is
+    // recorded before it is sent, so nothing goes out twice.
+    return await runSubscriptionLifecycle();
+  } catch (error: unknown) {
+    return { success: false, message: getActionErrorMessage(error, "The job did not run") };
   }
 };
 

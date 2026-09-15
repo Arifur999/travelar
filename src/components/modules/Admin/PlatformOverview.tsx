@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatCurrency, formatNumber, formatPercent } from "@/lib/format";
 import { getPlatformStats } from "@/services/admin.services";
+import SubscriptionLifecycleCard from "./SubscriptionLifecycleCard";
 import {
   AGENCY_STATUS_LABELS,
   AGENCY_STATUS_TONES,
@@ -94,6 +95,8 @@ const PlatformOverview = () => {
           </Button>
         </div>
       )}
+
+      <SubscriptionLifecycleCard />
 
       <Card>
         <CardHeader>

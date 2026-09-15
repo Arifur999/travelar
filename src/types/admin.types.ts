@@ -65,6 +65,16 @@ export interface IPlatformStats {
   openTickets: number;
 }
 
+/** What one run of the subscription lifecycle job did. */
+export interface ILifecycleRunSummary {
+  /** Agencies moved to EXPIRED by this run. */
+  expired: number;
+  /** Reminders this run claimed (already-sent ones are not counted again). */
+  reminders: number;
+  emails: number;
+  ranAt: string;
+}
+
 export interface IActivityLogEntry {
   id: string;
   adminId: string;

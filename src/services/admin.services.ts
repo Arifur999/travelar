@@ -9,6 +9,7 @@ import {
   type IAssignPlanPayload,
   type ICreatePlanPayload,
   type IExtendTrialPayload,
+  type ILifecycleRunSummary,
   type IPlatformStats,
   type IUpdateAgencyStatusPayload,
 } from "@/types/admin.types";
@@ -115,6 +116,17 @@ export const deleteAgency = async (id: string) => {
     return await httpClient.delete<null>(`/admin/agencies/${id}`);
   } catch (error) {
     console.error("Error deleting agency:", error);
+    throw error;
+  }
+};
+
+/* ---------------------------------- jobs --------------------------------- */
+
+export const runSubscriptionLifecycle = async () => {
+  try {
+    return await httpClient.post<ILifecycleRunSummary>("/admin/jobs/subscription-lifecycle", {});
+  } catch (error) {
+    console.error("Error running the subscription lifecycle:", error);
     throw error;
   }
 };
