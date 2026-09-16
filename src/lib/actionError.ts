@@ -1,3 +1,5 @@
+import { describeApiFailure } from "./apiError";
+
 /**
  * Turns whatever a service threw into a message a component can show.
  * Precedence: the API's own message, then a JS Error message, then the
@@ -19,39 +21,17 @@ const SAFE_REQUEST_ID = /^[A-Za-z0-9._:-]{8,64}$/;
  */
 const SERVER_ERROR_MESSAGE = "Something went wrong on our side. Please try again.";
 
-interface ErrorBody {
-  status?: number;
-  message?: string;
-  requestId?: string;
-}
-
-/** Unwraps the axios error shape without pulling axios into the bundle. */
-const readErrorBody = (error: unknown): ErrorBody | null => {
-  if (!error || typeof error !== "object" || !("response" in error)) return null;
-  const response = (error as { response?: unknown }).response;
-  if (!response || typeof response !== "object") return null;
-
-  const status = (response as { status?: unknown }).status;
-  const data = (response as { data?: unknown }).data;
-  const body = data && typeof data === "object" ? (data as Record<string, unknown>) : {};
-
-  return {
-    status: typeof status === "number" ? status : undefined,
-    message: typeof body.message === "string" ? body.message : undefined,
-    requestId: typeof body.requestId === "string" ? body.requestId : undefined,
-  };
-};
-
 export const getActionErrorMessage = (error: unknown, fallbackMessage: string) => {
-  const body = readErrorBody(error);
+  const failure = describeApiFailure(error);
 
-  if (body) {
-    if (body.status !== undefined && body.status >= 500) {
-      return body.requestId && SAFE_REQUEST_ID.test(body.requestId)
-        ? `${SERVER_ERROR_MESSAGE} Reference: ${body.requestId}`
-        : SERVER_ERROR_MESSAGE;
-    }
-    if (body.message) return body.message;
+  if (failure.status !== undefined && failure.status >= 500) {
+    return failure.requestId && SAFE_REQUEST_ID.test(failure.requestId)
+      ? `${SERVER_ERROR_MESSAGE} Reference: ${failure.requestId}`
+      : SERVER_ERROR_MESSAGE;
+  }
+
+  if (failure.status !== undefined && failure.message) {
+    return failure.message;
   }
 
   if (error instanceof Error) {

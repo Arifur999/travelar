@@ -16,90 +16,45 @@ import {
 
 /** Unpaginated — an agency has a handful of categories. */
 export const getExpenseCategories = async () => {
-  try {
-    return await httpClient.get<IExpenseCategory[]>("/expenses/categories");
-  } catch (error) {
-    console.error("Error fetching expense categories:", error);
-    throw error;
-  }
+  return await httpClient.get<IExpenseCategory[]>("/expenses/categories");
 };
 
 export const createExpenseCategory = async (payload: ICreateExpenseCategoryPayload) => {
-  try {
-    return await httpClient.post<IExpenseCategory>("/expenses/categories", payload);
-  } catch (error) {
-    console.error("Error creating expense category:", error);
-    throw error;
-  }
+  return await httpClient.post<IExpenseCategory>("/expenses/categories", payload);
 };
 
 export const updateExpenseCategory = async (
   id: string,
   payload: IUpdateExpenseCategoryPayload,
 ) => {
-  try {
-    return await httpClient.patch<IExpenseCategory>(`/expenses/categories/${id}`, payload);
-  } catch (error) {
-    console.error("Error updating expense category:", error);
-    throw error;
-  }
+  return await httpClient.patch<IExpenseCategory>(`/expenses/categories/${id}`, payload);
 };
 
 export const deleteExpenseCategory = async (id: string) => {
-  try {
-    return await httpClient.delete<null>(`/expenses/categories/${id}`);
-  } catch (error) {
-    console.error("Error deleting expense category:", error);
-    throw error;
-  }
+  return await httpClient.delete<null>(`/expenses/categories/${id}`);
 };
 
 /* -------------------------------- expenses ------------------------------- */
 
 export const getExpenses = async (queryString?: string) => {
-  try {
-    return await httpClient.get<IExpensesListResponse>(
-      `/expenses${queryString ? `?${queryString}` : ""}`,
-    );
-  } catch (error) {
-    console.error("Error fetching expenses:", error);
-    throw error;
-  }
+  return await httpClient.get<IExpensesListResponse>(
+    `/expenses${queryString ? `?${queryString}` : ""}`,
+  );
 };
 
 /** Category breakdown with budget usage, plus month and year totals. */
 export const getExpenseDashboard = async () => {
-  try {
-    return await httpClient.get<IExpenseDashboard>("/expenses/dashboard");
-  } catch (error) {
-    console.error("Error fetching expense dashboard:", error);
-    throw error;
-  }
+  return await httpClient.get<IExpenseDashboard>("/expenses/dashboard");
 };
 
 export const createExpense = async (payload: ICreateExpensePayload) => {
-  try {
-    return await httpClient.post<IExpense>("/expenses", payload);
-  } catch (error) {
-    console.error("Error creating expense:", error);
-    throw error;
-  }
+  return await httpClient.post<IExpense>("/expenses", payload);
 };
 
 export const updateExpense = async (id: string, payload: IUpdateExpensePayload) => {
-  try {
-    return await httpClient.patch<IExpense>(`/expenses/${id}`, payload);
-  } catch (error) {
-    console.error("Error updating expense:", error);
-    throw error;
-  }
+  return await httpClient.patch<IExpense>(`/expenses/${id}`, payload);
 };
 
 export const deleteExpense = async (id: string) => {
-  try {
-    return await httpClient.delete<null>(`/expenses/${id}`);
-  } catch (error) {
-    console.error("Error deleting expense:", error);
-    throw error;
-  }
+  return await httpClient.delete<null>(`/expenses/${id}`);
 };

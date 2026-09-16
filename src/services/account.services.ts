@@ -21,100 +21,50 @@ import {
  * here.
  */
 export const getCashAccounts = async () => {
-  try {
-    return await httpClient.get<IAccountsListResponse>("/accounts");
-  } catch (error) {
-    console.error("Error fetching cash accounts:", error);
-    throw error;
-  }
+  return await httpClient.get<IAccountsListResponse>("/accounts");
 };
 
 /** The Balance Dashboard: one row per account, one column per money source. */
 export const getAccountsOverview = async () => {
-  try {
-    return await httpClient.get<IAccountOverviewResponse>("/accounts/overview");
-  } catch (error) {
-    console.error("Error fetching balance overview:", error);
-    throw error;
-  }
+  return await httpClient.get<IAccountOverviewResponse>("/accounts/overview");
 };
 
 export const getCashAccountById = async (id: string) => {
-  try {
-    return await httpClient.get<IAccountBalance>(`/accounts/${id}`);
-  } catch (error) {
-    console.error("Error fetching cash account:", error);
-    throw error;
-  }
+  return await httpClient.get<IAccountBalance>(`/accounts/${id}`);
 };
 
 export const createCashAccount = async (payload: ICreateCashAccountPayload) => {
-  try {
-    return await httpClient.post<IAccountBalance>("/accounts", payload);
-  } catch (error) {
-    console.error("Error creating cash account:", error);
-    throw error;
-  }
+  return await httpClient.post<IAccountBalance>("/accounts", payload);
 };
 
 export const updateCashAccount = async (id: string, payload: IUpdateCashAccountPayload) => {
-  try {
-    return await httpClient.patch<IAccountBalance>(`/accounts/${id}`, payload);
-  } catch (error) {
-    console.error("Error updating cash account:", error);
-    throw error;
-  }
+  return await httpClient.patch<IAccountBalance>(`/accounts/${id}`, payload);
 };
 
 export const deleteCashAccount = async (id: string) => {
-  try {
-    return await httpClient.delete<null>(`/accounts/${id}`);
-  } catch (error) {
-    console.error("Error deleting cash account:", error);
-    throw error;
-  }
+  return await httpClient.delete<null>(`/accounts/${id}`);
 };
 
 /* --------------------------- balance transfers --------------------------- */
 
 /** Paginated. `data.transfers` plus `data.summary`, with `meta` alongside. */
 export const getBalanceTransfers = async (queryString?: string) => {
-  try {
-    return await httpClient.get<IBalanceTransfersResponse>(
-      `/balance-transfers${queryString ? `?${queryString}` : ""}`,
-    );
-  } catch (error) {
-    console.error("Error fetching balance transfers:", error);
-    throw error;
-  }
+  return await httpClient.get<IBalanceTransfersResponse>(
+    `/balance-transfers${queryString ? `?${queryString}` : ""}`,
+  );
 };
 
 export const createBalanceTransfer = async (payload: ICreateBalanceTransferPayload) => {
-  try {
-    return await httpClient.post<IBalanceTransfer>("/balance-transfers", payload);
-  } catch (error) {
-    console.error("Error creating balance transfer:", error);
-    throw error;
-  }
+  return await httpClient.post<IBalanceTransfer>("/balance-transfers", payload);
 };
 
 export const updateBalanceTransfer = async (
   id: string,
   payload: IUpdateBalanceTransferPayload,
 ) => {
-  try {
-    return await httpClient.patch<IBalanceTransfer>(`/balance-transfers/${id}`, payload);
-  } catch (error) {
-    console.error("Error updating balance transfer:", error);
-    throw error;
-  }
+  return await httpClient.patch<IBalanceTransfer>(`/balance-transfers/${id}`, payload);
 };
 
 export const deleteBalanceTransfer = async (id: string) => {
-  try {
-    return await httpClient.delete<null>(`/balance-transfers/${id}`);
-  } catch (error) {
-    console.error("Error deleting balance transfer:", error);
-    throw error;
-  }
+  return await httpClient.delete<null>(`/balance-transfers/${id}`);
 };

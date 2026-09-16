@@ -79,6 +79,30 @@ configured, the reset link is printed to the API's console.
   (`nosniff`, `X-Frame-Options`, `Referrer-Policy`, `Permissions-Policy`, HSTS in
   production) come from `next.config.ts`.
 
+## Logs
+
+Everything the web server says goes through `src/lib/logger.ts` — one JSON
+object per line in production, a short human line in development, with
+`LOG_LEVEL` (`debug`/`info`/`warn`/`error`/`silent`) overriding the default. It
+matches the API's logger, so both tiers read the same way.
+
+A failed API call is logged through `describeApiFailure(error)`, never as the
+error object. An axios error carries `config.headers`, and this app forwards
+the browser's whole cookie jar to the API — so logging it printed the live
+`accessToken`, `refreshToken` and better-auth session token into this server's
+log on every failed request. `no-console` is a lint error outside the logger to
+keep that from coming back.
+
+When a render fails outright, the error page shows `Ref: <digest>` and
+`src/instrumentation.ts` logs that digest with the route, the stack, and — when
+an API call was the cause — the API's own `requestId`. So a user quoting a
+reference leads to the web line, and that line leads to the API's logs:
+
+```sh
+docker compose logs web | jq 'select(.digest == "<the ref>")'
+docker compose logs api | jq 'select(.requestId == "<the requestId from that line>")'
+```
+
 ## Production image
 
 ```bash

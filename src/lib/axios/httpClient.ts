@@ -3,7 +3,9 @@ import axios from "axios";
 import { cookies, headers } from "next/headers";
 import { getNewTokensWithRefreshToken } from "@/services/auth.services";
 import { ApiResponse } from "@/types/api.types";
+import { describeApiFailure } from "../apiError";
 import { getApiBaseUrl } from "../apiBaseUrl";
+import { logger } from "../logger";
 import { getForwardedForHeader } from "../forwardedFor";
 import { isTokenExpiringSoon } from "../tokenUtils";
 
@@ -18,8 +20,8 @@ async function tryRefreshToken(accessToken: string, refreshToken: string): Promi
 
   try {
     await getNewTokensWithRefreshToken(refreshToken);
-  } catch (error: any) {
-    console.error("Error refreshing token in http client:", error);
+  } catch (error) {
+    logger.error("token refresh failed in the http client", describeApiFailure(error));
   }
 }
 
@@ -87,7 +89,7 @@ const httpGet = async <TData>(
     });
     return response.data;
   } catch (error) {
-    console.error(`GET request to ${endpoint} failed:`, error);
+    logger.error("API request failed", describeApiFailure(error));
     throw error;
   }
 };
@@ -105,7 +107,7 @@ const httpPost = async <TData>(
     });
     return response.data;
   } catch (error) {
-    console.error(`POST request to ${endpoint} failed:`, error);
+    logger.error("API request failed", describeApiFailure(error));
     throw error;
   }
 };
@@ -123,7 +125,7 @@ const httpPatch = async <TData>(
     });
     return response.data;
   } catch (error) {
-    console.error(`PATCH request to ${endpoint} failed:`, error);
+    logger.error("API request failed", describeApiFailure(error));
     throw error;
   }
 };
@@ -141,7 +143,7 @@ const httpPut = async <TData>(
     });
     return response.data;
   } catch (error) {
-    console.error(`PUT request to ${endpoint} failed:`, error);
+    logger.error("API request failed", describeApiFailure(error));
     throw error;
   }
 };
@@ -158,7 +160,7 @@ const httpDelete = async <TData>(
     });
     return response.data;
   } catch (error) {
-    console.error(`DELETE request to ${endpoint} failed:`, error);
+    logger.error("API request failed", describeApiFailure(error));
     throw error;
   }
 };
@@ -176,7 +178,7 @@ const httpPostFormData = async <TData>(
     });
     return response.data;
   } catch (error) {
-    console.error(`Multipart POST request to ${endpoint} failed:`, error);
+    logger.error("API request failed", describeApiFailure(error));
     throw error;
   }
 };
@@ -194,7 +196,7 @@ const httpPatchFormData = async <TData>(
     });
     return response.data;
   } catch (error) {
-    console.error(`Multipart PATCH request to ${endpoint} failed:`, error);
+    logger.error("API request failed", describeApiFailure(error));
     throw error;
   }
 };
@@ -229,7 +231,7 @@ const httpGetFile = async (endpoint: string): Promise<ApiFile> => {
         // Not JSON — leave the bytes; the caller falls back to its own message.
       }
     }
-    console.error(`GET file request to ${endpoint} failed:`, error?.response?.status ?? error);
+    logger.error("API file request failed", describeApiFailure(error));
     throw error;
   }
 };

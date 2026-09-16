@@ -20,92 +20,47 @@ import {
 /* ------------------------------ capital flows ---------------------------- */
 
 export const getCapitalFlows = async (queryString?: string) => {
-  try {
-    return await httpClient.get<ICapitalFlowsListResponse>(
-      `/capital${queryString ? `?${queryString}` : ""}`,
-    );
-  } catch (error) {
-    console.error("Error fetching capital entries:", error);
-    throw error;
-  }
+  return await httpClient.get<ICapitalFlowsListResponse>(
+    `/capital${queryString ? `?${queryString}` : ""}`,
+  );
 };
 
 /** Per-owner totals and share of the business. */
 export const getCapitalSummary = async () => {
-  try {
-    return await httpClient.get<ICapitalSummary>("/capital/summary");
-  } catch (error) {
-    console.error("Error fetching capital summary:", error);
-    throw error;
-  }
+  return await httpClient.get<ICapitalSummary>("/capital/summary");
 };
 
 export const createCapitalFlow = async (payload: ICreateCapitalFlowPayload) => {
-  try {
-    return await httpClient.post<ICapitalFlow>("/capital", payload);
-  } catch (error) {
-    console.error("Error recording capital entry:", error);
-    throw error;
-  }
+  return await httpClient.post<ICapitalFlow>("/capital", payload);
 };
 
 export const updateCapitalFlow = async (id: string, payload: IUpdateDateNotePayload) => {
-  try {
-    return await httpClient.patch<ICapitalFlow>(`/capital/${id}`, payload);
-  } catch (error) {
-    console.error("Error updating capital entry:", error);
-    throw error;
-  }
+  return await httpClient.patch<ICapitalFlow>(`/capital/${id}`, payload);
 };
 
 export const deleteCapitalFlow = async (id: string) => {
-  try {
-    return await httpClient.delete<null>(`/capital/${id}`);
-  } catch (error) {
-    console.error("Error deleting capital entry:", error);
-    throw error;
-  }
+  return await httpClient.delete<null>(`/capital/${id}`);
 };
 
 /* --------------------------- profit withdrawals -------------------------- */
 
 export const getProfitWithdrawals = async (queryString?: string) => {
-  try {
-    return await httpClient.get<IProfitWithdrawalsListResponse>(
-      `/capital/withdrawals${queryString ? `?${queryString}` : ""}`,
-    );
-  } catch (error) {
-    console.error("Error fetching profit withdrawals:", error);
-    throw error;
-  }
+  return await httpClient.get<IProfitWithdrawalsListResponse>(
+    `/capital/withdrawals${queryString ? `?${queryString}` : ""}`,
+  );
 };
 
 export const createProfitWithdrawal = async (payload: ICreateProfitWithdrawalPayload) => {
-  try {
-    return await httpClient.post<IProfitWithdrawal>("/capital/withdrawals", payload);
-  } catch (error) {
-    console.error("Error recording profit withdrawal:", error);
-    throw error;
-  }
+  return await httpClient.post<IProfitWithdrawal>("/capital/withdrawals", payload);
 };
 
 export const updateProfitWithdrawal = async (
   id: string,
   payload: IUpdateDateNotePayload,
 ) => {
-  try {
-    return await httpClient.patch<IProfitWithdrawal>(`/capital/withdrawals/${id}`, payload);
-  } catch (error) {
-    console.error("Error updating profit withdrawal:", error);
-    throw error;
-  }
+  return await httpClient.patch<IProfitWithdrawal>(`/capital/withdrawals/${id}`, payload);
 };
 
 export const deleteProfitWithdrawal = async (id: string) => {
-  try {
-    return await httpClient.delete<null>(`/capital/withdrawals/${id}`);
-  } catch (error) {
-    console.error("Error deleting profit withdrawal:", error);
-    throw error;
-  }
+  return await httpClient.delete<null>(`/capital/withdrawals/${id}`);
 };

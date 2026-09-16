@@ -8,6 +8,8 @@ import { getForwardedForHeader } from "@/lib/forwardedFor";
 import { setTokenInCookies } from "@/lib/tokenUtils";
 import { deleteCookie } from "@/lib/cookiesUtils";
 import { type ApiResponse } from "@/types/api.types";
+import { describeApiFailure } from "@/lib/apiError";
+import { logger } from "@/lib/logger";
 import {
   type IChangePasswordPayload,
   type IForgotPasswordPayload,
@@ -79,7 +81,7 @@ export const getUserInfo = cache(async (): Promise<IUser | null> => {
     const { data } = await res.json();
     return data as IUser;
   } catch (error) {
-    console.error("Error fetching user info:", error);
+    logger.warn("could not load the signed-in user", describeApiFailure(error));
     return null;
   }
 });
@@ -109,7 +111,7 @@ export const getMyFeatures = cache(async (): Promise<IMyFeatures | null> => {
     const { data } = await res.json();
     return data as IMyFeatures;
   } catch (error) {
-    console.error("Error fetching agency features:", error);
+    logger.warn("could not load the agency features", describeApiFailure(error));
     return null;
   }
 });
@@ -265,7 +267,7 @@ export async function logoutAction() {
       },
     });
   } catch (error) {
-    console.error("Error logging out:", error);
+    logger.warn("server logout failed; clearing cookies anyway", describeApiFailure(error));
   } finally {
     // Clear locally regardless — a failed server call must not leave the user
     // stuck in a half-signed-in state.

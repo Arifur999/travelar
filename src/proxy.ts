@@ -10,6 +10,8 @@ import { buildContentSecurityPolicy, createNonce } from "./lib/securityHeaders";
 import { isTokenExpiringSoon } from "./lib/tokenUtils";
 import { getNewTokensWithRefreshToken, getUserInfo } from "./services/auth.services";
 import { type UserRole } from "./types/user.types";
+import { describeApiFailure } from "@/lib/apiError";
+import { logger } from "@/lib/logger";
 
 /**
  * Next 16 renamed `middleware.ts` to `proxy.ts` and the exported function to
@@ -69,7 +71,7 @@ export async function proxy(request: NextRequest) {
           requestHeaders.set("x-token-refreshed", "1");
         }
       } catch (error) {
-        console.error("Error refreshing token in proxy:", error);
+        logger.warn("token refresh failed in the proxy", describeApiFailure(error));
       }
     }
 
@@ -111,7 +113,7 @@ export async function proxy(request: NextRequest) {
 
     return next();
   } catch (error) {
-    console.error("Error in proxy:", error);
+    logger.error("proxy failed", describeApiFailure(error));
     // Still send the policy: a routing failure must not also drop the CSP.
     return next();
   }

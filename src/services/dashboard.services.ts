@@ -18,12 +18,7 @@ import {
  */
 
 export const getDashboardSummary = async () => {
-  try {
-    return await httpClient.get<IDashboardSummary>("/dashboard/summary");
-  } catch (error) {
-    console.error("Error fetching dashboard summary:", error);
-    throw error;
-  }
+  return await httpClient.get<IDashboardSummary>("/dashboard/summary");
 };
 
 /** Any date range — the spreadsheet's Custom Dashboard. Defaults to this month. */
@@ -33,14 +28,9 @@ export const getCustomDashboard = async (from?: string, to?: string) => {
   if (to) params.set("to", to);
   const query = params.toString();
 
-  try {
-    return await httpClient.get<IDashboardOverview>(
-      `/dashboard/custom${query ? `?${query}` : ""}`,
-    );
-  } catch (error) {
-    console.error("Error fetching custom dashboard:", error);
-    throw error;
-  }
+  return await httpClient.get<IDashboardOverview>(
+    `/dashboard/custom${query ? `?${query}` : ""}`,
+  );
 };
 
 export const getMonthlyDashboard = async (year?: number, month?: number) => {
@@ -49,55 +39,30 @@ export const getMonthlyDashboard = async (year?: number, month?: number) => {
   if (month) params.set("month", String(month));
   const query = params.toString();
 
-  try {
-    return await httpClient.get<IMonthlyOverview>(
-      `/dashboard/monthly${query ? `?${query}` : ""}`,
-    );
-  } catch (error) {
-    console.error("Error fetching monthly dashboard:", error);
-    throw error;
-  }
+  return await httpClient.get<IMonthlyOverview>(
+    `/dashboard/monthly${query ? `?${query}` : ""}`,
+  );
 };
 
 export const getYearlyDashboard = async (year?: number) => {
-  try {
-    return await httpClient.get<IYearlyOverview>(
-      `/dashboard/yearly${year ? `?year=${year}` : ""}`,
-    );
-  } catch (error) {
-    console.error("Error fetching yearly dashboard:", error);
-    throw error;
-  }
+  return await httpClient.get<IYearlyOverview>(
+    `/dashboard/yearly${year ? `?year=${year}` : ""}`,
+  );
 };
 
 export const getCashFlow = async () => {
-  try {
-    return await httpClient.get<ICashFlow>("/dashboard/cash-flow");
-  } catch (error) {
-    console.error("Error fetching cash flow:", error);
-    throw error;
-  }
+  return await httpClient.get<ICashFlow>("/dashboard/cash-flow");
 };
 
 /* ---------------------------------- goals -------------------------------- */
 
 export const getGoals = async (year?: number) => {
-  try {
-    return await httpClient.get<IMonthlyGoal[]>(
-      `/dashboard/goals${year ? `?year=${year}` : ""}`,
-    );
-  } catch (error) {
-    console.error("Error fetching goals:", error);
-    throw error;
-  }
+  return await httpClient.get<IMonthlyGoal[]>(
+    `/dashboard/goals${year ? `?year=${year}` : ""}`,
+  );
 };
 
 /** AGENCY_ADMIN only on the API — staff can read goals but not set them. */
 export const upsertGoal = async (payload: IUpsertGoalPayload) => {
-  try {
-    return await httpClient.post<IMonthlyGoal>("/dashboard/goals", payload);
-  } catch (error) {
-    console.error("Error saving goal:", error);
-    throw error;
-  }
+  return await httpClient.post<IMonthlyGoal>("/dashboard/goals", payload);
 };

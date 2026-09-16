@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { logger } from "@/lib/logger";
 
 /**
  * Next 16: the recovery prop is `retry` — stable since 16.3.0, and named
@@ -17,7 +18,11 @@ export default function Error({
   retry: () => void;
 }) {
   useEffect(() => {
-    console.error(error);
+    // This runs in the browser, where React has already replaced the message
+    // with a generic one — the digest is the only part worth recording. The
+    // real error and its stack are logged server-side by instrumentation.ts,
+    // filed under this same digest.
+    logger.error("error boundary rendered", { digest: error.digest, message: error.message });
   }, [error]);
 
   return (

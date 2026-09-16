@@ -16,52 +16,27 @@ import { type IPlan } from "@/types/user.types";
  */
 
 export const getAvailablePlans = async () => {
-  try {
-    return await httpClient.get<IPlan[]>("/billing/plans");
-  } catch (error) {
-    console.error("Error fetching plans:", error);
-    throw error;
-  }
+  return await httpClient.get<IPlan[]>("/billing/plans");
 };
 
 export const getMySubscription = async () => {
-  try {
-    return await httpClient.get<IMySubscription>("/billing/my-subscription");
-  } catch (error) {
-    console.error("Error fetching subscription:", error);
-    throw error;
-  }
+  return await httpClient.get<IMySubscription>("/billing/my-subscription");
 };
 
 /** Online orders and manually recorded payments, merged and sorted by date. */
 export const getPaymentHistory = async () => {
-  try {
-    return await httpClient.get<IPaymentHistoryRow[]>("/billing/payment-history");
-  } catch (error) {
-    console.error("Error fetching payment history:", error);
-    throw error;
-  }
+  return await httpClient.get<IPaymentHistoryRow[]>("/billing/payment-history");
 };
 
 export const getOrderStatus = async (transactionId: string) => {
-  try {
-    return await httpClient.get<ISubscriptionOrder>(
-      `/billing/orders/${encodeURIComponent(transactionId)}/status`,
-    );
-  } catch (error) {
-    console.error("Error fetching order status:", error);
-    throw error;
-  }
+  return await httpClient.get<ISubscriptionOrder>(
+    `/billing/orders/${encodeURIComponent(transactionId)}/status`,
+  );
 };
 
 /** AGENCY_ADMIN only. Returns where to send the browser. */
 export const startCheckout = async (planId: string) => {
-  try {
-    return await httpClient.post<ICheckoutSession>("/billing/checkout", { planId });
-  } catch (error) {
-    console.error("Error starting checkout:", error);
-    throw error;
-  }
+  return await httpClient.post<ICheckoutSession>("/billing/checkout", { planId });
 };
 
 /**
@@ -70,12 +45,7 @@ export const startCheckout = async (planId: string) => {
  * is what the implementation this replaces allowed.
  */
 export const retryOrder = async (transactionId: string) => {
-  try {
-    return await httpClient.post<ICheckoutSession>(
-      `/billing/orders/${encodeURIComponent(transactionId)}/retry`,
-    );
-  } catch (error) {
-    console.error("Error retrying order:", error);
-    throw error;
-  }
+  return await httpClient.post<ICheckoutSession>(
+    `/billing/orders/${encodeURIComponent(transactionId)}/retry`,
+  );
 };

@@ -17,73 +17,38 @@ import { type DocumentStatus } from "@/types/enums.types";
 /* ------------------------------- visa cases ------------------------------ */
 
 export const getVisaCases = async (queryString?: string) => {
-  try {
-    return await httpClient.get<IVisaCasesListResponse>(
-      `/visa${queryString ? `?${queryString}` : ""}`,
-    );
-  } catch (error) {
-    console.error("Error fetching visa cases:", error);
-    throw error;
-  }
+  return await httpClient.get<IVisaCasesListResponse>(
+    `/visa${queryString ? `?${queryString}` : ""}`,
+  );
 };
 
 /** Includes documents, payments and status history; the list does not. */
 export const getVisaCaseById = async (id: string) => {
-  try {
-    return await httpClient.get<IVisaCaseDetail>(`/visa/${id}`);
-  } catch (error) {
-    console.error("Error fetching visa case:", error);
-    throw error;
-  }
+  return await httpClient.get<IVisaCaseDetail>(`/visa/${id}`);
 };
 
 export const createVisaCase = async (payload: ICreateVisaCasePayload) => {
-  try {
-    return await httpClient.post<IVisaCase>("/visa", payload);
-  } catch (error) {
-    console.error("Error creating visa case:", error);
-    throw error;
-  }
+  return await httpClient.post<IVisaCase>("/visa", payload);
 };
 
 export const updateVisaCase = async (id: string, payload: IUpdateVisaCasePayload) => {
-  try {
-    return await httpClient.patch<IVisaCaseDetail>(`/visa/${id}`, payload);
-  } catch (error) {
-    console.error("Error updating visa case:", error);
-    throw error;
-  }
+  return await httpClient.patch<IVisaCaseDetail>(`/visa/${id}`, payload);
 };
 
 /** Its own route — the generic update deliberately cannot set status. */
 export const changeVisaStatus = async (id: string, payload: IChangeVisaStatusPayload) => {
-  try {
-    return await httpClient.patch<IVisaCaseDetail>(`/visa/${id}/status`, payload);
-  } catch (error) {
-    console.error("Error changing visa status:", error);
-    throw error;
-  }
+  return await httpClient.patch<IVisaCaseDetail>(`/visa/${id}/status`, payload);
 };
 
 /** AGENCY_ADMIN only. */
 export const deleteVisaCase = async (id: string) => {
-  try {
-    return await httpClient.delete<null>(`/visa/${id}`);
-  } catch (error) {
-    console.error("Error deleting visa case:", error);
-    throw error;
-  }
+  return await httpClient.delete<null>(`/visa/${id}`);
 };
 
 /* -------------------------------- documents ------------------------------ */
 
 export const addVisaDocument = async (id: string, title: string) => {
-  try {
-    return await httpClient.post<IVisaCaseDetail>(`/visa/${id}/documents`, { title });
-  } catch (error) {
-    console.error("Error adding visa document:", error);
-    throw error;
-  }
+  return await httpClient.post<IVisaCaseDetail>(`/visa/${id}/documents`, { title });
 };
 
 export const setVisaDocumentStatus = async (
@@ -91,85 +56,45 @@ export const setVisaDocumentStatus = async (
   documentId: string,
   documentStatus: DocumentStatus,
 ) => {
-  try {
-    return await httpClient.patch<IVisaCaseDetail>(`/visa/${id}/documents/${documentId}`, {
-      status: documentStatus,
-    });
-  } catch (error) {
-    console.error("Error updating visa document:", error);
-    throw error;
-  }
+  return await httpClient.patch<IVisaCaseDetail>(`/visa/${id}/documents/${documentId}`, {
+    status: documentStatus,
+  });
 };
 
 export const deleteVisaDocument = async (id: string, documentId: string) => {
-  try {
-    return await httpClient.delete<IVisaCaseDetail>(`/visa/${id}/documents/${documentId}`);
-  } catch (error) {
-    console.error("Error deleting visa document:", error);
-    throw error;
-  }
+  return await httpClient.delete<IVisaCaseDetail>(`/visa/${id}/documents/${documentId}`);
 };
 
 /* -------------------------------- payments ------------------------------- */
 
 export const recordVisaPayment = async (id: string, payload: IRecordVisaPaymentPayload) => {
-  try {
-    return await httpClient.post<IVisaCaseDetail>(`/visa/${id}/payments`, payload);
-  } catch (error) {
-    console.error("Error recording visa payment:", error);
-    throw error;
-  }
+  return await httpClient.post<IVisaCaseDetail>(`/visa/${id}/payments`, payload);
 };
 
 /** AGENCY_ADMIN only. */
 export const deleteVisaPayment = async (id: string, paymentId: string) => {
-  try {
-    return await httpClient.delete<IVisaCaseDetail>(`/visa/${id}/payments/${paymentId}`);
-  } catch (error) {
-    console.error("Error deleting visa payment:", error);
-    throw error;
-  }
+  return await httpClient.delete<IVisaCaseDetail>(`/visa/${id}/payments/${paymentId}`);
 };
 
 /* --------------------------------- agents -------------------------------- */
 
 export const getVisaAgents = async (queryString?: string) => {
-  try {
-    return await httpClient.get<IVisaAgent[]>(
-      `/visa/agents${queryString ? `?${queryString}` : ""}`,
-    );
-  } catch (error) {
-    console.error("Error fetching visa agents:", error);
-    throw error;
-  }
+  return await httpClient.get<IVisaAgent[]>(
+    `/visa/agents${queryString ? `?${queryString}` : ""}`,
+  );
 };
 
 export const createVisaAgent = async (payload: ICreateVisaAgentPayload) => {
-  try {
-    return await httpClient.post<IVisaAgent>("/visa/agents", payload);
-  } catch (error) {
-    console.error("Error creating visa agent:", error);
-    throw error;
-  }
+  return await httpClient.post<IVisaAgent>("/visa/agents", payload);
 };
 
 export const updateVisaAgent = async (
   id: string,
   payload: Partial<ICreateVisaAgentPayload>,
 ) => {
-  try {
-    return await httpClient.patch<IVisaAgent>(`/visa/agents/${id}`, payload);
-  } catch (error) {
-    console.error("Error updating visa agent:", error);
-    throw error;
-  }
+  return await httpClient.patch<IVisaAgent>(`/visa/agents/${id}`, payload);
 };
 
 export const deleteVisaAgent = async (id: string) => {
-  try {
-    return await httpClient.delete<null>(`/visa/agents/${id}`);
-  } catch (error) {
-    console.error("Error deleting visa agent:", error);
-    throw error;
-  }
+  return await httpClient.delete<null>(`/visa/agents/${id}`);
 };

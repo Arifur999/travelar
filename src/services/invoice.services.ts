@@ -11,10 +11,5 @@ const INVOICE_PATHS: Record<InvoiceKind, (id: string) => string> = {
 };
 
 export const getInvoicePdf = async (kind: InvoiceKind, id: string) => {
-  try {
-    return await httpClient.getFile(INVOICE_PATHS[kind](id));
-  } catch (error) {
-    console.error("Error fetching an invoice:", error);
-    throw error;
-  }
+  return await httpClient.getFile(INVOICE_PATHS[kind](id));
 };

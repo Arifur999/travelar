@@ -20,6 +20,8 @@ pnpm test:watch    # while working
 | `src/zod/auth.validation.test.ts` | Password recovery: email normalization, matching passwords, token and length bounds that mirror the API. |
 | `src/zod/team.validation.test.ts` | Email normalization, blank-means-null for the agency profile, roles an agency cannot grant. |
 | `src/lib/actionError.test.ts` | A 4xx keeps the API's own message; a 5xx is replaced with a sentence plus the request id, so a user can quote something the logs can be searched for. An implausible id is dropped rather than rendered. |
+| `src/lib/apiError.test.ts` | Regression for a real leak: `console.error(axiosError)` printed `config.headers`, i.e. the forwarded accessToken, refreshToken and session token. Asserts a described failure can never carry a cookie, a header or the query string. |
+| `src/instrumentation.test.ts` | The support chain: the digest shown on the error page is logged against the API's own requestId, with the stack, and without the session cookies or the resolved URL. |
 
 Not tested here, on purpose: components, pages, services and actions. They are
 wiring, and testing them needs a mock API that has to be kept in step with the

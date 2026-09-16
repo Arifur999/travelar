@@ -16,96 +16,46 @@ import {
 /* -------------------------------- airlines ------------------------------- */
 
 export const getAirlines = async (queryString?: string) => {
-  try {
-    return await httpClient.get<IAirline[]>(`/airlines${queryString ? `?${queryString}` : ""}`);
-  } catch (error) {
-    console.error("Error fetching airlines:", error);
-    throw error;
-  }
+  return await httpClient.get<IAirline[]>(`/airlines${queryString ? `?${queryString}` : ""}`);
 };
 
 export const getAirlineById = async (id: string) => {
-  try {
-    return await httpClient.get<IAirline>(`/airlines/${id}`);
-  } catch (error) {
-    console.error("Error fetching airline:", error);
-    throw error;
-  }
+  return await httpClient.get<IAirline>(`/airlines/${id}`);
 };
 
 export const createAirline = async (payload: ICreateAirlinePayload) => {
-  try {
-    return await httpClient.post<IAirline>("/airlines", payload);
-  } catch (error) {
-    console.error("Error creating airline:", error);
-    throw error;
-  }
+  return await httpClient.post<IAirline>("/airlines", payload);
 };
 
 export const updateAirline = async (id: string, payload: Partial<ICreateAirlinePayload>) => {
-  try {
-    return await httpClient.patch<IAirline>(`/airlines/${id}`, payload);
-  } catch (error) {
-    console.error("Error updating airline:", error);
-    throw error;
-  }
+  return await httpClient.patch<IAirline>(`/airlines/${id}`, payload);
 };
 
 export const deleteAirline = async (id: string) => {
-  try {
-    return await httpClient.delete<{ message: string }>(`/airlines/${id}`);
-  } catch (error) {
-    console.error("Error deleting airline:", error);
-    throw error;
-  }
+  return await httpClient.delete<{ message: string }>(`/airlines/${id}`);
 };
 
 /* --------------------------------- routes -------------------------------- */
 
 /** Mounted at /routes-master, not /routes — /routes is taken by the Express router tree. */
 export const getRoutes = async (queryString?: string) => {
-  try {
-    return await httpClient.get<IRoute[]>(
-      `/routes-master${queryString ? `?${queryString}` : ""}`,
-    );
-  } catch (error) {
-    console.error("Error fetching routes:", error);
-    throw error;
-  }
+  return await httpClient.get<IRoute[]>(
+    `/routes-master${queryString ? `?${queryString}` : ""}`,
+  );
 };
 
 export const getRouteById = async (id: string) => {
-  try {
-    return await httpClient.get<IRoute>(`/routes-master/${id}`);
-  } catch (error) {
-    console.error("Error fetching route:", error);
-    throw error;
-  }
+  return await httpClient.get<IRoute>(`/routes-master/${id}`);
 };
 
 export const createRoute = async (payload: ICreateRoutePayload) => {
-  try {
-    return await httpClient.post<IRoute>("/routes-master", payload);
-  } catch (error) {
-    console.error("Error creating route:", error);
-    throw error;
-  }
+  return await httpClient.post<IRoute>("/routes-master", payload);
 };
 
 export const updateRoute = async (id: string, payload: Partial<ICreateRoutePayload>) => {
-  try {
-    return await httpClient.patch<IRoute>(`/routes-master/${id}`, payload);
-  } catch (error) {
-    console.error("Error updating route:", error);
-    throw error;
-  }
+  return await httpClient.patch<IRoute>(`/routes-master/${id}`, payload);
 };
 
 export const deleteRoute = async (id: string) => {
-  try {
-    return await httpClient.delete<{ message: string }>(`/routes-master/${id}`);
-  } catch (error) {
-    console.error("Error deleting route:", error);
-    throw error;
-  }
+  return await httpClient.delete<{ message: string }>(`/routes-master/${id}`);
 };
