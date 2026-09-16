@@ -25,6 +25,12 @@ export interface PaginationMeta {
 export interface ApiErrorResponse {
   success: false;
   message: string;
+  /**
+   * The API's x-request-id for the failed call, present on error envelopes.
+   * `getActionErrorMessage` puts it in front of the user for a 5xx, where the
+   * message itself says nothing actionable.
+   */
+  requestId?: string;
 }
 
 /**

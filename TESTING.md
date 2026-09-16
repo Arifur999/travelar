@@ -19,6 +19,7 @@ pnpm test:watch    # while working
 | `src/lib/securityHeaders.test.ts` | The CSP stays strict: scripts only with the nonce, no `unsafe-inline`/`unsafe-eval` in production, no framing, no plugins, no foreign connections; the static headers are present. |
 | `src/zod/auth.validation.test.ts` | Password recovery: email normalization, matching passwords, token and length bounds that mirror the API. |
 | `src/zod/team.validation.test.ts` | Email normalization, blank-means-null for the agency profile, roles an agency cannot grant. |
+| `src/lib/actionError.test.ts` | A 4xx keeps the API's own message; a 5xx is replaced with a sentence plus the request id, so a user can quote something the logs can be searched for. An implausible id is dropped rather than rendered. |
 
 Not tested here, on purpose: components, pages, services and actions. They are
 wiring, and testing them needs a mock API that has to be kept in step with the
