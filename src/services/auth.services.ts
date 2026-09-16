@@ -10,6 +10,7 @@ import { deleteCookie } from "@/lib/cookiesUtils";
 import { type ApiResponse } from "@/types/api.types";
 import { describeApiFailure } from "@/lib/apiError";
 import { logger } from "@/lib/logger";
+import { classifySessionOutcome, type SessionProbe } from "@/lib/sessionOutcome";
 import {
   type IChangePasswordPayload,
   type IForgotPasswordPayload,
@@ -57,17 +58,35 @@ const persistTokens = async (tokens: {
   if (tokens.token) await setTokenInCookies("better-auth.session_token", tokens.token, 24 * 60 * 60);
 };
 
+export type Session =
+  | { outcome: "authenticated"; user: IUser }
+  /** Signed out, or the API says this session is no good. Send them to /login. */
+  | { outcome: "unauthenticated"; user: null }
+  /**
+   * We could not ask. The session may be perfectly valid — show that the
+   * service is unreachable, and do NOT send them to /login: they cannot sign
+   * in either while the API is down, so it reads as losing their account.
+   */
+  | { outcome: "unavailable"; user: null };
+
 /**
+ * Who the API says the caller is, and — when it cannot say — why.
+ *
  * Multiple Server Components in the same request tree (sidebar, navbar, page
- * content) each call this independently. Without request-level dedup that's
- * several separate live round-trips per page load, and if any one of them is
- * slow or flaky that component silently loses its user while the others render
- * fine — the sidebar vanishing while the page content still shows. cache()
- * gives one real fetch per request, shared by every caller.
+ * content) each ask independently. Without request-level dedup that's several
+ * separate live round-trips per page load, and if any one of them is slow or
+ * flaky that component silently loses its user while the others render fine —
+ * the sidebar vanishing while the page content still shows. cache() gives one
+ * real fetch per request, shared by every caller.
  */
-export const getUserInfo = cache(async (): Promise<IUser | null> => {
+export const loadSession = cache(async (): Promise<Session> => {
   const cookieStore = await cookies();
-  if (!cookieStore.get("accessToken")?.value) return null;
+  if (!cookieStore.get("accessToken")?.value) {
+    return { outcome: "unauthenticated", user: null };
+  }
+
+  let probe: SessionProbe;
+  let body: { data?: IUser } | null = null;
 
   try {
     const res = await fetch(`${getApiBaseUrl()}/auth/me`, {
@@ -75,16 +94,40 @@ export const getUserInfo = cache(async (): Promise<IUser | null> => {
       headers: await buildAuthHeader(),
       cache: "no-store",
     });
-
-    if (!res.ok) return null;
-
-    const { data } = await res.json();
-    return data as IUser;
+    probe = { kind: "response", status: res.status };
+    if (res.ok) body = await res.json();
   } catch (error) {
-    logger.warn("could not load the signed-in user", describeApiFailure(error));
-    return null;
+    probe = { kind: "transport-failure" };
+    logger.warn("could not reach the API to load the session", describeApiFailure(error));
   }
+
+  const outcome = classifySessionOutcome(probe);
+
+  if (outcome === "authenticated" && body?.data) {
+    return { outcome, user: body.data };
+  }
+  if (outcome === "authenticated") {
+    // 2xx without a user is the API contract breaking, not a logout.
+    logger.warn("the API returned a session with no user");
+    return { outcome: "unavailable", user: null };
+  }
+  if (outcome === "unavailable" && probe.kind === "response") {
+    logger.warn("the API could not answer who the user is", { status: probe.status });
+  }
+
+  return { outcome, user: null };
 });
+
+/**
+ * The signed-in user, or null.
+ *
+ * NOTE: `null` here means "no user to show" and covers BOTH being signed out
+ * and the API being unreachable. That is fine for a page that simply renders
+ * nothing without a user, but a caller that decides whether to send someone to
+ * /login MUST use `loadSession()` and check the outcome — see the dashboard
+ * layout. Redirecting on this `null` is what turned an outage into a logout.
+ */
+export const getUserInfo = cache(async (): Promise<IUser | null> => (await loadSession()).user);
 
 /**
  * Drives every feature lock in the UI. Cached per request for the same reason

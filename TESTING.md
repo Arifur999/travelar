@@ -22,6 +22,7 @@ pnpm test:watch    # while working
 | `src/lib/actionError.test.ts` | A 4xx keeps the API's own message; a 5xx is replaced with a sentence plus the request id, so a user can quote something the logs can be searched for. An implausible id is dropped rather than rendered. |
 | `src/lib/apiError.test.ts` | Regression for a real leak: `console.error(axiosError)` printed `config.headers`, i.e. the forwarded accessToken, refreshToken and session token. Asserts a described failure can never carry a cookie, a header or the query string. |
 | `src/instrumentation.test.ts` | The support chain: the digest shown on the error page is logged against the API's own requestId, with the stack, and without the session cookies or the resolved URL. |
+| `src/lib/sessionOutcome.test.ts` | Only the API's own 401/403 may end a session. Every other status and an unreachable API must leave the user signed in and show that the service is down — redirecting on any missing user is what made an outage look like a logout. |
 
 Not tested here, on purpose: components, pages, services and actions. They are
 wiring, and testing them needs a mock API that has to be kept in step with the

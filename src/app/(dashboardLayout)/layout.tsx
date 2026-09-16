@@ -1,9 +1,10 @@
 import { redirect } from "next/navigation";
 import DashboardNavbar from "@/components/modules/Dashboard/DashboardNavbar";
 import DashboardSidebar from "@/components/modules/Dashboard/DashboardSidebar";
+import ServiceUnavailable from "@/components/modules/Dashboard/ServiceUnavailable";
 import SubscriptionBanner from "@/components/modules/Dashboard/SubscriptionBanner";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { getMyFeatures, getUserInfo } from "@/services/auth.services";
+import { getMyFeatures, loadSession } from "@/services/auth.services";
 
 /**
  * The shell reads cookies through getUserInfo(), so it must never be statically
@@ -16,9 +17,17 @@ const DashboardLayout = async ({ children }: { children: React.ReactNode }) => {
   // line: the proxy trusts a locally-verified JWT, while this asks the API who
   // the user actually is — so a revoked or deleted account cannot ride a
   // still-unexpired token into the shell.
-  const [userInfo, myFeatures] = await Promise.all([getUserInfo(), getMyFeatures()]);
+  const [session, myFeatures] = await Promise.all([loadSession(), getMyFeatures()]);
 
-  if (!userInfo) redirect("/login");
+  // "Cannot ask" is not "signed out". Redirecting here on any missing user is
+  // what made an API outage look like being logged out — and /login could not
+  // help, because signing in needs the same API. Access is still refused; the
+  // difference is only in what the user is told.
+  if (session.outcome === "unavailable") return <ServiceUnavailable />;
+
+  if (session.outcome === "unauthenticated") redirect("/login");
+
+  const userInfo = session.user;
 
   return (
     <SidebarProvider>
