@@ -23,6 +23,7 @@ pnpm test:watch    # while working
 | `src/lib/apiError.test.ts` | Regression for a real leak: `console.error(axiosError)` printed `config.headers`, i.e. the forwarded accessToken, refreshToken and session token. Asserts a described failure can never carry a cookie, a header or the query string. |
 | `src/instrumentation.test.ts` | The support chain: the digest shown on the error page is logged against the API's own requestId, with the stack, and without the session cookies or the resolved URL. |
 | `src/lib/sessionOutcome.test.ts` | Only the API's own 401/403 may end a session. Every other status and an unreachable API must leave the user signed in and show that the service is down — redirecting on any missing user is what made an outage look like a logout. |
+| `src/lib/dashboardCharts.test.ts` | What the home-page charts draw: month labels (year only where the window crosses one), per-metric empty states, month-over-month change with no fake figure from a zero month, sales-mix slices without zero or negative modules, account bars capped at a limit without losing the total or hiding an overdraft, and goal rings that show "not tracked" rather than 0%. |
 
 Not tested here, on purpose: components, pages, services and actions. They are
 wiring, and testing them needs a mock API that has to be kept in step with the

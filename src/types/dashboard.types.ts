@@ -85,7 +85,18 @@ export interface IYearlyOverview extends IDashboardOverview {
  * does it: what is in the accounts, plus what customers still owe, less what is
  * still owed to suppliers.
  */
+export interface ICashFlowAccount {
+  id: string;
+  name: string;
+  category: string;
+  isActive: boolean;
+  /** Can be negative: expenses and payouts are allowed to overdraw. */
+  balance: number;
+}
+
 export interface ICashFlow {
+  /** Each account's balance, largest first. They sum to accountBalance. */
+  accounts: ICashFlowAccount[];
   accountBalance: number;
   customerDue: number;
   /** accountBalance + customerDue. */
@@ -100,10 +111,25 @@ export interface ICashFlow {
   difference: number;
 }
 
-/** The landing dashboard: this calendar month plus the current cash position. */
+/** One calendar month of the landing trend. The current month is to date. */
+export interface ITrendMonth {
+  year: number;
+  /** 1–12. */
+  month: number;
+  sales: number;
+  profit: number;
+  expenses: number;
+}
+
+/**
+ * The landing dashboard: this calendar month, the current cash position, and
+ * the last six months (oldest first, this month last). A base feature, so it
+ * is served on every plan.
+ */
 export interface IDashboardSummary {
   thisMonth: IDashboardOverview;
   cashFlow: ICashFlow;
+  trend: ITrendMonth[];
 }
 
 export interface IMonthlyGoal {
