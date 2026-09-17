@@ -79,7 +79,7 @@ const OverviewPanel = ({ overview }: { overview: IDashboardOverview }) => {
 
   return (
     <div className="space-y-6">
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="grid gap-6 lg:grid-cols-2 [&>*]:min-w-0">
         <Card>
           <CardHeader>
             <CardTitle>Against goal</CardTitle>
@@ -231,7 +231,7 @@ const OverviewPanel = ({ overview }: { overview: IDashboardOverview }) => {
         </CardContent>
       </Card>
 
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="grid gap-6 lg:grid-cols-2 [&>*]:min-w-0">
         <Card>
           <CardHeader>
             <CardTitle>Income by airline</CardTitle>
