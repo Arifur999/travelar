@@ -116,6 +116,21 @@ image serves any environment. To run the whole stack (Postgres, migrations,
 API and this app) with one command, see *Run the full stack in Docker* in the
 [backend README](https://github.com/Arifur999/travelar_backend#run-the-full-stack-in-docker).
 
+## Live site and releases
+
+Production runs at **travelar.softech.agency**. A push to `main` goes live
+only through this path:
+
+1. The `Deploy` workflow runs CI (lint, unit tests, API contract, build).
+2. Only if CI passes, it publishes `ghcr.io/arifur999/travelar-web`.
+3. Within two minutes, a timer on the server pulls the new image and waits
+   for it to report healthy.
+4. If the new release does not become healthy, the timer puts the previous
+   release back. A red CI run publishes nothing.
+
+Server setup and operations are in
+[travelar_backend/deploy/README.md](https://github.com/Arifur999/travelar_backend/blob/main/deploy/README.md).
+
 ## Structure
 
 ```

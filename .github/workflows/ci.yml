@@ -4,9 +4,19 @@ on:
   push:
     branches: [main]
   pull_request:
+  # Deploy runs this as its quality gate before publishing an image.
+  workflow_call:
+    inputs:
+      skip-image-build:
+        description: The caller builds and pushes the image itself.
+        type: boolean
+        default: false
 
 concurrency:
-  group: ci-${{ github.ref }}
+  # github.workflow is the CALLER's name when Deploy runs this, so the two runs
+  # of one push land in different groups. With one shared group,
+  # cancel-in-progress would make them cancel each other.
+  group: ci-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -61,6 +71,9 @@ jobs:
 
   docker:
     name: Production image builds
+    # A negation on purpose: on push and pull_request `inputs` is empty, and
+    # GitHub compares null == false as true, so `inputs.x != false` would skip it.
+    if: ${{ !inputs.skip-image-build }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:

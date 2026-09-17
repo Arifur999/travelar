@@ -1,0 +1,56 @@
+name: Deploy
+
+# main -> CI must pass -> ghcr.io/arifur999/travelar-web. The VPS does the rest:
+# travelar_backend's deploy/agent/travelar-deploy.sh notices the new image
+# within two minutes and rolls back if the release never turns healthy.
+#
+# There is no SSH step. GitHub's runners cannot reach the server on port 22, so
+# the release is pulled rather than pushed, and no SSH key lives in this repo.
+# A red quality gate publishes nothing, so the live site stays on the last
+# good release. The whole setup: travelar_backend/deploy/README.md.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  # Queue releases rather than cancel them: a cancelled push step could leave
+  # :latest pointing at an older build than the one that was tested last.
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  quality:
+    name: Quality gate
+    uses: ./.github/workflows/ci.yml
+    with:
+      skip-image-build: true
+
+  publish:
+    name: Publish travelar-web
+    needs: quality
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v5
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: |
+            ghcr.io/arifur999/travelar-web:${{ github.sha }}
+            ghcr.io/arifur999/travelar-web:latest
+          labels: |
+            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
+            org.opencontainers.image.revision=${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
