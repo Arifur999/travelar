@@ -118,7 +118,7 @@ API and this app) with one command, see *Run the full stack in Docker* in the
 
 ## Live site and releases
 
-Production runs at **travelar.softech.agency**. A push to `main` goes live
+Production runs at **travance.softech.agency**. A push to `main` goes live
 only through this path:
 
 1. The `Deploy` workflow runs CI (lint, unit tests, API contract, build).
