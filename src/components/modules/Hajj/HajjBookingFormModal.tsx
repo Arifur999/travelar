@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { createHajjBookingAction } from "@/app/(dashboardLayout)/dashboard/hajj/_action";
 import AppField from "@/components/shared/form/AppField";
 import AppSubmitButton from "@/components/shared/form/AppSubmitButton";
+import SearchableSelect from "@/components/shared/form/SearchableSelect";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -27,6 +28,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { formatCurrency, formatDate, formatNumber, toNumber } from "@/lib/format";
+import { customerOptions } from "@/lib/pickerOptions";
 import { getCustomerDashboard } from "@/services/customer.services";
 import { getHajjBatches, getHajjPackages } from "@/services/hajj.services";
 import {
@@ -149,22 +151,17 @@ const HajjBookingFormModal = ({ open, onOpenChange }: HajjBookingFormModalProps)
                 {(field) => (
                   <div className="space-y-1.5">
                     <Label htmlFor={field.name}>Customer</Label>
-                    <Select
+                    <SearchableSelect
+                      id={field.name}
                       value={field.state.value}
-                      onValueChange={field.handleChange}
+                      onChange={field.handleChange}
+                      options={customerOptions(customers)}
+                      placeholder="Who is paying"
+                      searchPlaceholder="Search by name, phone or passport…"
+                      emptyText="No customer matches. Add them on the Customers page first."
+                      loading={!customersData}
                       disabled={isPending}
-                    >
-                      <SelectTrigger id={field.name} className="w-full">
-                        <SelectValue placeholder="Who is paying" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {customers.map((customer) => (
-                          <SelectItem key={customer.id} value={customer.id}>
-                            {customer.name} — {customer.phone}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    />
                   </div>
                 )}
               </form.Field>

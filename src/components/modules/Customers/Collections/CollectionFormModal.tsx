@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { createDueReceiptAction } from "@/app/(dashboardLayout)/dashboard/collections/_action";
 import AppField from "@/components/shared/form/AppField";
 import AppSubmitButton from "@/components/shared/form/AppSubmitButton";
+import SearchableSelect from "@/components/shared/form/SearchableSelect";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -30,6 +31,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { formatCurrency, toNumber } from "@/lib/format";
+import { customerOptions } from "@/lib/pickerOptions";
 import { getCashAccounts } from "@/services/account.services";
 import { getCustomerDashboard } from "@/services/customer.services";
 import {
@@ -167,29 +169,17 @@ const CollectionFormModal = ({
                 {(field) => (
                   <div className="space-y-1.5">
                     <Label htmlFor={field.name}>Customer</Label>
-                    <Select
+                    <SearchableSelect
+                      id={field.name}
                       value={field.state.value}
-                      onValueChange={field.handleChange}
+                      onChange={field.handleChange}
+                      options={customerOptions(customers, { showDue: true })}
+                      placeholder="Pick a customer"
+                      searchPlaceholder="Search by name, phone or passport…"
+                      emptyText="No customer matches."
+                      loading={!customersData}
                       disabled={isPending}
-                    >
-                      <SelectTrigger id={field.name} className="w-full">
-                        <SelectValue placeholder="Pick a customer" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {customers.map((customer) => (
-                          <SelectItem key={customer.id} value={customer.id}>
-                            {customer.name}
-                            {customer.currentDue !== 0 && (
-                              <span className="text-muted-foreground">
-                                {" "}
-                                — {customer.currentDue > 0 ? "owes" : "credit"}{" "}
-                                {formatCurrency(Math.abs(customer.currentDue))}
-                              </span>
-                            )}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    />
                   </div>
                 )}
               </form.Field>

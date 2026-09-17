@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { createSupplierPaymentAction } from "@/app/(dashboardLayout)/dashboard/supplier-payments/_action";
 import AppField from "@/components/shared/form/AppField";
 import AppSubmitButton from "@/components/shared/form/AppSubmitButton";
+import SearchableSelect from "@/components/shared/form/SearchableSelect";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -27,6 +28,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { formatCurrency } from "@/lib/format";
+import { supplierOptions } from "@/lib/pickerOptions";
 import { getCashAccounts } from "@/services/account.services";
 import { getSupplierDashboard } from "@/services/supplier.services";
 import {
@@ -150,29 +152,17 @@ const SupplierPaymentFormModal = ({
             {(field) => (
               <div className="space-y-1.5">
                 <Label htmlFor={field.name}>Supplier</Label>
-                <Select
+                <SearchableSelect
+                  id={field.name}
                   value={field.state.value}
-                  onValueChange={field.handleChange}
+                  onChange={field.handleChange}
+                  options={supplierOptions(suppliers, { showPayable: true })}
+                  placeholder="Pick a supplier"
+                  searchPlaceholder="Search suppliers…"
+                  emptyText="No supplier matches."
+                  loading={!suppliersData}
                   disabled={isPending}
-                >
-                  <SelectTrigger id={field.name} className="w-full">
-                    <SelectValue placeholder="Pick a supplier" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {suppliers.map((supplier) => (
-                      <SelectItem key={supplier.id} value={supplier.id}>
-                        {supplier.name}
-                        {supplier.currentPayable !== 0 && (
-                          <span className="text-muted-foreground">
-                            {" "}
-                            — {supplier.currentPayable > 0 ? "owed" : "advance"}{" "}
-                            {formatCurrency(Math.abs(supplier.currentPayable))}
-                          </span>
-                        )}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                />
               </div>
             )}
           </form.Field>

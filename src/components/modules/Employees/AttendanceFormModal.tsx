@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { createAttendanceAction } from "@/app/(dashboardLayout)/dashboard/employees/_action";
 import AppField from "@/components/shared/form/AppField";
 import AppSubmitButton from "@/components/shared/form/AppSubmitButton";
+import SearchableSelect from "@/components/shared/form/SearchableSelect";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -25,6 +26,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { employeeOptions } from "@/lib/pickerOptions";
 import { getEmployeeDashboard } from "@/services/employee.services";
 import {
   attendanceFieldsZodSchema,
@@ -121,22 +123,17 @@ const AttendanceFormModal = ({ open, onOpenChange }: AttendanceFormModalProps) =
             {(field) => (
               <div className="space-y-1.5">
                 <Label htmlFor={field.name}>Employee</Label>
-                <Select
+                <SearchableSelect
+                  id={field.name}
                   value={field.state.value}
-                  onValueChange={field.handleChange}
+                  onChange={field.handleChange}
+                  options={employeeOptions(employees)}
+                  placeholder="Pick an employee"
+                  searchPlaceholder="Search by name or phone…"
+                  emptyText="No employee matches."
+                  loading={!employeesData}
                   disabled={isPending}
-                >
-                  <SelectTrigger id={field.name} className="w-full">
-                    <SelectValue placeholder="Pick an employee" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {employees.map((employee) => (
-                      <SelectItem key={employee.id} value={employee.id}>
-                        {employee.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                />
               </div>
             )}
           </form.Field>

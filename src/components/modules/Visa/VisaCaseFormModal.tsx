@@ -10,6 +10,7 @@ import {
 } from "@/app/(dashboardLayout)/dashboard/visa/_action";
 import AppField from "@/components/shared/form/AppField";
 import AppSubmitButton from "@/components/shared/form/AppSubmitButton";
+import SearchableSelect from "@/components/shared/form/SearchableSelect";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -22,14 +23,8 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { formatCurrency, formatDateForInput, toNumber } from "@/lib/format";
+import { customerOptions, visaAgentOptions } from "@/lib/pickerOptions";
 import { getCustomerDashboard } from "@/services/customer.services";
 import { getVisaAgents } from "@/services/visa.services";
 import {
@@ -44,7 +39,6 @@ interface VisaCaseFormModalProps {
   visaCase?: IVisaCase | null;
 }
 
-const NONE = "__none__";
 
 const VisaCaseFormModal = ({ open, onOpenChange, visaCase }: VisaCaseFormModalProps) => {
   const isEdit = Boolean(visaCase);
@@ -164,22 +158,17 @@ const VisaCaseFormModal = ({ open, onOpenChange, visaCase }: VisaCaseFormModalPr
                   {(field) => (
                     <div className="space-y-1.5">
                       <Label htmlFor={field.name}>Applicant</Label>
-                      <Select
+                      <SearchableSelect
+                        id={field.name}
                         value={field.state.value}
-                        onValueChange={field.handleChange}
+                        onChange={field.handleChange}
+                        options={customerOptions(customers)}
+                        placeholder="Pick a customer"
+                        searchPlaceholder="Search by name, phone or passport…"
+                        emptyText="No customer matches. Add them on the Customers page first."
+                        loading={!customersData}
                         disabled={isPending}
-                      >
-                        <SelectTrigger id={field.name} className="w-full">
-                          <SelectValue placeholder="Pick a customer" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {customers.map((customer) => (
-                            <SelectItem key={customer.id} value={customer.id}>
-                              {customer.name} — {customer.phone}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                      />
                     </div>
                   )}
                 </form.Field>
@@ -241,25 +230,19 @@ const VisaCaseFormModal = ({ open, onOpenChange, visaCase }: VisaCaseFormModalPr
                 {(field) => (
                   <div className="space-y-1.5">
                     <Label htmlFor={field.name}>Agent</Label>
-                    <Select
-                      value={field.state.value || NONE}
-                      onValueChange={(next) => field.handleChange(next === NONE ? "" : next)}
+                    {/* No agent means the agency handles the case itself. */}
+                    <SearchableSelect
+                      id={field.name}
+                      value={field.state.value ?? ""}
+                      onChange={field.handleChange}
+                      options={visaAgentOptions(agents)}
+                      placeholder="Handled in-house"
+                      searchPlaceholder="Search agents…"
+                      emptyText="No agent matches."
+                      loading={!agentsData}
                       disabled={isPending}
-                    >
-                      <SelectTrigger id={field.name} className="w-full">
-                        <SelectValue placeholder="Pick an agent" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {/* Radix forbids an empty-string item value. */}
-                        <SelectItem value={NONE}>Handled in-house</SelectItem>
-                        {agents.map((agent) => (
-                          <SelectItem key={agent.id} value={agent.id}>
-                            {agent.name}
-                            {agent.type ? ` — ${agent.type}` : ""}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                      clearable
+                    />
                   </div>
                 )}
               </form.Field>

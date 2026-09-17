@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { createPayoutAction } from "@/app/(dashboardLayout)/dashboard/employees/_action";
 import AppField from "@/components/shared/form/AppField";
 import AppSubmitButton from "@/components/shared/form/AppSubmitButton";
+import SearchableSelect from "@/components/shared/form/SearchableSelect";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -27,6 +28,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { formatCurrency, toNumber } from "@/lib/format";
+import { employeeOptions } from "@/lib/pickerOptions";
 import { getCashAccounts } from "@/services/account.services";
 import { getEmployeeDashboard } from "@/services/employee.services";
 import {
@@ -135,22 +137,17 @@ const PayoutFormModal = ({ open, onOpenChange }: PayoutFormModalProps) => {
             {(field) => (
               <div className="space-y-1.5">
                 <Label htmlFor={field.name}>Employee</Label>
-                <Select
+                <SearchableSelect
+                  id={field.name}
                   value={field.state.value}
-                  onValueChange={field.handleChange}
+                  onChange={field.handleChange}
+                  options={employeeOptions(employees)}
+                  placeholder="Pick an employee"
+                  searchPlaceholder="Search by name or phone…"
+                  emptyText="No employee matches."
+                  loading={!employeesData}
                   disabled={isPending}
-                >
-                  <SelectTrigger id={field.name} className="w-full">
-                    <SelectValue placeholder="Pick an employee" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {employees.map((employee) => (
-                      <SelectItem key={employee.id} value={employee.id}>
-                        {employee.name} — {employee.phone}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                />
                 {employees.length === 0 && (
                   <p className="text-xs text-muted-foreground">
                     No active employees. Add one, or clear a resign date.

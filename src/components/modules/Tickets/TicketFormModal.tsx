@@ -10,6 +10,7 @@ import {
 } from "@/app/(dashboardLayout)/dashboard/tickets/_action";
 import AppField from "@/components/shared/form/AppField";
 import AppSubmitButton from "@/components/shared/form/AppSubmitButton";
+import SearchableSelect, { type SearchableSelectOption } from "@/components/shared/form/SearchableSelect";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -22,14 +23,8 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { formatCurrency, formatDateForInput, toNumber } from "@/lib/format";
+import { customerOptions, supplierOptions } from "@/lib/pickerOptions";
 import { cn } from "@/lib/utils";
 import { getCustomerDashboard } from "@/services/customer.services";
 import { getAirlines, getRoutes } from "@/services/masterData.services";
@@ -59,7 +54,6 @@ const emptyValues: ICreateTicketFormValues = {
   cost: "",
 };
 
-const NONE = "__none__";
 
 const TicketFormModal = ({ open, onOpenChange, ticket }: TicketFormModalProps) => {
   const isEdit = Boolean(ticket);
@@ -138,35 +132,30 @@ const TicketFormModal = ({ open, onOpenChange, ticket }: TicketFormModalProps) =
     },
   });
 
-  /** An optional relation select: "None" has to be a sentinel, not "". */
+  /** An optional relation: searchable, and clearable back to "not set". */
   const relationSelect = (
     fieldName: "supplierId" | "airlineId" | "routeId",
     label: string,
-    options: { id: string; label: string }[],
+    options: SearchableSelectOption[],
     placeholder: string,
+    searchPlaceholder: string,
+    loading: boolean,
   ) => (
     <form.Field name={fieldName}>
       {(field) => (
         <div className="space-y-1.5">
           <Label htmlFor={field.name}>{label}</Label>
-          <Select
-            value={field.state.value || NONE}
-            onValueChange={(next) => field.handleChange(next === NONE ? "" : next)}
+          <SearchableSelect
+            id={field.name}
+            value={field.state.value ?? ""}
+            onChange={field.handleChange}
+            options={options}
+            placeholder={placeholder}
+            searchPlaceholder={searchPlaceholder}
+            loading={loading}
             disabled={isPending}
-          >
-            <SelectTrigger id={field.name} className="w-full">
-              <SelectValue placeholder={placeholder} />
-            </SelectTrigger>
-            <SelectContent>
-              {/* Radix forbids an empty-string item value. */}
-              <SelectItem value={NONE}>Not set</SelectItem>
-              {options.map((option) => (
-                <SelectItem key={option.id} value={option.id}>
-                  {option.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+            clearable
+          />
         </div>
       )}
     </form.Field>
@@ -209,22 +198,17 @@ const TicketFormModal = ({ open, onOpenChange, ticket }: TicketFormModalProps) =
                 {(field) => (
                   <div className="space-y-1.5">
                     <Label htmlFor={field.name}>Customer</Label>
-                    <Select
+                    <SearchableSelect
+                      id={field.name}
                       value={field.state.value}
-                      onValueChange={field.handleChange}
+                      onChange={field.handleChange}
+                      options={customerOptions(customers)}
+                      placeholder="Pick a customer"
+                      searchPlaceholder="Search by name, phone or passport…"
+                      emptyText="No customer matches. Add them on the Customers page first."
+                      loading={!customersData}
                       disabled={isPending}
-                    >
-                      <SelectTrigger id={field.name} className="w-full">
-                        <SelectValue placeholder="Pick a customer" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {customers.map((customer) => (
-                          <SelectItem key={customer.id} value={customer.id}>
-                            {customer.name} — {customer.phone}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    />
                   </div>
                 )}
               </form.Field>
@@ -262,22 +246,28 @@ const TicketFormModal = ({ open, onOpenChange, ticket }: TicketFormModalProps) =
               {relationSelect(
                 "airlineId",
                 "Airline",
-                airlines.map((a) => ({ id: a.id, label: `${a.shortCode} — ${a.name}` })),
+                airlines.map((a) => ({ value: a.id, label: a.name, description: a.shortCode })),
                 "Pick an airline",
+                "Search by name or code…",
+                !airlinesData,
               )}
 
               {relationSelect(
                 "routeId",
                 "Route",
-                routes.map((r) => ({ id: r.id, label: r.name })),
+                routes.map((r) => ({ value: r.id, label: r.name })),
                 "Pick a sector",
+                "Search sectors…",
+                !routesData,
               )}
 
               {relationSelect(
                 "supplierId",
                 "Supplier",
-                suppliers.map((s) => ({ id: s.id, label: s.name })),
+                supplierOptions(suppliers),
                 "Pick a supplier",
+                "Search suppliers…",
+                !suppliersData,
               )}
 
               <div className="grid grid-cols-2 gap-3">
