@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "check:contract": "node scripts/check-api-contract.mjs"
   },
   "dependencies": {
     "@tanstack/react-form": "^1.33.5",

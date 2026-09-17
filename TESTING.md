@@ -25,6 +25,8 @@ pnpm test:watch    # while working
 | `src/lib/sessionOutcome.test.ts` | Only the API's own 401/403 may end a session. Every other status and an unreachable API must leave the user signed in and show that the service is down — redirecting on any missing user is what made an outage look like a logout. |
 | `src/lib/dashboardCharts.test.ts` | What the home-page charts draw: month labels (year only where the window crosses one), per-metric empty states, month-over-month change with no fake figure from a zero month, sales-mix slices without zero or negative modules, account bars capped at a limit without losing the total or hiding an overdraft, and goal rings that show "not tracked" rather than 0%. |
 
+The payloads services send are checked separately, against the API source rather than a mock: `pnpm check:contract` compares every mutation's payload type with the zod schema of the API route it calls, and fails on a field the API would silently drop, a required field never sent, or a call no route answers. CI checks out the API repo for it.
+
 Not tested here, on purpose: components, pages, services and actions. They are
 wiring, and testing them needs a mock API that has to be kept in step with the
 real one. What the API does — tenant isolation, auth, money — is covered by

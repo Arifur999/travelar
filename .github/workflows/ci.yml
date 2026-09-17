@@ -35,6 +35,30 @@ jobs:
       # needs no env: the API address and JWT secret are read at runtime.
       - run: pnpm build
 
+  # Every payload this app sends must match the API schema that validates it.
+  # The API's zod objects strip unknown keys, so drift is silent data loss —
+  # see scripts/check-api-contract.mjs. The API is its own repo, checked out
+  # into its own job so it never lands inside this one's lint or build.
+  contract:
+    name: API contract
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/checkout@v5
+        with:
+          repository: Arifur999/travelar_backend
+          path: .api-src
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm check:contract
+        env:
+          API_REPO_DIR: .api-src
+
   docker:
     name: Production image builds
     runs-on: ubuntu-latest

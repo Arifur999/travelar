@@ -15,6 +15,7 @@ pnpm lint                          # also enforces the no-console and zod-import
 pnpm test                          # vitest unit tests, ~2s (see TESTING.md)
 pnpm test src/lib/format.test.ts   # one file
 pnpm build                         # standalone output; also the full type-check, test files included
+pnpm check:contract                # every mutation payload vs the API schema (needs ../travel_agency_backend)
 ```
 
 There is no separate typecheck script. CI runs `lint → test → build`, then builds the Docker image.
@@ -41,6 +42,7 @@ API scopes every business row on `agencyId`. The API lives in
 - **Content-Security-Policy is on.** `proxy.ts` sends a per-request nonce policy (`src/lib/securityHeaders.ts`): no inline scripts or event handlers without the nonce, no `eval`, the browser may only connect to this app. Never add `dangerouslySetInnerHTML` scripts, `onclick="…"` strings, or client-side calls to other origins. A `<Script>` or a library that injects one needs the nonce from `headers().get("x-nonce")`.
 - **Never `console.*` and never log a raw error** (lint-enforced). Everything goes through `@/lib/logger`, and a failed API call is described with `describeApiFailure(error)` from `@/lib/apiError`. An axios error carries `config.headers`, and this app forwards the browser's whole cookie jar to the API — logging the error object printed live session tokens into the server log. Server-side render failures are reported by `src/instrumentation.ts`, which files them under the same `digest` the error page shows the user.
 - **Import zod from `@/lib/zod`, never `"zod"`** (lint-enforced). It turns off zod's `eval` probe, which the CSP would otherwise report on every page.
+- **Every mutation payload type must match the API schema that validates it, key for key.** The API's zod objects strip unknown keys, so a misnamed field is not an error — it is silently dropped. `pnpm check:contract` (`scripts/check-api-contract.mjs`) pairs each `httpClient.post/put/patch` in `src/services` with its API route by method and path and compares the payload's declared type with the route's schema; CI runs it against the API's main branch. Give a service's payload parameter a named type from `src/types` so the check can read it.
 - **Some files copy API rules so the UI can disable what the API would refuse.** The API stays the authority; when its rule changes, update the copy and its test:
   - `src/lib/navItem.ts` `feature` ↔ each router's `checkFeatureAccess`
   - `src/lib/teamPermissions.ts` ↔ `TeamService.assertCanManage`
