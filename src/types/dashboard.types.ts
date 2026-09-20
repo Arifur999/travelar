@@ -126,10 +126,21 @@ export interface ITrendMonth {
  * the last six months (oldest first, this month last). A base feature, so it
  * is served on every plan.
  */
+/**
+ * What a new agency still has to do before the figures mean anything. Any of
+ * the three sales modules counts as a sale, from any month.
+ */
+export interface ISetupProgress {
+  hasCashAccount: boolean;
+  hasCustomer: boolean;
+  hasSale: boolean;
+}
+
 export interface IDashboardSummary {
   thisMonth: IDashboardOverview;
   cashFlow: ICashFlow;
   trend: ITrendMonth[];
+  setup: ISetupProgress;
 }
 
 export interface IMonthlyGoal {
