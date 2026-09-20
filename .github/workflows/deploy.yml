@@ -11,6 +11,10 @@ name: Deploy
 on:
   push:
     branches: [main]
+    # Docs cannot change the image. Publishing anyway would still produce a new
+    # digest, and every new digest restarts the live container.
+    paths-ignore:
+      - "**/*.md"
   workflow_dispatch:
 
 concurrency:
