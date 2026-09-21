@@ -1,12 +1,19 @@
 import { describe, expect, it } from "vitest";
 import {
   buildAccountBars,
+  buildNetPositionBars,
   buildSalesMix,
   buildTrendPoints,
+  isNetPositionEmpty,
   isTrendEmpty,
   monthOverMonth,
 } from "./dashboardCharts";
-import { type ICashFlowAccount, type IModuleBreakdown, type ITrendMonth } from "@/types/dashboard.types";
+import {
+  type ICashFlow,
+  type ICashFlowAccount,
+  type IModuleBreakdown,
+  type ITrendMonth,
+} from "@/types/dashboard.types";
 
 const month = (year: number, m: number, sales = 0, profit = 0, expenses = 0): ITrendMonth => ({
   year,
@@ -161,3 +168,53 @@ describe("buildAccountBars", () => {
   });
 });
 
+
+const cashFlow = (over: Partial<ICashFlow> = {}): ICashFlow => ({
+  accounts: [],
+  accountBalance: 0,
+  customerDue: 0,
+  totalAssets: 0,
+  supplierPayable: 0,
+  netCashFlow: 0,
+  invested: 0,
+  withdrawn: 0,
+  netInvestment: 0,
+  difference: 0,
+  ...over,
+});
+
+describe("buildNetPositionBars", () => {
+  it("draws what is owed away below the axis", () => {
+    const bars = buildNetPositionBars(
+      cashFlow({ accountBalance: 50_000, customerDue: 20_000, supplierPayable: 30_000, netCashFlow: 40_000 }),
+    );
+
+    expect(bars.map((bar) => [bar.key, bar.value])).toEqual([
+      ["cash", 50_000],
+      ["receivable", 20_000],
+      ["payable", -30_000],
+      ["net", 40_000],
+    ]);
+    expect(bars.find((bar) => bar.key === "payable")?.isNegative).toBe(true);
+  });
+
+  it("takes the net from the API rather than adding up again", () => {
+    // The Reports page shows the same figure; computing it twice is how two
+    // screens end up disagreeing.
+    const bars = buildNetPositionBars(cashFlow({ accountBalance: 10, netCashFlow: 999 }));
+
+    expect(bars.find((bar) => bar.key === "net")?.value).toBe(999);
+  });
+
+  it("flags an overdrawn balance and a negative net", () => {
+    const bars = buildNetPositionBars(cashFlow({ accountBalance: -5, netCashFlow: -5 }));
+
+    expect(bars.find((bar) => bar.key === "cash")?.isNegative).toBe(true);
+    expect(bars.find((bar) => bar.key === "net")?.isNegative).toBe(true);
+  });
+
+  it("is empty only when every figure is zero", () => {
+    expect(isNetPositionEmpty(buildNetPositionBars(cashFlow()))).toBe(true);
+    expect(isNetPositionEmpty(buildNetPositionBars(cashFlow({ customerDue: 1 })))).toBe(false);
+  });
+});

@@ -1,5 +1,6 @@
 import {
   MONTH_NAMES,
+  type ICashFlow,
   type ICashFlowAccount,
   type IModuleBreakdown,
   type ITrendMonth,
@@ -165,3 +166,30 @@ export const buildAccountBars = (accounts: ICashFlowAccount[], limit = 5): Accou
   return [...bars, ...overdrawn.map(toBar)];
 };
 
+
+export interface NetPositionBar {
+  key: "cash" | "receivable" | "payable" | "net";
+  label: string;
+  /** Payables are drawn below the axis, because they are owed away. */
+  value: number;
+  isNegative: boolean;
+}
+
+/**
+ * What the agency is worth right now: cash, plus what customers owe, minus
+ * what it owes suppliers.
+ *
+ * `netCashFlow` comes from the API rather than being added up here — the same
+ * figure is shown on the Reports page, and two places computing it separately
+ * is how they end up disagreeing.
+ */
+export const buildNetPositionBars = (cashFlow: ICashFlow): NetPositionBar[] => [
+  { key: "cash", label: "Cash in hand", value: cashFlow.accountBalance, isNegative: cashFlow.accountBalance < 0 },
+  { key: "receivable", label: "Customers owe", value: cashFlow.customerDue, isNegative: false },
+  { key: "payable", label: "Owed to suppliers", value: -cashFlow.supplierPayable, isNegative: cashFlow.supplierPayable > 0 },
+  { key: "net", label: "Net position", value: cashFlow.netCashFlow, isNegative: cashFlow.netCashFlow < 0 },
+];
+
+/** True when there is nothing to draw — every figure is zero. */
+export const isNetPositionEmpty = (bars: NetPositionBar[]) =>
+  bars.every((bar) => bar.value === 0);

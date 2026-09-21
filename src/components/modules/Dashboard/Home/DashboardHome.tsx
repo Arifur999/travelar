@@ -9,6 +9,7 @@ import { getDashboardSummary } from "@/services/dashboard.services";
 import { type PlanFeature } from "@/types/enums.types";
 import CashByAccountChart from "./CashByAccountChart";
 import HeadlineCards from "./HeadlineCards";
+import NetPositionChart from "./NetPositionChart";
 import SalesMixChart from "./SalesMixChart";
 import SetupChecklist from "./SetupChecklist";
 import TrendChart from "./TrendChart";
@@ -76,6 +77,8 @@ const DashboardHome = ({ features }: { features: PlanFeature[] }) => {
         <SalesMixChart byModule={thisMonth.byModule} />
         <CashByAccountChart accounts={cashFlow.accounts} />
       </div>
+
+      <NetPositionChart cashFlow={cashFlow} />
     </div>
   );
 };
