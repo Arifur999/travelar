@@ -14,7 +14,7 @@ import { type InvoiceKind } from "@/types/invoice.types";
  * and whether the plan includes the module, is still decided by the API.
  */
 
-const KINDS: readonly InvoiceKind[] = ["ticket", "visa", "hajj"];
+const KINDS: readonly InvoiceKind[] = ["ticket", "visa", "hajj", "tour"];
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 const textResponse = (status: number, message: string) =>

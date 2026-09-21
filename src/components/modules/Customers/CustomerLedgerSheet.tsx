@@ -29,6 +29,8 @@ const TYPE_LABELS: Record<CustomerLedgerRowType, string> = {
   "visa-payment": "Payment",
   hajj: "Hajj",
   "hajj-payment": "Payment",
+  tour: "Tour",
+  "tour-payment": "Payment",
   "due-received": "Collection",
   discount: "Discount",
 };
@@ -45,6 +47,8 @@ const TYPE_TONES: Record<CustomerLedgerRowType, string> = {
   "visa-payment": "bg-success/10 text-success",
   hajj: "bg-hajj/10 text-hajj",
   "hajj-payment": "bg-success/10 text-success",
+  tour: "bg-chart-4/10 text-chart-4",
+  "tour-payment": "bg-success/10 text-success",
   "due-received": "bg-success/10 text-success",
   discount: "bg-info/10 text-info",
 };

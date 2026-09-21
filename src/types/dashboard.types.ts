@@ -11,6 +11,8 @@ export interface IModuleBreakdown {
    * pilgrim, which is exactly what a naive port would have done.
    */
   hajj: { count: number; sales: number; profit: null };
+  /** Tours record both sides, so their margin is real. */
+  tours: { count: number; sales: number; profit: number };
 }
 
 export interface IIncomeByAirlineRow {

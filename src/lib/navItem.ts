@@ -106,7 +106,7 @@ export const agencyNavGroups: NavGroup[] = [
         children: [
           { title: "Air Tickets", href: "/dashboard/tickets", icon: Plane, feature: "TICKETING" },
           { title: "Visa", href: "/dashboard/visa", icon: FileCheck, feature: "VISA" },
-          { title: "Tours", href: "/dashboard/tours", icon: Map, soon: true },
+          { title: "Tours", href: "/dashboard/tours", icon: Map, feature: "TOURS" },
           { title: "Hotel", href: "/dashboard/hotels", icon: BedDouble, soon: true },
         ],
       },

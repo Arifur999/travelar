@@ -14,7 +14,15 @@ export type UserStatus = "ACTIVE" | "BLOCKED" | "DELETED";
 
 export type AgencyStatus = "TRIAL" | "ACTIVE" | "EXPIRED" | "SUSPENDED";
 
-export type PlanFeature = "TICKETING" | "VISA" | "HAJJ_UMRAH" | "EXPENSE" | "REPORTS" | "CRM";
+export type PlanFeature =
+  | "TICKETING"
+  | "VISA"
+  | "HAJJ_UMRAH"
+  | "TOURS"
+  | "HOTEL"
+  | "EXPENSE"
+  | "REPORTS"
+  | "CRM";
 
 export type TicketStatus = "ISSUED" | "REISSUED" | "REFUNDED" | "VOID";
 
@@ -27,6 +35,11 @@ export type HajjPackageType = "HAJJ" | "UMRAH";
 export type HajjTier = "ECONOMY" | "PREMIUM" | "VIP";
 
 export type HajjMealPlan = "NONE" | "BREAKFAST" | "FULL_BOARD";
+
+/** A tour stops taking bookings when it closes; a cancelled one frees every seat. */
+export type TourStatus = "OPEN" | "CLOSED" | "COMPLETED" | "CANCELLED";
+
+export type TourBookingStatus = "RESERVED" | "CONFIRMED" | "COMPLETED" | "CANCELLED";
 
 export type HajjBatchStatus = "OPEN" | "FULL" | "DEPARTED" | "COMPLETED" | "CANCELLED";
 
@@ -111,6 +124,8 @@ export const PLAN_FEATURE_LABELS: Record<PlanFeature, string> = {
   TICKETING: "Ticketing",
   VISA: "Visa processing",
   HAJJ_UMRAH: "Hajj & Umrah",
+  TOURS: "Tours",
+  HOTEL: "Hotel booking",
   EXPENSE: "Accounts & expenses",
   REPORTS: "Reports",
   // Gates nothing today: customers and collections are deliberately base
@@ -139,6 +154,20 @@ export const HAJJ_BOOKING_STATUS_LABELS: Record<HajjBookingStatus, string> = {
   CONFIRMED: "Confirmed",
   CANCELLED: "Cancelled",
   COMPLETED: "Completed",
+};
+
+export const TOUR_STATUS_LABELS: Record<TourStatus, string> = {
+  OPEN: "Open",
+  CLOSED: "Closed",
+  COMPLETED: "Completed",
+  CANCELLED: "Cancelled",
+};
+
+export const TOUR_BOOKING_STATUS_LABELS: Record<TourBookingStatus, string> = {
+  RESERVED: "Reserved",
+  CONFIRMED: "Confirmed",
+  COMPLETED: "Completed",
+  CANCELLED: "Cancelled",
 };
 
 export const HAJJ_PACKAGE_TYPE_LABELS: Record<HajjPackageType, string> = {
@@ -282,6 +311,8 @@ export const CASH_ACCOUNT_CATEGORY_OPTIONS = toSelectOptions(CASH_ACCOUNT_CATEGO
 export const TICKET_STATUS_OPTIONS = toSelectOptions(TICKET_STATUS_LABELS);
 export const VISA_STATUS_OPTIONS = toSelectOptions(VISA_STATUS_LABELS);
 export const HAJJ_BOOKING_STATUS_OPTIONS = toSelectOptions(HAJJ_BOOKING_STATUS_LABELS);
+export const TOUR_STATUS_OPTIONS = toSelectOptions(TOUR_STATUS_LABELS);
+export const TOUR_BOOKING_STATUS_OPTIONS = toSelectOptions(TOUR_BOOKING_STATUS_LABELS);
 export const HAJJ_PACKAGE_TYPE_OPTIONS = toSelectOptions(HAJJ_PACKAGE_TYPE_LABELS);
 export const HAJJ_TIER_OPTIONS = toSelectOptions(HAJJ_TIER_LABELS);
 export const HAJJ_MEAL_PLAN_OPTIONS = toSelectOptions(HAJJ_MEAL_PLAN_LABELS);
@@ -335,6 +366,20 @@ export const HAJJ_BOOKING_STATUS_TONES: Record<HajjBookingStatus, BadgeTone> = {
   CONFIRMED: "success",
   CANCELLED: "danger",
   COMPLETED: "info",
+};
+
+export const TOUR_BOOKING_STATUS_TONES: Record<TourBookingStatus, BadgeTone> = {
+  RESERVED: "warning",
+  CONFIRMED: "success",
+  COMPLETED: "info",
+  CANCELLED: "danger",
+};
+
+export const TOUR_STATUS_TONES: Record<TourStatus, BadgeTone> = {
+  OPEN: "success",
+  CLOSED: "neutral",
+  COMPLETED: "info",
+  CANCELLED: "danger",
 };
 
 export const USER_STATUS_TONES: Record<UserStatus, BadgeTone> = {

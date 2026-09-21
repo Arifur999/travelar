@@ -18,12 +18,14 @@ const chartConfig = {
   ticketing: { label: "Tickets", color: "var(--chart-1)" },
   visa: { label: "Visa", color: "var(--chart-2)" },
   hajj: { label: "Hajj & Umrah", color: "var(--chart-3)" },
+  tours: { label: "Tours", color: "var(--chart-4)" },
 } satisfies ChartConfig;
 
 const DOT_CLASSES = {
   ticketing: "bg-chart-1",
   visa: "bg-chart-2",
   hajj: "bg-chart-3",
+  tours: "bg-chart-4",
 } as const;
 
 const SalesMixChart = ({ byModule }: { byModule: IModuleBreakdown }) => {

@@ -8,6 +8,7 @@ const INVOICE_PATHS: Record<InvoiceKind, (id: string) => string> = {
   ticket: (id) => `/ticketing/${id}/invoice`,
   visa: (id) => `/visa/${id}/invoice`,
   hajj: (id) => `/hajj/bookings/${id}/invoice`,
+  tour: (id) => `/tours/bookings/${id}/invoice`,
 };
 
 export const getInvoicePdf = async (kind: InvoiceKind, id: string) => {
