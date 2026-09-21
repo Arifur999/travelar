@@ -1,3 +1,4 @@
+import { PAYMENT_SOURCES } from "@/lib/paymentSource";
 import { z } from "@/lib/zod";
 import {
   type IChangeHajjBookingStatusPayload,
@@ -173,7 +174,9 @@ export const assignRoomServerZodSchema = z.object({
 /* -------------------------------- payments ------------------------------- */
 
 export const hajjPaymentFieldsZodSchema = z.object({
-  cashAccountId: z.string("Pick an account").min(1, "Pick an account"),
+  source: z.enum(PAYMENT_SOURCES),
+  // Only asked for when `source` is ACCOUNT; a wallet payment names none.
+  cashAccountId: z.string().optional(),
   amount: z
     .string("Amount is required")
     .regex(/^\d*(\.\d{1,2})?$/, "Amount must be a positive number")
@@ -186,11 +189,23 @@ export const hajjPaymentFieldsZodSchema = z.object({
 
 export type IHajjPaymentFormValues = z.infer<typeof hajjPaymentFieldsZodSchema>;
 
-export const hajjPaymentServerZodSchema = z.object({
-  cashAccountId: z.uuid("A valid account is required"),
-  amount: z.coerce.number("Amount is required").positive("Amount must be greater than zero"),
-  method: z.enum(METHODS, "Invalid payment method").optional(),
-  transactionRef: z.preprocess(emptyStringToUndefined, z.string().max(120).optional()),
-  note: z.preprocess(emptyStringToUndefined, z.string().max(500).optional()),
-  paidAt: z.preprocess(emptyStringToUndefined, z.string().optional()),
-}) satisfies z.ZodType<IRecordHajjPaymentPayload>;
+export const hajjPaymentServerZodSchema = z
+  .object({
+    cashAccountId: z.preprocess(
+      emptyStringToUndefined,
+      z.uuid("A valid account is required").optional(),
+    ),
+    fromWallet: z.boolean().optional(),
+    amount: z.coerce.number("Amount is required").positive("Amount must be greater than zero"),
+    method: z.enum(METHODS, "Invalid payment method").optional(),
+    transactionRef: z.preprocess(emptyStringToUndefined, z.string().max(120).optional()),
+    note: z.preprocess(emptyStringToUndefined, z.string().max(500).optional()),
+    paidAt: z.preprocess(emptyStringToUndefined, z.string().optional()),
+  })
+  // A payment is either money arriving into an account or a balance the
+  // customer already paid in. Neither means nothing can be posted, and the
+  // API refuses it too — this just says so before the round trip.
+  .refine((values) => values.fromWallet === true || Boolean(values.cashAccountId), {
+    message: "Choose the account the money went into",
+    path: ["cashAccountId"],
+  }) satisfies z.ZodType<IRecordHajjPaymentPayload>;

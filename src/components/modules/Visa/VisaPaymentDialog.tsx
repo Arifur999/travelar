@@ -1,12 +1,14 @@
 "use client";
 
 import { useForm } from "@tanstack/react-form";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { recordVisaPaymentAction } from "@/app/(dashboardLayout)/dashboard/visa/_action";
+import { useWalletBalance } from "@/components/modules/Wallet/useWalletBalance";
 import AppField from "@/components/shared/form/AppField";
 import AppSubmitButton from "@/components/shared/form/AppSubmitButton";
+import PaymentSourceFields from "@/components/shared/form/PaymentSourceFields";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -26,7 +28,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { formatCurrency } from "@/lib/format";
-import { getCashAccounts } from "@/services/account.services";
+import { paymentCap, toPaymentPayload, type PaymentSource } from "@/lib/paymentSource";
 import {
   visaPaymentFieldsZodSchema,
   type IVisaPaymentFormValues,
@@ -49,20 +51,15 @@ const VisaPaymentDialog = ({ open, onOpenChange, visaCase }: VisaPaymentDialogPr
   const queryClient = useQueryClient();
   const router = useRouter();
 
-  const { data: accountsData } = useQuery({
-    queryKey: ["cash-accounts"],
-    queryFn: () => getCashAccounts(),
-    enabled: open,
-  });
-
-  const accounts = (accountsData?.data.data ?? []).filter((account) => account.isActive);
+  const { balance: walletBalance } = useWalletBalance(visaCase.customer.id, open);
 
   const { mutateAsync, isPending } = useMutation({
     mutationFn: (values: IVisaPaymentFormValues) =>
-      recordVisaPaymentAction(visaCase.id, values),
+      recordVisaPaymentAction(visaCase.id, toPaymentPayload(values)),
   });
 
   const defaultValues: IVisaPaymentFormValues = {
+    source: "ACCOUNT",
     cashAccountId: "",
     amount: visaCase.dueAmount > 0 ? String(visaCase.dueAmount) : "",
     method: "CASH",
@@ -91,6 +88,9 @@ const VisaPaymentDialog = ({ open, onOpenChange, visaCase }: VisaPaymentDialogPr
       void queryClient.invalidateQueries({ queryKey: ["customer-ledger"] });
       void queryClient.invalidateQueries({ queryKey: ["cash-accounts"] });
       void queryClient.invalidateQueries({ queryKey: ["accounts-overview"] });
+      void queryClient.invalidateQueries({ queryKey: ["wallet-summary"] });
+      void queryClient.invalidateQueries({ queryKey: ["wallet-holders"] });
+      void queryClient.invalidateQueries({ queryKey: ["wallet-statement"] });
       void queryClient.refetchQueries({ queryKey: ["visa-cases"], type: "active" });
       router.refresh();
     },
@@ -129,84 +129,102 @@ const VisaPaymentDialog = ({ open, onOpenChange, visaCase }: VisaPaymentDialogPr
           }}
           className="space-y-5"
         >
-          <form.Field name="cashAccountId">
-            {(field) => (
-              <div className="space-y-1.5">
-                <Label htmlFor={field.name}>Into account</Label>
-                <Select
-                  value={field.state.value}
-                  onValueChange={field.handleChange}
-                  disabled={isPending}
-                >
-                  <SelectTrigger id={field.name} className="w-full">
-                    <SelectValue placeholder="Pick an account" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {accounts.map((account) => (
-                      <SelectItem key={account.id} value={account.id}>
-                        {account.name} — {formatCurrency(account.currentBalance)}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            )}
-          </form.Field>
-
-          <form.Field
-            name="amount"
-            validators={{ onChange: visaPaymentFieldsZodSchema.shape.amount }}
+          <form.Subscribe
+            selector={(state) => [state.values.source, state.values.cashAccountId ?? ""] as const}
           >
-            {(field) => (
-              <AppField
-                field={field}
-                label="Amount"
-                placeholder="0.00"
+            {([source, cashAccountId]) => (
+              <PaymentSourceFields
+                source={source}
+                onSourceChange={(next: PaymentSource) => {
+                  form.setFieldValue("source", next);
+                  // A settlement takes no cash, so the amount can only be what
+                  // is left; the API refuses more either way.
+                  form.setFieldValue(
+                    "amount",
+                    String(paymentCap(visaCase.dueAmount, next, walletBalance)),
+                  );
+                }}
+                cashAccountId={cashAccountId}
+                onAccountChange={(next) => form.setFieldValue("cashAccountId", next)}
+                walletBalance={walletBalance}
+                active={open}
                 disabled={isPending}
-                prepend={<span className="text-sm">৳</span>}
-                hint={`Cannot exceed the outstanding ${formatCurrency(visaCase.dueAmount)}.`}
+                idPrefix={`visa-payment-${visaCase.id}`}
               />
             )}
-          </form.Field>
+          </form.Subscribe>
 
-          <form.Field name="method">
-            {(field) => (
-              <div className="space-y-1.5">
-                <Label htmlFor={field.name}>Method</Label>
-                <Select
-                  value={field.state.value}
-                  onValueChange={(next) => field.handleChange(next as PaymentMethod)}
-                  disabled={isPending}
+          <form.Subscribe selector={(state) => state.values.source}>
+            {(source) => (
+              <>
+                <form.Field
+                  name="amount"
+                  validators={{ onChange: visaPaymentFieldsZodSchema.shape.amount }}
                 >
-                  <SelectTrigger id={field.name} className="w-full">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {PAYMENT_METHOD_OPTIONS.map((option) => (
-                      <SelectItem key={option.value} value={option.value}>
-                        {option.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            )}
-          </form.Field>
+                  {(field) => (
+                    <AppField
+                      field={field}
+                      label="Amount"
+                      placeholder="0.00"
+                      disabled={isPending}
+                      prepend={<span className="text-sm">৳</span>}
+                      hint={
+                        source === "WALLET"
+                          ? `Cannot exceed the ${formatCurrency(
+                              paymentCap(visaCase.dueAmount, source, walletBalance),
+                            )} available from what this customer paid in.`
+                          : `Cannot exceed the outstanding ${formatCurrency(visaCase.dueAmount)}.`
+                      }
+                    />
+                  )}
+                </form.Field>
 
-          <form.Field
-            name="reference"
-            validators={{ onChange: visaPaymentFieldsZodSchema.shape.reference }}
-          >
-            {(field) => (
-              <AppField
-                field={field}
-                label="Reference"
-                placeholder="Receipt or transaction number"
-                disabled={isPending}
-                hint="Optional"
-              />
+                {/* Both describe cash changing hands, which a settlement is not. */}
+                {source === "ACCOUNT" && (
+                  <>
+                    <form.Field name="method">
+                      {(field) => (
+                        <div className="space-y-1.5">
+                          <Label htmlFor={field.name}>Method</Label>
+                          <Select
+                            value={field.state.value}
+                            onValueChange={(next) => field.handleChange(next as PaymentMethod)}
+                            disabled={isPending}
+                          >
+                            <SelectTrigger id={field.name} className="w-full">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {PAYMENT_METHOD_OPTIONS.map((option) => (
+                                <SelectItem key={option.value} value={option.value}>
+                                  {option.label}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      )}
+                    </form.Field>
+
+                    <form.Field
+                      name="reference"
+                      validators={{ onChange: visaPaymentFieldsZodSchema.shape.reference }}
+                    >
+                      {(field) => (
+                        <AppField
+                          field={field}
+                          label="Reference"
+                          placeholder="Receipt or transaction number"
+                          disabled={isPending}
+                          hint="Optional"
+                        />
+                      )}
+                    </form.Field>
+                  </>
+                )}
+              </>
             )}
-          </form.Field>
+          </form.Subscribe>
 
           <form.Field name="paidAt">
             {(field) => (

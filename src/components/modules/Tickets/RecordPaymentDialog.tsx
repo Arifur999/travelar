@@ -1,12 +1,14 @@
 "use client";
 
 import { useForm } from "@tanstack/react-form";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { recordTicketPaymentAction } from "@/app/(dashboardLayout)/dashboard/tickets/_action";
+import { useWalletBalance } from "@/components/modules/Wallet/useWalletBalance";
 import AppField from "@/components/shared/form/AppField";
 import AppSubmitButton from "@/components/shared/form/AppSubmitButton";
+import PaymentSourceFields from "@/components/shared/form/PaymentSourceFields";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -26,7 +28,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { formatCurrency } from "@/lib/format";
-import { getCashAccounts } from "@/services/account.services";
+import { paymentCap, toPaymentPayload, type PaymentSource } from "@/lib/paymentSource";
 import {
   ticketPaymentFieldsZodSchema,
   type ITicketPaymentFormValues,
@@ -45,25 +47,23 @@ interface RecordPaymentDialogProps {
  * ledger-level collection, where over-payment legitimately becomes a credit.
  * The API enforces the cap inside a transaction; the field is pre-filled with
  * the exact due so the common case is one click.
+ *
+ * The money can also come from what the customer paid in earlier, which posts
+ * nothing: that cash reached an account when it was collected.
  */
 const RecordPaymentDialog = ({ open, onOpenChange, ticket }: RecordPaymentDialogProps) => {
   const queryClient = useQueryClient();
   const router = useRouter();
 
-  const { data: accountsData } = useQuery({
-    queryKey: ["cash-accounts"],
-    queryFn: () => getCashAccounts(),
-    enabled: open,
-  });
-
-  const accounts = (accountsData?.data.data ?? []).filter((account) => account.isActive);
+  const { balance: walletBalance } = useWalletBalance(ticket.customer.id, open);
 
   const { mutateAsync, isPending } = useMutation({
     mutationFn: (values: ITicketPaymentFormValues) =>
-      recordTicketPaymentAction(ticket.id, values),
+      recordTicketPaymentAction(ticket.id, toPaymentPayload(values)),
   });
 
   const defaultValues: ITicketPaymentFormValues = {
+    source: "ACCOUNT",
     cashAccountId: "",
     // Pre-filled with what is actually outstanding; the API refuses more.
     amount: ticket.dueAmount > 0 ? String(ticket.dueAmount) : "",
@@ -95,6 +95,11 @@ const RecordPaymentDialog = ({ open, onOpenChange, ticket }: RecordPaymentDialog
       void queryClient.invalidateQueries({ queryKey: ["customer-ledger"] });
       void queryClient.invalidateQueries({ queryKey: ["cash-accounts"] });
       void queryClient.invalidateQueries({ queryKey: ["accounts-overview"] });
+      // A wallet payment spends a balance, and every account payment is a
+      // number the wallet page derives from — both lists are now stale.
+      void queryClient.invalidateQueries({ queryKey: ["wallet-summary"] });
+      void queryClient.invalidateQueries({ queryKey: ["wallet-holders"] });
+      void queryClient.invalidateQueries({ queryKey: ["wallet-statement"] });
       void queryClient.refetchQueries({ queryKey: ["tickets"], type: "active" });
       router.refresh();
     },
@@ -133,84 +138,102 @@ const RecordPaymentDialog = ({ open, onOpenChange, ticket }: RecordPaymentDialog
           }}
           className="space-y-5"
         >
-          <form.Field name="cashAccountId">
-            {(field) => (
-              <div className="space-y-1.5">
-                <Label htmlFor={field.name}>Into account</Label>
-                <Select
-                  value={field.state.value}
-                  onValueChange={field.handleChange}
-                  disabled={isPending}
-                >
-                  <SelectTrigger id={field.name} className="w-full">
-                    <SelectValue placeholder="Pick an account" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {accounts.map((account) => (
-                      <SelectItem key={account.id} value={account.id}>
-                        {account.name} — {formatCurrency(account.currentBalance)}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            )}
-          </form.Field>
-
-          <form.Field
-            name="amount"
-            validators={{ onChange: ticketPaymentFieldsZodSchema.shape.amount }}
+          <form.Subscribe
+            selector={(state) => [state.values.source, state.values.cashAccountId ?? ""] as const}
           >
-            {(field) => (
-              <AppField
-                field={field}
-                label="Amount"
-                placeholder="0.00"
+            {([source, cashAccountId]) => (
+              <PaymentSourceFields
+                source={source}
+                onSourceChange={(next: PaymentSource) => {
+                  form.setFieldValue("source", next);
+                  // A settlement takes no cash, so the amount can only be what
+                  // is left; the API refuses more either way.
+                  form.setFieldValue(
+                    "amount",
+                    String(paymentCap(ticket.dueAmount, next, walletBalance)),
+                  );
+                }}
+                cashAccountId={cashAccountId}
+                onAccountChange={(next) => form.setFieldValue("cashAccountId", next)}
+                walletBalance={walletBalance}
+                active={open}
                 disabled={isPending}
-                prepend={<span className="text-sm">৳</span>}
-                hint={`Cannot exceed the outstanding ${formatCurrency(ticket.dueAmount)}.`}
+                idPrefix={`ticket-payment-${ticket.id}`}
               />
             )}
-          </form.Field>
+          </form.Subscribe>
 
-          <form.Field name="method">
-            {(field) => (
-              <div className="space-y-1.5">
-                <Label htmlFor={field.name}>Method</Label>
-                <Select
-                  value={field.state.value}
-                  onValueChange={(next) => field.handleChange(next as PaymentMethod)}
-                  disabled={isPending}
+          <form.Subscribe selector={(state) => state.values.source}>
+            {(source) => (
+              <>
+                <form.Field
+                  name="amount"
+                  validators={{ onChange: ticketPaymentFieldsZodSchema.shape.amount }}
                 >
-                  <SelectTrigger id={field.name} className="w-full">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {PAYMENT_METHOD_OPTIONS.map((option) => (
-                      <SelectItem key={option.value} value={option.value}>
-                        {option.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            )}
-          </form.Field>
+                  {(field) => (
+                    <AppField
+                      field={field}
+                      label="Amount"
+                      placeholder="0.00"
+                      disabled={isPending}
+                      prepend={<span className="text-sm">৳</span>}
+                      hint={
+                        source === "WALLET"
+                          ? `Cannot exceed the ${formatCurrency(
+                              paymentCap(ticket.dueAmount, source, walletBalance),
+                            )} available from this customer's balance.`
+                          : `Cannot exceed the outstanding ${formatCurrency(ticket.dueAmount)}.`
+                      }
+                    />
+                  )}
+                </form.Field>
 
-          <form.Field
-            name="reference"
-            validators={{ onChange: ticketPaymentFieldsZodSchema.shape.reference }}
-          >
-            {(field) => (
-              <AppField
-                field={field}
-                label="Reference"
-                placeholder="Cheque or transaction number"
-                disabled={isPending}
-                hint="Optional"
-              />
+                {/* Both describe cash changing hands, which a settlement is not. */}
+                {source === "ACCOUNT" && (
+                  <>
+                    <form.Field name="method">
+                      {(field) => (
+                        <div className="space-y-1.5">
+                          <Label htmlFor={field.name}>Method</Label>
+                          <Select
+                            value={field.state.value}
+                            onValueChange={(next) => field.handleChange(next as PaymentMethod)}
+                            disabled={isPending}
+                          >
+                            <SelectTrigger id={field.name} className="w-full">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {PAYMENT_METHOD_OPTIONS.map((option) => (
+                                <SelectItem key={option.value} value={option.value}>
+                                  {option.label}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      )}
+                    </form.Field>
+
+                    <form.Field
+                      name="reference"
+                      validators={{ onChange: ticketPaymentFieldsZodSchema.shape.reference }}
+                    >
+                      {(field) => (
+                        <AppField
+                          field={field}
+                          label="Reference"
+                          placeholder="Cheque or transaction number"
+                          disabled={isPending}
+                          hint="Optional"
+                        />
+                      )}
+                    </form.Field>
+                  </>
+                )}
+              </>
             )}
-          </form.Field>
+          </form.Subscribe>
 
           <form.Field name="paidAt">
             {(field) => (

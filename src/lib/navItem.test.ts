@@ -49,7 +49,11 @@ describe("isNavItemActive", () => {
   it("never lights a module that is not built yet", () => {
     // Its href is a page that does not exist; matching it would highlight a
     // section for a route that can only 404.
-    expect(isNavItemActive(find("Wallet"), "/dashboard/wallet")).toBe(false);
+    expect(isNavItemActive(find("Tours"), "/dashboard/tours")).toBe(false);
+  });
+
+  it("lights a module once it is built", () => {
+    expect(isNavItemActive(find("Wallet"), "/dashboard/wallet")).toBe(true);
   });
 
   it("keeps an exact child off its siblings' pages", () => {

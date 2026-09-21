@@ -285,10 +285,10 @@ const TicketDetailSheet = ({
                             {formatDate(payment.paidAt)}
                           </td>
                           <td className="px-3 py-2">
-                            <Badge variant="outline">{payment.cashAccount.name}</Badge>
+                            <Badge variant="outline">{payment.cashAccount?.name ?? "Customer balance"}</Badge>
                           </td>
                           <td className="px-3 py-2 text-muted-foreground">
-                            {PAYMENT_METHOD_LABELS[payment.method]}
+                            {payment.fromWallet ? "Settled from balance" : PAYMENT_METHOD_LABELS[payment.method]}
                             {payment.reference && (
                               <span className="block text-xs">{payment.reference}</span>
                             )}
@@ -381,10 +381,12 @@ const TicketDetailSheet = ({
                 <span className="font-medium text-foreground">
                   {formatCurrency(deletingPayment.amount)}
                 </span>{" "}
-                from {deletingPayment.cashAccount.name}.{" "}
+                from {deletingPayment.cashAccount?.name ?? "the customer balance"}.{" "}
               </>
             )}
-            The posting is deleted, so the account goes back down and this ticket shows the
+            {deletingPayment?.fromWallet
+              ? "The amount goes back to what the customer has left, and this ticket shows the"
+              : "The posting is deleted, so the account goes back down and this ticket shows the"}{" "}
             amount outstanding again.
           </>
         }

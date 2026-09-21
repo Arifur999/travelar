@@ -12,11 +12,13 @@ import {
   recordHajjPaymentAction,
   setHajjDocumentStatusAction,
 } from "@/app/(dashboardLayout)/dashboard/hajj/_action";
+import { useWalletBalance } from "@/components/modules/Wallet/useWalletBalance";
 import ConfirmDialog from "@/components/shared/ConfirmDialog";
 import InvoiceButton from "@/components/shared/InvoiceButton";
 import Loader from "@/components/shared/Loader";
 import AppField from "@/components/shared/form/AppField";
 import AppSubmitButton from "@/components/shared/form/AppSubmitButton";
+import PaymentSourceFields from "@/components/shared/form/PaymentSourceFields";
 import StatusBadge from "@/components/shared/cell/StatusBadge";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -47,7 +49,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { useForm } from "@tanstack/react-form";
 import { formatCurrency, formatDate, formatDateTime, toNumber } from "@/lib/format";
-import { getCashAccounts } from "@/services/account.services";
+import { paymentCap, toPaymentPayload, type PaymentSource } from "@/lib/paymentSource";
 import { getHajjBookingById, getHajjRooms } from "@/services/hajj.services";
 import {
   DOCUMENT_STATUS_LABELS,
@@ -118,14 +120,12 @@ const HajjBookingDetailSheet = ({
     enabled: open,
   });
 
-  const { data: accountsData } = useQuery({
-    queryKey: ["cash-accounts"],
-    queryFn: () => getCashAccounts(),
-    enabled: open && isPaymentOpen,
-  });
+  const { balance: walletBalance } = useWalletBalance(
+    current.customer.id,
+    open && isPaymentOpen,
+  );
 
   const rooms = roomsData?.data ?? [];
-  const accounts = (accountsData?.data.data ?? []).filter((account) => account.isActive);
   const isFinal = isHajjBookingFinal(current.status);
   const allowed = HAJJ_BOOKING_TRANSITIONS[current.status];
 
@@ -153,7 +153,7 @@ const HajjBookingDetailSheet = ({
 
   const { mutateAsync: submitPayment, isPending: isPayingPending } = useMutation({
     mutationFn: (values: IHajjPaymentFormValues) =>
-      recordHajjPaymentAction(current.id, values),
+      recordHajjPaymentAction(current.id, toPaymentPayload(values)),
   });
 
   const { mutateAsync: submitStatus, isPending: isStatusPending } = useMutation({
@@ -162,6 +162,7 @@ const HajjBookingDetailSheet = ({
   });
 
   const paymentDefaults: IHajjPaymentFormValues = {
+    source: "ACCOUNT",
     cashAccountId: "",
     amount: current.dueAmount > 0 ? String(current.dueAmount) : "",
     method: "CASH",
@@ -186,6 +187,11 @@ const HajjBookingDetailSheet = ({
       void queryClient.invalidateQueries({ queryKey: ["customer-dashboard"] });
       void queryClient.invalidateQueries({ queryKey: ["cash-accounts"] });
       void queryClient.invalidateQueries({ queryKey: ["accounts-overview"] });
+      // A wallet payment spends a balance, and an account payment is one of
+      // the figures the wallet page derives from — both lists are now stale.
+      void queryClient.invalidateQueries({ queryKey: ["wallet-summary"] });
+      void queryClient.invalidateQueries({ queryKey: ["wallet-holders"] });
+      void queryClient.invalidateQueries({ queryKey: ["wallet-statement"] });
       invalidate();
     },
   });
@@ -455,10 +461,10 @@ const HajjBookingDetailSheet = ({
                             {formatDate(payment.paidAt)}
                           </td>
                           <td className="px-3 py-2">
-                            <Badge variant="outline">{payment.cashAccount.name}</Badge>
+                            <Badge variant="outline">{payment.cashAccount?.name ?? "Customer balance"}</Badge>
                           </td>
                           <td className="px-3 py-2 text-muted-foreground">
-                            {PAYMENT_METHOD_LABELS[payment.method]}
+                            {payment.fromWallet ? "Settled from balance" : PAYMENT_METHOD_LABELS[payment.method]}
                             {payment.transactionRef && (
                               <span className="block text-xs">{payment.transactionRef}</span>
                             )}
@@ -554,83 +560,101 @@ const HajjBookingDetailSheet = ({
             }}
             className="space-y-5"
           >
-            <paymentForm.Field name="cashAccountId">
-              {(field) => (
-                <div className="space-y-1.5">
-                  <Label htmlFor={field.name}>Into account</Label>
-                  <Select
-                    value={field.state.value}
-                    onValueChange={field.handleChange}
-                    disabled={isPayingPending}
-                  >
-                    <SelectTrigger id={field.name} className="w-full">
-                      <SelectValue placeholder="Pick an account" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {accounts.map((account) => (
-                        <SelectItem key={account.id} value={account.id}>
-                          {account.name} — {formatCurrency(account.currentBalance)}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              )}
-            </paymentForm.Field>
-
-            <paymentForm.Field
-              name="amount"
-              validators={{ onChange: hajjPaymentFieldsZodSchema.shape.amount }}
+            <paymentForm.Subscribe
+              selector={(state) => [state.values.source, state.values.cashAccountId ?? ""] as const}
             >
-              {(field) => (
-                <AppField
-                  field={field}
-                  label="Amount"
-                  placeholder="0.00"
+              {([source, cashAccountId]) => (
+                <PaymentSourceFields
+                  source={source}
+                  onSourceChange={(next: PaymentSource) => {
+                    paymentForm.setFieldValue("source", next);
+                    // A settlement takes no cash, so the amount can only be
+                    // what is left; the API refuses more either way.
+                    paymentForm.setFieldValue(
+                      "amount",
+                      String(paymentCap(current.dueAmount, next, walletBalance)),
+                    );
+                  }}
+                  cashAccountId={cashAccountId}
+                  onAccountChange={(next) => paymentForm.setFieldValue("cashAccountId", next)}
+                  walletBalance={walletBalance}
+                  active={open && isPaymentOpen}
                   disabled={isPayingPending}
-                  prepend={<span className="text-sm">৳</span>}
-                  hint={`Cannot exceed the outstanding ${formatCurrency(current.dueAmount)}.`}
+                  idPrefix={`hajj-payment-${current.id}`}
                 />
               )}
-            </paymentForm.Field>
+            </paymentForm.Subscribe>
 
-            <paymentForm.Field name="method">
-              {(field) => (
-                <div className="space-y-1.5">
-                  <Label htmlFor={field.name}>Method</Label>
-                  <Select
-                    value={field.state.value}
-                    onValueChange={(next) => field.handleChange(next as PaymentMethod)}
-                    disabled={isPayingPending}
+            <paymentForm.Subscribe selector={(state) => state.values.source}>
+              {(source) => (
+                <>
+                  <paymentForm.Field
+                    name="amount"
+                    validators={{ onChange: hajjPaymentFieldsZodSchema.shape.amount }}
                   >
-                    <SelectTrigger id={field.name} className="w-full">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {PAYMENT_METHOD_OPTIONS.map((option) => (
-                        <SelectItem key={option.value} value={option.value}>
-                          {option.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              )}
-            </paymentForm.Field>
+                    {(field) => (
+                      <AppField
+                        field={field}
+                        label="Amount"
+                        placeholder="0.00"
+                        disabled={isPayingPending}
+                        prepend={<span className="text-sm">৳</span>}
+                        hint={
+                          source === "WALLET"
+                            ? `Cannot exceed the ${formatCurrency(
+                                paymentCap(current.dueAmount, source, walletBalance),
+                              )} available from what this customer paid in.`
+                            : `Cannot exceed the outstanding ${formatCurrency(current.dueAmount)}.`
+                        }
+                      />
+                    )}
+                  </paymentForm.Field>
 
-            <paymentForm.Field
-              name="transactionRef"
-              validators={{ onChange: hajjPaymentFieldsZodSchema.shape.transactionRef }}
-            >
-              {(field) => (
-                <AppField
-                  field={field}
-                  label="Reference"
-                  disabled={isPayingPending}
-                  hint="Optional"
-                />
+                  {/* Both describe cash changing hands, which a settlement is not. */}
+                  {source === "ACCOUNT" && (
+                    <>
+                      <paymentForm.Field name="method">
+                        {(field) => (
+                          <div className="space-y-1.5">
+                            <Label htmlFor={field.name}>Method</Label>
+                            <Select
+                              value={field.state.value}
+                              onValueChange={(next) => field.handleChange(next as PaymentMethod)}
+                              disabled={isPayingPending}
+                            >
+                              <SelectTrigger id={field.name} className="w-full">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {PAYMENT_METHOD_OPTIONS.map((option) => (
+                                  <SelectItem key={option.value} value={option.value}>
+                                    {option.label}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        )}
+                      </paymentForm.Field>
+
+                      <paymentForm.Field
+                        name="transactionRef"
+                        validators={{ onChange: hajjPaymentFieldsZodSchema.shape.transactionRef }}
+                      >
+                        {(field) => (
+                          <AppField
+                            field={field}
+                            label="Reference"
+                            disabled={isPayingPending}
+                            hint="Optional"
+                          />
+                        )}
+                      </paymentForm.Field>
+                    </>
+                  )}
+                </>
               )}
-            </paymentForm.Field>
+            </paymentForm.Subscribe>
 
             <DialogFooter>
               <DialogClose asChild>
@@ -779,10 +803,12 @@ const HajjBookingDetailSheet = ({
                 <span className="font-medium text-foreground">
                   {formatCurrency(toNumber(deletingPayment.amount))}
                 </span>{" "}
-                from {deletingPayment.cashAccount.name}.{" "}
+                from {deletingPayment.cashAccount?.name ?? "the customer balance"}.{" "}
               </>
             )}
-            The posting is deleted, so the account goes back down and this booking shows the
+            {deletingPayment?.fromWallet
+              ? "The amount goes back to what the customer has left, and this booking shows the"
+              : "The posting is deleted, so the account goes back down and this booking shows the"}{" "}
             amount outstanding again.
           </>
         }

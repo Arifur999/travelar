@@ -189,7 +189,7 @@ export const agencyNavGroups: NavGroup[] = [
             feature: "EXPENSE",
             exact: true,
           },
-          { title: "Wallet", href: "/dashboard/wallet", icon: Wallet, soon: true },
+          { title: "Wallet", href: "/dashboard/wallet", icon: Wallet },
         ],
       },
       {

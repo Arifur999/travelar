@@ -44,8 +44,11 @@ export interface IVisaPayment {
   /** Raw Prisma row, so a Decimal string. Read through toNumber(). */
   amount: Money;
   method: PaymentMethod;
-  cashAccountId: string;
-  cashAccount: IRef;
+  /** null on a settlement from the customer balance: no account moved. */
+  cashAccountId: string | null;
+  cashAccount: IRef | null;
+  /** Paid out of what the customer handed over earlier, so nothing posted. */
+  fromWallet: boolean;
   reference?: string | null;
   note?: string | null;
   paidAt: string;
@@ -142,7 +145,13 @@ export interface IChangeVisaStatusPayload {
 }
 
 export interface IRecordVisaPaymentPayload {
-  cashAccountId: string;
+  /**
+   * Absent on a wallet payment: nothing moves between accounts, so there is
+   * no account to name.
+   */
+  cashAccountId?: string;
+  /** Spend what the customer paid in earlier instead of taking money now. */
+  fromWallet?: boolean;
   amount: number;
   method?: PaymentMethod;
   reference?: string;

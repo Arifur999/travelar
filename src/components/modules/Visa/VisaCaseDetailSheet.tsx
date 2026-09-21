@@ -366,10 +366,10 @@ const VisaCaseDetailSheet = ({
                             {formatDate(payment.paidAt)}
                           </td>
                           <td className="px-3 py-2">
-                            <Badge variant="outline">{payment.cashAccount.name}</Badge>
+                            <Badge variant="outline">{payment.cashAccount?.name ?? "Customer balance"}</Badge>
                           </td>
                           <td className="px-3 py-2 text-muted-foreground">
-                            {PAYMENT_METHOD_LABELS[payment.method]}
+                            {payment.fromWallet ? "Settled from balance" : PAYMENT_METHOD_LABELS[payment.method]}
                           </td>
                           <td className="px-3 py-2 text-right font-medium tabular-nums">
                             {formatCurrency(payment.amount)}
@@ -453,10 +453,12 @@ const VisaCaseDetailSheet = ({
                 <span className="font-medium text-foreground">
                   {formatCurrency(toNumber(deletingPayment.amount))}
                 </span>{" "}
-                from {deletingPayment.cashAccount.name}.{" "}
+                from {deletingPayment.cashAccount?.name ?? "the customer balance"}.{" "}
               </>
             )}
-            The posting is deleted, so the account goes back down and this case shows the
+            {deletingPayment?.fromWallet
+              ? "The amount goes back to what the customer has left, and this case shows the"
+              : "The posting is deleted, so the account goes back down and this case shows the"}{" "}
             amount outstanding again.
           </>
         }
