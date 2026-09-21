@@ -1,7 +1,6 @@
 import { z } from "@/lib/zod";
 import { type ICreatePlanPayload } from "@/types/admin.types";
-
-const FEATURES = ["TICKETING", "VISA", "HAJJ_UMRAH", "EXPENSE", "REPORTS", "CRM"] as const;
+import { PLAN_FEATURES } from "@/types/enums.types";
 
 const emptyStringToUndefined = (value: unknown) =>
   typeof value === "string" && value.trim() === "" ? undefined : value;
@@ -30,7 +29,7 @@ export const createPlanServerZodSchema = z.object({
     .number("Duration is required")
     .int()
     .positive("Duration must be at least 1 day"),
-  features: z.array(z.enum(FEATURES, "Unknown feature")).optional(),
+  features: z.array(z.enum(PLAN_FEATURES, "Unknown feature")).optional(),
   isActive: z.boolean().optional(),
 }) satisfies z.ZodType<ICreatePlanPayload>;
 

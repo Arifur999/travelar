@@ -337,6 +337,18 @@ export const EMPLOYEE_PAYOUT_TYPE_OPTIONS = toSelectOptions(EMPLOYEE_PAYOUT_TYPE
 export const ATTENDANCE_STATUS_OPTIONS = toSelectOptions(ATTENDANCE_STATUS_LABELS);
 export const PLAN_FEATURE_OPTIONS = toSelectOptions(PLAN_FEATURE_LABELS);
 
+/**
+ * Every feature, at runtime, for the forms that validate a list of them.
+ *
+ * Derived from the labels so a module added to one is never missing from
+ * the other — a hand-written copy of this list is what left two modules
+ * unsellable and locked on trial.
+ */
+export const PLAN_FEATURES = Object.keys(PLAN_FEATURE_LABELS) as [
+  PlanFeature,
+  ...PlanFeature[],
+];
+
 /** The roles an agency can hand out itself — SUPER_ADMIN never appears here. */
 export const TEAM_ROLE_OPTIONS: SelectOption<"AGENCY_ADMIN" | "AGENCY_STAFF">[] = [
   { value: "AGENCY_STAFF", label: USER_ROLE_LABELS.AGENCY_STAFF },

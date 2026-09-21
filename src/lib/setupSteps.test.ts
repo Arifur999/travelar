@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { buildSetupSteps, isSetupComplete, nextSetupStep } from "./setupSteps";
-import { type PlanFeature } from "@/types/enums.types";
+import { PLAN_FEATURES, type PlanFeature } from "@/types/enums.types";
 
-const ALL: PlanFeature[] = ["TICKETING", "VISA", "HAJJ_UMRAH", "EXPENSE", "REPORTS", "CRM"];
+const ALL: PlanFeature[] = [...PLAN_FEATURES];
 const nothingDone = { hasCashAccount: false, hasCustomer: false, hasSale: false };
 const allDone = { hasCashAccount: true, hasCustomer: true, hasSale: true };
 
