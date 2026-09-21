@@ -1,50 +1,34 @@
 import type { Metadata } from "next";
 import { HydrationBoundary, QueryClient, dehydrate } from "@tanstack/react-query";
-import EmployeesPanel from "@/components/modules/Employees/EmployeesPanel";
+import EmployeeSummaryCards from "@/components/modules/Employees/EmployeeSummaryCards";
+import RecentPayouts, {
+  RECENT_PAYOUTS_QUERY,
+} from "@/components/modules/Employees/RecentPayouts";
 import PageHeader from "@/components/shared/PageHeader";
-import { buildQueryString, type PageSearchParams } from "@/lib/queryString";
-import { getCashAccounts } from "@/services/account.services";
-import { getUserInfo } from "@/services/auth.services";
 import {
-  getAttendance,
   getAttendanceSummary,
   getEmployeeDashboard,
-  getEmployees,
   getEmployeeTransactions,
 } from "@/services/employee.services";
 
 export const metadata: Metadata = { title: "Employees" };
 
-const EmployeesPage = async ({ searchParams }: { searchParams: PageSearchParams }) => {
-  const queryString = buildQueryString(await searchParams);
-
+/** The section's landing page: headcount, what has been paid, who was in. */
+const EmployeesDashboardPage = async () => {
   const queryClient = new QueryClient();
 
-  const [userInfo] = await Promise.all([
-    getUserInfo(),
-    queryClient.prefetchQuery({
-      queryKey: ["employees", queryString],
-      queryFn: () => getEmployees(queryString),
-    }),
+  await Promise.all([
     queryClient.prefetchQuery({
       queryKey: ["employee-dashboard"],
       queryFn: () => getEmployeeDashboard(),
-    }),
-    queryClient.prefetchQuery({
-      queryKey: ["employee-payouts", "page=1&limit=10"],
-      queryFn: () => getEmployeeTransactions("page=1&limit=10"),
-    }),
-    queryClient.prefetchQuery({
-      queryKey: ["attendance", "page=1&limit=10"],
-      queryFn: () => getAttendance("page=1&limit=10"),
     }),
     queryClient.prefetchQuery({
       queryKey: ["attendance-summary"],
       queryFn: () => getAttendanceSummary(),
     }),
     queryClient.prefetchQuery({
-      queryKey: ["cash-accounts"],
-      queryFn: () => getCashAccounts(),
+      queryKey: ["employee-payouts", RECENT_PAYOUTS_QUERY],
+      queryFn: () => getEmployeeTransactions(RECENT_PAYOUTS_QUERY),
     }),
   ]);
 
@@ -56,13 +40,11 @@ const EmployeesPage = async ({ searchParams }: { searchParams: PageSearchParams 
       />
 
       <HydrationBoundary state={dehydrate(queryClient)}>
-        <EmployeesPanel
-          initialQueryString={queryString}
-          isAdmin={userInfo?.role === "AGENCY_ADMIN"}
-        />
+        <EmployeeSummaryCards />
+        <RecentPayouts />
       </HydrationBoundary>
     </div>
   );
 };
 
-export default EmployeesPage;
+export default EmployeesDashboardPage;
