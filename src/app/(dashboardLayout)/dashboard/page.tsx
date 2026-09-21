@@ -32,10 +32,22 @@ const DashboardPage = async () => {
 
   const features = myFeatures?.features ?? [];
 
-  // The landing page is the one place that should not link to itself.
+  // One tile per section rather than per page: a section opens at its first
+  // built page. The landing page is the one place that should not link to
+  // itself, and a module that is not built yet has nowhere to link to.
   const links = agencyNavGroups
     .flatMap((group) => group.items)
-    .filter((item) => isNavItemVisibleToRole(item, userInfo.role) && item.href !== "/dashboard");
+    .filter((item) => isNavItemVisibleToRole(item, userInfo.role))
+    .flatMap((item) => {
+      if (!item.children) {
+        return item.soon || item.href === "/dashboard" ? [] : [item];
+      }
+
+      const first = item.children.find(
+        (child) => !child.soon && isNavItemVisibleToRole(child, userInfo.role),
+      );
+      return first ? [{ ...item, href: first.href }] : [];
+    });
 
   return (
     <div className="space-y-8">

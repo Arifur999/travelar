@@ -1,15 +1,19 @@
 import {
   ArrowLeftRight,
   Banknote,
+  BedDouble,
   Building2,
   ChartColumn,
   CreditCard,
   FileCheck,
   HandCoins,
   IdCard,
+  Landmark,
   LayoutDashboard,
   Layers,
   LifeBuoy,
+  Luggage,
+  Map,
   Megaphone,
   MoonStar,
   PiggyBank,
@@ -31,6 +35,17 @@ export interface NavItem {
   title: string;
   href: string;
   icon: LucideIcon;
+  /**
+   * Submenu entries. A parent with children is not a link itself — the sidebar
+   * turns it into a collapsible section, open while one of its children is the
+   * page being viewed.
+   */
+  children?: NavItem[];
+  /**
+   * The module is not built yet. It is listed, greyed out and unclickable,
+   * rather than hidden, so the sidebar shows what the product will have.
+   */
+  soon?: boolean;
   /**
    * The plan feature this module needs. Must match the `checkFeatureAccess`
    * call on the corresponding backend router — if they disagree, the sidebar
@@ -82,9 +97,18 @@ export const agencyNavGroups: NavGroup[] = [
   {
     label: "Sales",
     items: [
-      { title: "Tickets", href: "/dashboard/tickets", icon: Plane, feature: "TICKETING" },
-      { title: "Visa cases", href: "/dashboard/visa", icon: FileCheck, feature: "VISA" },
-      { title: "Hajj & Umrah", href: "/dashboard/hajj", icon: MoonStar, feature: "HAJJ_UMRAH" },
+      {
+        title: "Travel Services",
+        href: "/dashboard/travel-services",
+        icon: Luggage,
+        children: [
+          { title: "Air Tickets", href: "/dashboard/tickets", icon: Plane, feature: "TICKETING" },
+          { title: "Visa", href: "/dashboard/visa", icon: FileCheck, feature: "VISA" },
+          { title: "Hajj & Umrah", href: "/dashboard/hajj", icon: MoonStar, feature: "HAJJ_UMRAH" },
+          { title: "Tours", href: "/dashboard/tours", icon: Map, soon: true },
+          { title: "Hotel", href: "/dashboard/hotels", icon: BedDouble, soon: true },
+        ],
+      },
     ],
   },
   {
@@ -111,12 +135,27 @@ export const agencyNavGroups: NavGroup[] = [
   {
     label: "Money",
     items: [
-      { title: "Cash accounts", href: "/dashboard/accounts", icon: Wallet, feature: "EXPENSE" },
       {
-        title: "Transfers",
-        href: "/dashboard/transfers",
-        icon: ArrowLeftRight,
+        title: "Accounts",
+        href: "/dashboard/accounts",
+        icon: Landmark,
         feature: "EXPENSE",
+        children: [
+          {
+            title: "Fund Transfer",
+            href: "/dashboard/transfers",
+            icon: ArrowLeftRight,
+            feature: "EXPENSE",
+          },
+          {
+            title: "Ledger",
+            href: "/dashboard/accounts",
+            icon: ScrollText,
+            feature: "EXPENSE",
+            exact: true,
+          },
+          { title: "Wallet", href: "/dashboard/wallet", icon: Wallet, soon: true },
+        ],
       },
       { title: "Expenses", href: "/dashboard/expenses", icon: Receipt, feature: "EXPENSE" },
       {
@@ -190,6 +229,21 @@ export const isNavItemVisibleToRole = (item: NavItem, role: UserRole) =>
   !item.roles || item.roles.includes(role);
 
 /**
+ * Every item a role can reach, submenu entries included and parents left out —
+ * a parent is a section header, not a page. Used by the landing page's quick
+ * access grid and by the breadcrumb.
+ */
+export const flattenNavItems = (groups: NavGroup[], role: UserRole): NavItem[] =>
+  groups
+    .flatMap((group) => group.items)
+    .filter((item) => isNavItemVisibleToRole(item, role))
+    .flatMap((item) =>
+      item.children
+        ? item.children.filter((child) => isNavItemVisibleToRole(child, role))
+        : [item],
+    );
+
+/**
  * A locked item is still rendered — greyed out, with a lock and a route to
  * billing — rather than hidden. Hiding it makes the product look like it lacks
  * the module; showing it locked makes the upgrade discoverable.
@@ -205,16 +259,21 @@ export const isNavItemLocked = (item: NavItem, features: PlanFeature[]) =>
  * Longest-prefix match, so `/dashboard/tickets/abc` highlights Tickets rather
  * than also lighting up every shorter sibling.
  */
-export const isNavItemActive = (item: NavItem, pathname: string) => {
+export const isNavItemActive = (item: NavItem, pathname: string): boolean => {
+  // A parent lights up through its children, never through its own href: two
+  // sections can share a prefix (Accounts sits on /dashboard/accounts, whose
+  // Ledger child is that exact page), and a soon item is no page at all.
+  if (item.children) return item.children.some((child) => isNavItemActive(child, pathname));
+  if (item.soon) return false;
   if (item.exact) return pathname === item.href;
   return pathname === item.href || pathname.startsWith(`${item.href}/`);
 };
 
 /** Drives the header breadcrumb and the document title. */
 export const findNavItemByPath = (pathname: string, role: UserRole): NavItem | null => {
-  const candidates = getNavGroupsForRole(role)
-    .flatMap((group) => group.items)
-    .filter((item) => isNavItemActive(item, pathname));
+  const candidates = flattenNavItems(getNavGroupsForRole(role), role).filter((item) =>
+    isNavItemActive(item, pathname),
+  );
 
   if (candidates.length === 0) return null;
 

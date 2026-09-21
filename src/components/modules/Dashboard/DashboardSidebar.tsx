@@ -2,7 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Lock, Plane } from "lucide-react";
+import { ChevronRight, Lock, Plane } from "lucide-react";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import {
   Sidebar,
   SidebarContent,
@@ -14,6 +19,9 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
   SidebarRail,
   useSidebar,
 } from "@/components/ui/sidebar";
@@ -31,6 +39,7 @@ import {
   isNavItemLocked,
   isNavItemVisibleToRole,
 } from "@/lib/navItem";
+import { type NavItem } from "@/lib/navItem";
 import { PLAN_FEATURE_LABELS, type PlanFeature } from "@/types/enums.types";
 import { type IUser } from "@/types/user.types";
 
@@ -49,6 +58,13 @@ interface DashboardSidebarProps {
   features: PlanFeature[];
 }
 
+/** Marks a module that is listed but not built yet. */
+const SoonBadge = () => (
+  <span className="shrink-0 rounded-sm bg-muted px-1.5 py-0.5 text-[10px] leading-none font-medium tracking-wide text-muted-foreground uppercase">
+    Soon
+  </span>
+);
+
 const DashboardSidebar = ({ userInfo, features }: DashboardSidebarProps) => {
   const pathname = usePathname();
   const { isMobile, setOpenMobile } = useSidebar();
@@ -60,6 +76,105 @@ const DashboardSidebar = ({ userInfo, features }: DashboardSidebarProps) => {
   // the user just navigated to.
   const closeOnMobile = () => {
     if (isMobile) setOpenMobile(false);
+  };
+
+  const lockedLabel = (item: NavItem) =>
+    `${PLAN_FEATURE_LABELS[item.feature as PlanFeature]} is not in your plan — upgrade to unlock`;
+
+  /** A top-level entry with no submenu. */
+  const renderItem = (item: NavItem) => {
+    const Icon = item.icon;
+
+    if (item.soon) {
+      return (
+        <SidebarMenuButton
+          disabled
+          className="text-muted-foreground/70"
+          tooltip={`${item.title} — coming soon`}
+        >
+          <Icon aria-hidden="true" />
+          <span className="flex-1 truncate">{item.title}</span>
+          <SoonBadge />
+        </SidebarMenuButton>
+      );
+    }
+
+    // A locked module stays visible but routes to billing instead of a page the
+    // API would refuse with a 403. Hiding it would make the product look like
+    // it lacks the module; showing it locked makes the upgrade findable.
+    if (isNavItemLocked(item, features)) {
+      return (
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <SidebarMenuButton asChild className="text-muted-foreground/70" tooltip={undefined}>
+              <Link
+                href="/dashboard/billing"
+                onClick={closeOnMobile}
+                aria-label={`${item.title} — locked, upgrade required`}
+              >
+                <Icon aria-hidden="true" />
+                <span className="flex-1 truncate">{item.title}</span>
+                <Lock className="size-3.5 shrink-0" aria-hidden="true" />
+              </Link>
+            </SidebarMenuButton>
+          </TooltipTrigger>
+          <TooltipContent side="right">{lockedLabel(item)}</TooltipContent>
+        </Tooltip>
+      );
+    }
+
+    return (
+      <SidebarMenuButton asChild isActive={isNavItemActive(item, pathname)} tooltip={item.title}>
+        <Link href={item.href} onClick={closeOnMobile}>
+          <Icon aria-hidden="true" />
+          <span className="truncate">{item.title}</span>
+        </Link>
+      </SidebarMenuButton>
+    );
+  };
+
+  /** A submenu entry. Same three states, drawn at submenu size. */
+  const renderSubItem = (item: NavItem) => {
+    if (item.soon) {
+      return (
+        <SidebarMenuSubButton
+          aria-disabled="true"
+          className="text-muted-foreground/70"
+          title={`${item.title} — coming soon`}
+        >
+          <span className="flex-1 truncate">{item.title}</span>
+          <SoonBadge />
+        </SidebarMenuSubButton>
+      );
+    }
+
+    if (isNavItemLocked(item, features)) {
+      return (
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <SidebarMenuSubButton asChild className="text-muted-foreground/70">
+              <Link
+                href="/dashboard/billing"
+                onClick={closeOnMobile}
+                aria-label={`${item.title} — locked, upgrade required`}
+              >
+                <span className="flex-1 truncate">{item.title}</span>
+                <Lock className="size-3.5 shrink-0" aria-hidden="true" />
+              </Link>
+            </SidebarMenuSubButton>
+          </TooltipTrigger>
+          <TooltipContent side="right">{lockedLabel(item)}</TooltipContent>
+        </Tooltip>
+      );
+    }
+
+    return (
+      <SidebarMenuSubButton asChild isActive={isNavItemActive(item, pathname)}>
+        <Link href={item.href} onClick={closeOnMobile}>
+          <span className="truncate">{item.title}</span>
+        </Link>
+      </SidebarMenuSubButton>
+    );
   };
 
   return (
@@ -97,56 +212,49 @@ const DashboardSidebar = ({ userInfo, features }: DashboardSidebarProps) => {
               <SidebarGroupLabel>{group.label}</SidebarGroupLabel>
               <SidebarGroupContent>
                 <SidebarMenu>
-                  {visibleItems.map((item) => {
-                    const Icon = item.icon;
-                    const isActive = isNavItemActive(item, pathname);
-                    const isLocked = isNavItemLocked(item, features);
+                  {visibleItems.map((item) =>
+                    item.children ? (
+                      <Collapsible
+                        key={item.href}
+                        asChild
+                        // Open on the section being viewed; closed sections stay
+                        // out of the way. Uncontrolled, so a collapse the user
+                        // makes by hand is not undone on every render.
+                        defaultOpen={isNavItemActive(item, pathname)}
+                        className="group/collapsible"
+                      >
+                        <SidebarMenuItem>
+                          <CollapsibleTrigger asChild>
+                            <SidebarMenuButton
+                              tooltip={item.title}
+                              isActive={isNavItemActive(item, pathname)}
+                            >
+                              <item.icon aria-hidden="true" />
+                              <span className="flex-1 truncate">{item.title}</span>
+                              <ChevronRight
+                                className="size-4 shrink-0 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90"
+                                aria-hidden="true"
+                              />
+                            </SidebarMenuButton>
+                          </CollapsibleTrigger>
 
-                    // A locked module stays visible but routes to billing
-                    // instead of a page the API would refuse with a 403.
-                    // Hiding it would make the product look like it lacks the
-                    // module; showing it locked makes the upgrade findable.
-                    if (isLocked) {
-                      return (
-                        <SidebarMenuItem key={item.href}>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <SidebarMenuButton
-                                asChild
-                                className="text-muted-foreground/70"
-                                tooltip={undefined}
-                              >
-                                <Link
-                                  href="/dashboard/billing"
-                                  onClick={closeOnMobile}
-                                  aria-label={`${item.title} — locked, upgrade required`}
-                                >
-                                  <Icon aria-hidden="true" />
-                                  <span className="flex-1 truncate">{item.title}</span>
-                                  <Lock className="size-3.5 shrink-0" aria-hidden="true" />
-                                </Link>
-                              </SidebarMenuButton>
-                            </TooltipTrigger>
-                            <TooltipContent side="right">
-                              {PLAN_FEATURE_LABELS[item.feature as PlanFeature]} is not in your
-                              plan — upgrade to unlock
-                            </TooltipContent>
-                          </Tooltip>
+                          <CollapsibleContent>
+                            <SidebarMenuSub>
+                              {item.children
+                                .filter((child) => isNavItemVisibleToRole(child, userInfo.role))
+                                .map((child) => (
+                                  <SidebarMenuSubItem key={child.href}>
+                                    {renderSubItem(child)}
+                                  </SidebarMenuSubItem>
+                                ))}
+                            </SidebarMenuSub>
+                          </CollapsibleContent>
                         </SidebarMenuItem>
-                      );
-                    }
-
-                    return (
-                      <SidebarMenuItem key={item.href}>
-                        <SidebarMenuButton asChild isActive={isActive} tooltip={item.title}>
-                          <Link href={item.href} onClick={closeOnMobile}>
-                            <Icon aria-hidden="true" />
-                            <span className="truncate">{item.title}</span>
-                          </Link>
-                        </SidebarMenuButton>
-                      </SidebarMenuItem>
-                    );
-                  })}
+                      </Collapsible>
+                    ) : (
+                      <SidebarMenuItem key={item.href}>{renderItem(item)}</SidebarMenuItem>
+                    ),
+                  )}
                 </SidebarMenu>
               </SidebarGroupContent>
             </SidebarGroup>
