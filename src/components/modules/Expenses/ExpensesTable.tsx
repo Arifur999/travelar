@@ -3,11 +3,10 @@
 import { useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { CalendarDays, Plus, Receipt, Tags } from "lucide-react";
+import { Plus } from "lucide-react";
 import { toast } from "sonner";
 import { deleteExpenseAction } from "@/app/(dashboardLayout)/dashboard/expenses/_action";
 import ConfirmDialog from "@/components/shared/ConfirmDialog";
-import StatsCard from "@/components/shared/StatsCard";
 import DataTable from "@/components/shared/table/DataTable";
 import { Button } from "@/components/ui/button";
 import { useRowActionModalState } from "@/hooks/useRowActionModalState";
@@ -19,7 +18,7 @@ import {
 import { useServerManagedDataTableSearch } from "@/hooks/useServerManagedDataTableSearch";
 import { formatCurrency } from "@/lib/format";
 import { getCashAccounts } from "@/services/account.services";
-import { getExpenseCategories, getExpenseDashboard, getExpenses } from "@/services/expense.services";
+import { getExpenseCategories, getExpenses } from "@/services/expense.services";
 import { type IExpense } from "@/types/expense.types";
 import { type DataTableFilterConfig } from "@/types/table.types";
 import ExpenseFormModal from "./ExpenseFormModal";
@@ -73,12 +72,6 @@ const ExpensesTable = ({ initialQueryString }: { initialQueryString: string }) =
   const { data, isFetching } = useQuery({
     queryKey: ["expenses", effectiveQueryString],
     queryFn: () => getExpenses(effectiveQueryString),
-  });
-
-  // Month and year totals come from the dashboard, not from the page.
-  const { data: dashboardData } = useQuery({
-    queryKey: ["expense-dashboard"],
-    queryFn: () => getExpenseDashboard(),
   });
 
   const { data: categoriesData } = useQuery({
@@ -146,43 +139,8 @@ const ExpensesTable = ({ initialQueryString }: { initialQueryString: string }) =
     router.refresh();
   };
 
-  const dashboard = dashboardData?.data;
-
   return (
     <>
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        <StatsCard
-          title="Spent all time"
-          value={formatCurrency(dashboard?.totalExpenses ?? 0)}
-          icon={Receipt}
-          accent="expense"
-        />
-        <StatsCard
-          title="This month"
-          value={formatCurrency(dashboard?.thisMonthTotal ?? 0)}
-          icon={CalendarDays}
-          accent="expense"
-        />
-        <StatsCard
-          title="This year"
-          value={formatCurrency(dashboard?.thisYearTotal ?? 0)}
-          icon={CalendarDays}
-          accent="ledger"
-        />
-        <StatsCard
-          title="Biggest category"
-          // null when nothing has been spent — "—" is honest, "0" would not be.
-          value={dashboard?.topExpenseCategory?.name ?? "—"}
-          icon={Tags}
-          accent="primary"
-          hint={
-            dashboard?.topExpenseCategory
-              ? formatCurrency(dashboard.topExpenseCategory.total)
-              : "Nothing spent yet"
-          }
-        />
-      </div>
-
       <DataTable<IExpense>
         data={data?.data.expenses ?? []}
         columns={expensesColumns}

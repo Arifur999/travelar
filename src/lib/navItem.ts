@@ -23,6 +23,7 @@ import {
   Route,
   ScrollText,
   Settings,
+  Tags,
   Truck,
   UserCog,
   Users,
@@ -157,7 +158,33 @@ export const agencyNavGroups: NavGroup[] = [
           { title: "Wallet", href: "/dashboard/wallet", icon: Wallet, soon: true },
         ],
       },
-      { title: "Expenses", href: "/dashboard/expenses", icon: Receipt, feature: "EXPENSE" },
+      {
+        title: "Expenses",
+        href: "/dashboard/expenses",
+        icon: Receipt,
+        feature: "EXPENSE",
+        children: [
+          {
+            title: "Dashboard",
+            href: "/dashboard/expenses",
+            icon: LayoutDashboard,
+            feature: "EXPENSE",
+            exact: true,
+          },
+          {
+            title: "Category",
+            href: "/dashboard/expenses/categories",
+            icon: Tags,
+            feature: "EXPENSE",
+          },
+          {
+            title: "Transactions",
+            href: "/dashboard/expenses/transactions",
+            icon: Receipt,
+            feature: "EXPENSE",
+          },
+        ],
+      },
       {
         title: "Capital",
         href: "/dashboard/capital",

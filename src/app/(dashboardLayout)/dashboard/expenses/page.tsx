@@ -1,41 +1,20 @@
 import type { Metadata } from "next";
 import { HydrationBoundary, QueryClient, dehydrate } from "@tanstack/react-query";
-import CategoryBreakdown from "@/components/modules/Expenses/CategoryBreakdown";
-import ExpensesTable from "@/components/modules/Expenses/ExpensesTable";
+import ExpenseSummaryCards from "@/components/modules/Expenses/ExpenseSummaryCards";
+import ExpenseTopCategories from "@/components/modules/Expenses/ExpenseTopCategories";
 import PageHeader from "@/components/shared/PageHeader";
-import { buildQueryString, type PageSearchParams } from "@/lib/queryString";
-import { getCashAccounts } from "@/services/account.services";
-import {
-  getExpenseCategories,
-  getExpenseDashboard,
-  getExpenses,
-} from "@/services/expense.services";
+import { getExpenseDashboard } from "@/services/expense.services";
 
 export const metadata: Metadata = { title: "Expenses" };
 
-const ExpensesPage = async ({ searchParams }: { searchParams: PageSearchParams }) => {
-  const queryString = buildQueryString(await searchParams);
-
+/** The section's landing page: the totals, and what they were spent on. */
+const ExpensesDashboardPage = async () => {
   const queryClient = new QueryClient();
 
-  await Promise.all([
-    queryClient.prefetchQuery({
-      queryKey: ["expenses", queryString],
-      queryFn: () => getExpenses(queryString),
-    }),
-    queryClient.prefetchQuery({
-      queryKey: ["expense-dashboard"],
-      queryFn: () => getExpenseDashboard(),
-    }),
-    queryClient.prefetchQuery({
-      queryKey: ["expense-categories"],
-      queryFn: () => getExpenseCategories(),
-    }),
-    queryClient.prefetchQuery({
-      queryKey: ["cash-accounts"],
-      queryFn: () => getCashAccounts(),
-    }),
-  ]);
+  await queryClient.prefetchQuery({
+    queryKey: ["expense-dashboard"],
+    queryFn: () => getExpenseDashboard(),
+  });
 
   return (
     <div className="space-y-6">
@@ -45,11 +24,11 @@ const ExpensesPage = async ({ searchParams }: { searchParams: PageSearchParams }
       />
 
       <HydrationBoundary state={dehydrate(queryClient)}>
-        <ExpensesTable initialQueryString={queryString} />
-        <CategoryBreakdown />
+        <ExpenseSummaryCards />
+        <ExpenseTopCategories />
       </HydrationBoundary>
     </div>
   );
 };
 
-export default ExpensesPage;
+export default ExpensesDashboardPage;
