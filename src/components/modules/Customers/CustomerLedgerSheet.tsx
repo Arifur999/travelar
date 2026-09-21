@@ -31,6 +31,8 @@ const TYPE_LABELS: Record<CustomerLedgerRowType, string> = {
   "hajj-payment": "Payment",
   tour: "Tour",
   "tour-payment": "Payment",
+  hotel: "Hotel",
+  "hotel-payment": "Payment",
   "due-received": "Collection",
   discount: "Discount",
 };
@@ -49,6 +51,8 @@ const TYPE_TONES: Record<CustomerLedgerRowType, string> = {
   "hajj-payment": "bg-success/10 text-success",
   tour: "bg-chart-4/10 text-chart-4",
   "tour-payment": "bg-success/10 text-success",
+  hotel: "bg-chart-2/10 text-chart-2",
+  "hotel-payment": "bg-success/10 text-success",
   "due-received": "bg-success/10 text-success",
   discount: "bg-info/10 text-info",
 };

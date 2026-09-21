@@ -107,7 +107,7 @@ export const agencyNavGroups: NavGroup[] = [
           { title: "Air Tickets", href: "/dashboard/tickets", icon: Plane, feature: "TICKETING" },
           { title: "Visa", href: "/dashboard/visa", icon: FileCheck, feature: "VISA" },
           { title: "Tours", href: "/dashboard/tours", icon: Map, feature: "TOURS" },
-          { title: "Hotel", href: "/dashboard/hotels", icon: BedDouble, soon: true },
+          { title: "Hotel", href: "/dashboard/hotels", icon: BedDouble, feature: "HOTEL" },
         ],
       },
       // Its own section rather than a travel service: it is sold, booked and

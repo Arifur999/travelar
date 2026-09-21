@@ -4,7 +4,7 @@ import { type Money } from "./api.types";
  * A customer, with the balance derived from every module that bills them.
  *
  *   currentDue = openingDue
- *              + Σ sales        (tickets, visa cases, hajj and tour bookings)
+ *              + Σ sales        (tickets, visa cases, hajj, tour and hotel bookings)
  *              − Σ collections  (payments against those, plus due receipts)
  *              − Σ discounts
  *
@@ -59,6 +59,8 @@ export type CustomerLedgerRowType =
   | "hajj-payment"
   | "tour"
   | "tour-payment"
+  | "hotel"
+  | "hotel-payment"
   | "due-received"
   | "discount";
 

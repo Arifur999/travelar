@@ -66,7 +66,7 @@ export const monthOverMonth = (trend: ITrendMonth[], metric: TrendMetric): numbe
   return ((current - previous) / Math.abs(previous)) * 100;
 };
 
-export type SalesModule = "ticketing" | "visa" | "hajj" | "tours";
+export type SalesModule = "ticketing" | "visa" | "hajj" | "tours" | "hotels";
 
 export interface SalesSlice {
   module: SalesModule;
@@ -82,6 +82,7 @@ const MODULE_LABELS: Record<SalesModule, string> = {
   visa: "Visa",
   hajj: "Hajj & Umrah",
   tours: "Tours",
+  hotels: "Hotel",
 };
 
 /**
@@ -90,7 +91,7 @@ const MODULE_LABELS: Record<SalesModule, string> = {
  * below zero — a pie cannot show that, so it is left out of the pie too.
  */
 export const buildSalesMix = (byModule: IModuleBreakdown): SalesSlice[] => {
-  const modules: SalesModule[] = ["ticketing", "visa", "hajj", "tours"];
+  const modules: SalesModule[] = ["ticketing", "visa", "hajj", "tours", "hotels"];
   const positive = modules
     .map((module) => ({ module, value: byModule[module].sales, count: byModule[module].count }))
     .filter((row) => row.value > 0);

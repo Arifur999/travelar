@@ -47,14 +47,23 @@ describe("isNavItemActive", () => {
   });
 
   it("never lights a module that is not built yet", () => {
-    // Its href is a page that does not exist; matching it would highlight a
-    // section for a route that can only 404.
-    expect(isNavItemActive(find("Hotel"), "/dashboard/hotels")).toBe(false);
+    // Every module in the menu is built today, so this is written against a
+    // made-up one: the rule has to keep working for the next module that is
+    // announced before its page exists, whose href can only 404.
+    const soon: NavItem = {
+      title: "Something new",
+      href: "/dashboard/something-new",
+      icon: find("Wallet").icon,
+      soon: true,
+    };
+
+    expect(isNavItemActive(soon, "/dashboard/something-new")).toBe(false);
   });
 
   it("lights a module once it is built", () => {
     expect(isNavItemActive(find("Wallet"), "/dashboard/wallet")).toBe(true);
     expect(isNavItemActive(find("Tours"), "/dashboard/tours")).toBe(true);
+    expect(isNavItemActive(find("Hotel"), "/dashboard/hotels")).toBe(true);
   });
 
   it("keeps an exact child off its siblings' pages", () => {

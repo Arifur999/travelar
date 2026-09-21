@@ -84,11 +84,13 @@ describe("buildSalesMix", () => {
     visa: number,
     hajj: number,
     tours = 0,
+    hotels = 0,
   ): IModuleBreakdown => ({
     ticketing: { count: 2, sales: ticketing, profit: 0 },
     visa: { count: 1, sales: visa, profit: 0 },
     hajj: { count: 3, sales: hajj, profit: null },
     tours: { count: 4, sales: tours, profit: 0 },
+    hotels: { count: 5, sales: hotels, profit: 0 },
   });
 
   it("gives each selling module its share", () => {

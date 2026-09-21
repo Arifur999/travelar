@@ -13,6 +13,8 @@ export interface IModuleBreakdown {
   hajj: { count: number; sales: number; profit: null };
   /** Tours record both sides, so their margin is real. */
   tours: { count: number; sales: number; profit: number };
+  /** Hotels record both sides too. */
+  hotels: { count: number; sales: number; profit: number };
 }
 
 export interface IIncomeByAirlineRow {

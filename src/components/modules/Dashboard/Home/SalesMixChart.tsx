@@ -19,6 +19,7 @@ const chartConfig = {
   visa: { label: "Visa", color: "var(--chart-2)" },
   hajj: { label: "Hajj & Umrah", color: "var(--chart-3)" },
   tours: { label: "Tours", color: "var(--chart-4)" },
+  hotels: { label: "Hotel", color: "var(--chart-5)" },
 } satisfies ChartConfig;
 
 const DOT_CLASSES = {
@@ -26,6 +27,7 @@ const DOT_CLASSES = {
   visa: "bg-chart-2",
   hajj: "bg-chart-3",
   tours: "bg-chart-4",
+  hotels: "bg-chart-5",
 } as const;
 
 const SalesMixChart = ({ byModule }: { byModule: IModuleBreakdown }) => {

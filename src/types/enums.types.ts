@@ -41,6 +41,8 @@ export type TourStatus = "OPEN" | "CLOSED" | "COMPLETED" | "CANCELLED";
 
 export type TourBookingStatus = "RESERVED" | "CONFIRMED" | "COMPLETED" | "CANCELLED";
 
+export type HotelBookingStatus = "RESERVED" | "CONFIRMED" | "COMPLETED" | "CANCELLED";
+
 export type HajjBatchStatus = "OPEN" | "FULL" | "DEPARTED" | "COMPLETED" | "CANCELLED";
 
 export type HajjHotelType = "MAKKAH" | "MADINAH";
@@ -167,6 +169,13 @@ export const TOUR_BOOKING_STATUS_LABELS: Record<TourBookingStatus, string> = {
   RESERVED: "Reserved",
   CONFIRMED: "Confirmed",
   COMPLETED: "Completed",
+  CANCELLED: "Cancelled",
+};
+
+export const HOTEL_BOOKING_STATUS_LABELS: Record<HotelBookingStatus, string> = {
+  RESERVED: "Reserved",
+  CONFIRMED: "Confirmed",
+  COMPLETED: "Checked out",
   CANCELLED: "Cancelled",
 };
 
@@ -313,6 +322,7 @@ export const VISA_STATUS_OPTIONS = toSelectOptions(VISA_STATUS_LABELS);
 export const HAJJ_BOOKING_STATUS_OPTIONS = toSelectOptions(HAJJ_BOOKING_STATUS_LABELS);
 export const TOUR_STATUS_OPTIONS = toSelectOptions(TOUR_STATUS_LABELS);
 export const TOUR_BOOKING_STATUS_OPTIONS = toSelectOptions(TOUR_BOOKING_STATUS_LABELS);
+export const HOTEL_BOOKING_STATUS_OPTIONS = toSelectOptions(HOTEL_BOOKING_STATUS_LABELS);
 export const HAJJ_PACKAGE_TYPE_OPTIONS = toSelectOptions(HAJJ_PACKAGE_TYPE_LABELS);
 export const HAJJ_TIER_OPTIONS = toSelectOptions(HAJJ_TIER_LABELS);
 export const HAJJ_MEAL_PLAN_OPTIONS = toSelectOptions(HAJJ_MEAL_PLAN_LABELS);
@@ -378,6 +388,13 @@ export const TOUR_BOOKING_STATUS_TONES: Record<TourBookingStatus, BadgeTone> = {
 export const TOUR_STATUS_TONES: Record<TourStatus, BadgeTone> = {
   OPEN: "success",
   CLOSED: "neutral",
+  COMPLETED: "info",
+  CANCELLED: "danger",
+};
+
+export const HOTEL_BOOKING_STATUS_TONES: Record<HotelBookingStatus, BadgeTone> = {
+  RESERVED: "warning",
+  CONFIRMED: "success",
   COMPLETED: "info",
   CANCELLED: "danger",
 };
