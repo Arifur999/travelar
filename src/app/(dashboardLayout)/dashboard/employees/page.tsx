@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { HydrationBoundary, QueryClient, dehydrate } from "@tanstack/react-query";
 import EmployeeSummaryCards from "@/components/modules/Employees/EmployeeSummaryCards";
+import PayrollCharts from "@/components/modules/Employees/PayrollCharts";
 import RecentPayouts, {
   RECENT_PAYOUTS_QUERY,
 } from "@/components/modules/Employees/RecentPayouts";
@@ -41,6 +42,7 @@ const EmployeesDashboardPage = async () => {
 
       <HydrationBoundary state={dehydrate(queryClient)}>
         <EmployeeSummaryCards />
+        <PayrollCharts />
         <RecentPayouts />
       </HydrationBoundary>
     </div>
