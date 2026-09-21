@@ -15,152 +15,69 @@ import { type IDashboardOverview } from "@/types/dashboard.types";
  * The same figures the source spreadsheet shows on its Custom, Monthly and
  * Yearly dashboards — one component, three scopes.
  */
-const GoalBar = ({
-  label,
-  actual,
-  goal,
-  progress,
-}: {
-  label: string;
-  actual: number;
-  goal: number;
-  progress: number;
-}) => {
-  // A goal of zero means "not tracked", which is a different thing from 0%
-  // achieved — so say so rather than drawing an empty bar.
-  if (goal <= 0) {
-    return (
-      <div className="space-y-1">
-        <div className="flex justify-between text-sm">
-          <span className="text-muted-foreground">{label}</span>
-          <span className="font-medium tabular-nums">{formatCurrency(actual)}</span>
-        </div>
-        <p className="text-xs text-muted-foreground">No goal set for this period.</p>
-      </div>
-    );
-  }
-
-  const met = progress >= 100;
-
-  return (
-    <div className="space-y-1">
-      <div className="flex justify-between text-sm">
-        <span className="text-muted-foreground">{label}</span>
-        <span className="font-medium tabular-nums">
-          {formatCurrency(actual)}{" "}
-          <span className="text-muted-foreground">of {formatCurrency(goal)}</span>
-        </span>
-      </div>
-      <div
-        className="h-2 w-full overflow-hidden rounded-full bg-muted"
-        role="progressbar"
-        aria-valuenow={Math.round(progress)}
-        aria-valuemin={0}
-        aria-valuemax={100}
-        aria-label={`${label} against goal`}
-      >
-        <div
-          className={cn("h-full rounded-full", met ? "bg-success" : "bg-primary")}
-          // Width clamps at 100% so the bar cannot overflow; the figure below
-          // is not clamped, because beating a goal is worth seeing.
-          style={{ width: `${Math.min(progress, 100)}%` }}
-        />
-      </div>
-      <p className={cn("text-xs", met ? "text-success" : "text-muted-foreground")}>
-        {formatPercent(progress)} of goal{met ? " — met" : ""}
-      </p>
-    </div>
-  );
-};
-
 const OverviewPanel = ({ overview }: { overview: IDashboardOverview }) => {
   const { byModule } = overview;
   const margin = calculateMarginPercent(overview.actualProfit, overview.actualSales);
 
   return (
     <div className="space-y-6">
-      <div className="grid gap-6 lg:grid-cols-2 [&>*]:min-w-0">
-        <Card>
-          <CardHeader>
-            <CardTitle>Against goal</CardTitle>
-            <CardDescription>
-              Goals are set per month, so a range sums every month it touches.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <GoalBar
-              label="Sales"
-              actual={overview.actualSales}
-              goal={overview.salesGoal}
-              progress={overview.salesProgress}
-            />
-            <GoalBar
-              label="Profit"
-              actual={overview.actualProfit}
-              goal={overview.profitGoal}
-              progress={overview.profitProgress}
-            />
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Result</CardTitle>
-            <CardDescription>What the period actually added to the business.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <dl className="text-sm">
-              <div className="flex justify-between py-1">
-                <dt className="text-muted-foreground">Sales</dt>
-                <dd className="tabular-nums">{formatCurrency(overview.actualSales)}</dd>
-              </div>
-              <div className="flex justify-between py-1">
-                <dt className="text-muted-foreground">Gross profit</dt>
-                <dd className="tabular-nums">
-                  {formatCurrency(overview.actualProfit)}
-                  {margin !== null && (
-                    <span className="ml-1 text-xs text-muted-foreground">
-                      ({formatPercent(margin)})
-                    </span>
-                  )}
-                </dd>
-              </div>
-              <div className="flex justify-between py-1">
-                <dt className="text-muted-foreground">Expenses</dt>
-                <dd className="tabular-nums text-destructive">
-                  − {formatCurrency(overview.expenses)}
-                </dd>
-              </div>
-              <div className="flex justify-between border-t py-1 pt-2 font-medium">
-                <dt>Profit / loss</dt>
-                <dd
-                  className={cn(
-                    "tabular-nums",
-                    overview.profitLoss >= 0 ? "text-success" : "text-destructive",
-                  )}
-                >
-                  {formatCurrency(overview.profitLoss)}
-                </dd>
-              </div>
-              <div className="flex justify-between py-1">
-                <dt className="text-muted-foreground">Profit withdrawn</dt>
-                <dd className="tabular-nums">− {formatCurrency(overview.profitWithdraw)}</dd>
-              </div>
-              <div className="flex justify-between border-t py-1 pt-2 font-medium">
-                <dt>Increase / decrease</dt>
-                <dd
-                  className={cn(
-                    "tabular-nums",
-                    overview.increaseOrDecrease >= 0 ? "text-success" : "text-destructive",
-                  )}
-                >
-                  {formatCurrency(overview.increaseOrDecrease)}
-                </dd>
-              </div>
-            </dl>
-          </CardContent>
-        </Card>
-      </div>
+      <Card>
+        <CardHeader>
+          <CardTitle>Result</CardTitle>
+          <CardDescription>What the period actually added to the business.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <dl className="text-sm">
+            <div className="flex justify-between py-1">
+              <dt className="text-muted-foreground">Sales</dt>
+              <dd className="tabular-nums">{formatCurrency(overview.actualSales)}</dd>
+            </div>
+            <div className="flex justify-between py-1">
+              <dt className="text-muted-foreground">Gross profit</dt>
+              <dd className="tabular-nums">
+                {formatCurrency(overview.actualProfit)}
+                {margin !== null && (
+                  <span className="ml-1 text-xs text-muted-foreground">
+                    ({formatPercent(margin)})
+                  </span>
+                )}
+              </dd>
+            </div>
+            <div className="flex justify-between py-1">
+              <dt className="text-muted-foreground">Expenses</dt>
+              <dd className="tabular-nums text-destructive">
+                − {formatCurrency(overview.expenses)}
+              </dd>
+            </div>
+            <div className="flex justify-between border-t py-1 pt-2 font-medium">
+              <dt>Profit / loss</dt>
+              <dd
+                className={cn(
+                  "tabular-nums",
+                  overview.profitLoss >= 0 ? "text-success" : "text-destructive",
+                )}
+              >
+                {formatCurrency(overview.profitLoss)}
+              </dd>
+            </div>
+            <div className="flex justify-between py-1">
+              <dt className="text-muted-foreground">Profit withdrawn</dt>
+              <dd className="tabular-nums">− {formatCurrency(overview.profitWithdraw)}</dd>
+            </div>
+            <div className="flex justify-between border-t py-1 pt-2 font-medium">
+              <dt>Increase / decrease</dt>
+              <dd
+                className={cn(
+                  "tabular-nums",
+                  overview.increaseOrDecrease >= 0 ? "text-success" : "text-destructive",
+                )}
+              >
+                {formatCurrency(overview.increaseOrDecrease)}
+              </dd>
+            </div>
+          </dl>
+        </CardContent>
+      </Card>
 
       <Card>
         <CardHeader>

@@ -1,5 +1,3 @@
-import { type Money } from "./api.types";
-
 /** Per-module contribution inside an overview. */
 export interface IModuleBreakdown {
   ticketing: { count: number; sales: number; profit: number };
@@ -141,25 +139,6 @@ export interface IDashboardSummary {
   cashFlow: ICashFlow;
   trend: ITrendMonth[];
   setup: ISetupProgress;
-}
-
-export interface IMonthlyGoal {
-  id: string;
-  agencyId: string;
-  year: number;
-  month: number;
-  /** Raw Prisma row, so Decimal strings. Read through toNumber(). */
-  salesGoal: Money;
-  profitGoal: Money;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface IUpsertGoalPayload {
-  year: number;
-  month: number;
-  salesGoal?: number;
-  profitGoal?: number;
 }
 
 export const MONTH_NAMES = [

@@ -49,7 +49,7 @@ const DashboardPage = async () => {
       </div>
 
       <HydrationBoundary state={dehydrate(queryClient)}>
-        <DashboardHome canSetGoals={userInfo.role === "AGENCY_ADMIN"} features={features} />
+        <DashboardHome features={features} />
       </HydrationBoundary>
 
       <section className="space-y-3" aria-labelledby="quick-access">

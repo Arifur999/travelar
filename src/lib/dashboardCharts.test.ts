@@ -3,7 +3,6 @@ import {
   buildAccountBars,
   buildSalesMix,
   buildTrendPoints,
-  goalProgress,
   isTrendEmpty,
   monthOverMonth,
 } from "./dashboardCharts";
@@ -162,17 +161,3 @@ describe("buildAccountBars", () => {
   });
 });
 
-describe("goalProgress", () => {
-  it("is null without a goal, rather than 0%", () => {
-    expect(goalProgress(5000, 0)).toBeNull();
-  });
-
-  it("caps the ring at full but reports the real figure", () => {
-    expect(goalProgress(15_000, 10_000)).toEqual({ percent: 150, ringPercent: 100, met: true });
-    expect(goalProgress(2500, 10_000)).toEqual({ percent: 25, ringPercent: 25, met: false });
-  });
-
-  it("draws an empty ring for a loss", () => {
-    expect(goalProgress(-2000, 10_000)).toEqual({ percent: -20, ringPercent: 0, met: false });
-  });
-});

@@ -165,18 +165,3 @@ export const buildAccountBars = (accounts: ICashFlowAccount[], limit = 5): Accou
   return [...bars, ...overdrawn.map(toBar)];
 };
 
-/**
- * Progress towards a goal for a ring. `null` when no goal is set — "not
- * tracked" must not be drawn as an empty ring that reads as 0% achieved.
- */
-export const goalProgress = (actual: number, goal: number) => {
-  if (goal <= 0) return null;
-  const percent = (actual / goal) * 100;
-  return {
-    percent,
-    // The ring stops at full; the number beside it does not, because beating a
-    // goal is worth seeing. A loss draws an empty ring rather than a negative one.
-    ringPercent: Math.min(Math.max(percent, 0), 100),
-    met: percent >= 100,
-  };
-};

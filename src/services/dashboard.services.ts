@@ -5,16 +5,14 @@ import {
   type ICashFlow,
   type IDashboardOverview,
   type IDashboardSummary,
-  type IMonthlyGoal,
   type IMonthlyOverview,
-  type IUpsertGoalPayload,
   type IYearlyOverview,
 } from "@/types/dashboard.types";
 
 /**
- * Only `/summary` and `/goals` are base features. The analytical views below
- * sit behind the REPORTS plan feature, so an agency without it gets a 403 with
- * the reason rather than an empty page.
+ * Only `/summary` is a base feature. The analytical views below sit behind the
+ * REPORTS plan feature, so an agency without it gets a 403 with the reason
+ * rather than an empty page.
  */
 
 export const getDashboardSummary = async () => {
@@ -54,15 +52,3 @@ export const getCashFlow = async () => {
   return await httpClient.get<ICashFlow>("/dashboard/cash-flow");
 };
 
-/* ---------------------------------- goals -------------------------------- */
-
-export const getGoals = async (year?: number) => {
-  return await httpClient.get<IMonthlyGoal[]>(
-    `/dashboard/goals${year ? `?year=${year}` : ""}`,
-  );
-};
-
-/** AGENCY_ADMIN only on the API — staff can read goals but not set them. */
-export const upsertGoal = async (payload: IUpsertGoalPayload) => {
-  return await httpClient.post<IMonthlyGoal>("/dashboard/goals", payload);
-};

@@ -225,12 +225,12 @@ const ReportsView = () => {
         <>
           <OverviewPanel overview={overview} />
 
-          {/* Month-by-month goal versus actual, yearly scope only. */}
+          {/* Month by month, yearly scope only. */}
           {scope === "yearly" && yearly.data && (
             <Card>
               <CardHeader>
                 <CardTitle>Month by month</CardTitle>
-                <CardDescription>Goal against actual across {year}.</CardDescription>
+                <CardDescription>Sales, profit and spending across {year}.</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="overflow-x-auto">
@@ -238,9 +238,7 @@ const ReportsView = () => {
                     <thead>
                       <tr className="border-b">
                         <th className="px-3 py-2 text-left font-medium">Month</th>
-                        <th className="px-3 py-2 text-right font-medium">Sales goal</th>
                         <th className="px-3 py-2 text-right font-medium">Sales</th>
-                        <th className="px-3 py-2 text-right font-medium">Profit goal</th>
                         <th className="px-3 py-2 text-right font-medium">Profit</th>
                         <th className="px-3 py-2 text-right font-medium">Expenses</th>
                         <th className="px-3 py-2 text-right font-medium">P / L</th>
@@ -250,14 +248,8 @@ const ReportsView = () => {
                       {yearly.data.data.months.map((row) => (
                         <tr key={row.month} className="border-b last:border-0">
                           <td className="px-3 py-2 whitespace-nowrap">{row.monthName}</td>
-                          <td className="px-3 py-2 text-right tabular-nums text-muted-foreground">
-                            {row.salesGoal > 0 ? formatCurrency(row.salesGoal) : "—"}
-                          </td>
                           <td className="px-3 py-2 text-right tabular-nums">
                             {formatCurrency(row.actualSales)}
-                          </td>
-                          <td className="px-3 py-2 text-right tabular-nums text-muted-foreground">
-                            {row.profitGoal > 0 ? formatCurrency(row.profitGoal) : "—"}
                           </td>
                           <td className="px-3 py-2 text-right tabular-nums">
                             {formatCurrency(row.actualProfit)}

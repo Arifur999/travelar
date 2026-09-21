@@ -31,7 +31,7 @@ const ReportsPage = async () => {
     <div className="space-y-6">
       <PageHeader
         title="Reports"
-        description="Sales, profit and spending against goal, at three scopes — plus what the money reconciles to right now."
+        description="Sales, profit and spending at three scopes — plus what the money reconciles to right now."
       />
 
       <HydrationBoundary state={dehydrate(queryClient)}>

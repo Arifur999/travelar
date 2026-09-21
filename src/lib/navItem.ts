@@ -19,7 +19,6 @@ import {
   Route,
   ScrollText,
   Settings,
-  Target,
   Truck,
   UserCog,
   Users,
@@ -63,7 +62,7 @@ export interface NavGroup {
  *   EXPENSE    → /accounts, /balance-transfers, /suppliers,
  *                /supplier-transactions, /expenses, /capital, /employees
  *   REPORTS    → /dashboard/custom, /monthly, /yearly, /cash-flow
- *   (none)     → /customers, /due-received, /dashboard/summary, /dashboard/goals,
+ *   (none)     → /customers, /due-received, /dashboard/summary,
  *                /team, /agency/profile
  *
  * Note: the backend PlanFeature enum also has CRM, but no router gates on it —
@@ -78,7 +77,6 @@ export const agencyNavGroups: NavGroup[] = [
     items: [
       { title: "Dashboard", href: "/dashboard", icon: LayoutDashboard, exact: true },
       { title: "Reports", href: "/dashboard/reports", icon: ChartColumn, feature: "REPORTS" },
-      { title: "Goals", href: "/dashboard/goals", icon: Target },
     ],
   },
   {

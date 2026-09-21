@@ -8,7 +8,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { getDashboardSummary } from "@/services/dashboard.services";
 import { type PlanFeature } from "@/types/enums.types";
 import CashByAccountChart from "./CashByAccountChart";
-import GoalRings from "./GoalRings";
 import HeadlineCards from "./HeadlineCards";
 import SalesMixChart from "./SalesMixChart";
 import SetupChecklist from "./SetupChecklist";
@@ -36,7 +35,7 @@ const HomeSkeleton = () => (
  * The figures on the landing page. A failure here is contained to this block:
  * the welcome and the module links around it still render and still work.
  */
-const DashboardHome = ({ canSetGoals, features }: { canSetGoals: boolean; features: PlanFeature[] }) => {
+const DashboardHome = ({ features }: { features: PlanFeature[] }) => {
   const { data, isPending, isError, refetch, isRefetching } = useQuery({
     // Must match the prefetch in dashboard/page.tsx. It is a literal on both
     // sides on purpose: a constant exported from this "use client" file would
@@ -71,16 +70,7 @@ const DashboardHome = ({ canSetGoals, features }: { canSetGoals: boolean; featur
 
       <HeadlineCards summary={summary} />
 
-      <div className="grid gap-4 lg:grid-cols-3">
-        <TrendChart trend={trend} />
-        <GoalRings
-          salesGoal={thisMonth.salesGoal}
-          profitGoal={thisMonth.profitGoal}
-          actualSales={thisMonth.actualSales}
-          actualProfit={thisMonth.actualProfit}
-          canSetGoals={canSetGoals}
-        />
-      </div>
+      <TrendChart trend={trend} />
 
       <div className="grid gap-4 lg:grid-cols-2">
         <SalesMixChart byModule={thisMonth.byModule} />
