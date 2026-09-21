@@ -14,7 +14,6 @@ import {
   SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
@@ -40,6 +39,7 @@ import {
   isNavItemVisibleToRole,
 } from "@/lib/navItem";
 import { type NavItem } from "@/lib/navItem";
+import { cn } from "@/lib/utils";
 import { PLAN_FEATURE_LABELS, type PlanFeature } from "@/types/enums.types";
 import { type IUser } from "@/types/user.types";
 
@@ -69,8 +69,10 @@ const DashboardSidebar = ({ userInfo, features }: DashboardSidebarProps) => {
   const pathname = usePathname();
   const { isMobile, setOpenMobile } = useSidebar();
 
-  const groups = getNavGroupsForRole(userInfo.role);
   const home = getDefaultDashboardRoute(userInfo.role);
+  const visibleItems = getNavGroupsForRole(userInfo.role)
+    .flatMap((group) => group.items)
+    .filter((item) => isNavItemVisibleToRole(item, userInfo.role));
 
   // On mobile the sidebar is a sheet; without this it stays open over the page
   // the user just navigated to.
@@ -142,6 +144,7 @@ const DashboardSidebar = ({ userInfo, features }: DashboardSidebarProps) => {
           className="text-muted-foreground/70"
           title={`${item.title} — coming soon`}
         >
+          <item.icon aria-hidden="true" />
           <span className="flex-1 truncate">{item.title}</span>
           <SoonBadge />
         </SidebarMenuSubButton>
@@ -158,6 +161,7 @@ const DashboardSidebar = ({ userInfo, features }: DashboardSidebarProps) => {
                 onClick={closeOnMobile}
                 aria-label={`${item.title} — locked, upgrade required`}
               >
+                <item.icon aria-hidden="true" />
                 <span className="flex-1 truncate">{item.title}</span>
                 <Lock className="size-3.5 shrink-0" aria-hidden="true" />
               </Link>
@@ -168,9 +172,12 @@ const DashboardSidebar = ({ userInfo, features }: DashboardSidebarProps) => {
       );
     }
 
+    const Icon = item.icon;
+
     return (
       <SidebarMenuSubButton asChild isActive={isNavItemActive(item, pathname)}>
         <Link href={item.href} onClick={closeOnMobile}>
+          <Icon aria-hidden="true" />
           <span className="truncate">{item.title}</span>
         </Link>
       </SidebarMenuSubButton>
@@ -200,17 +207,11 @@ const DashboardSidebar = ({ userInfo, features }: DashboardSidebarProps) => {
       </SidebarHeader>
 
       <SidebarContent>
-        {groups.map((group) => {
-          const visibleItems = group.items.filter((item) =>
-            isNavItemVisibleToRole(item, userInfo.role),
-          );
-
-          if (visibleItems.length === 0) return null;
-
-          return (
-            <SidebarGroup key={group.label}>
-              <SidebarGroupLabel>{group.label}</SidebarGroupLabel>
-              <SidebarGroupContent>
+        {/* One list, no group headings: the sections carry the structure now,
+            and a heading above every two or three of them was more furniture
+            than signpost. */}
+        <SidebarGroup>
+          <SidebarGroupContent>
                 <SidebarMenu>
                   {visibleItems.map((item) =>
                     item.children ? (
@@ -228,6 +229,13 @@ const DashboardSidebar = ({ userInfo, features }: DashboardSidebarProps) => {
                             <SidebarMenuButton
                               tooltip={item.title}
                               isActive={isNavItemActive(item, pathname)}
+                              // The section holding the current page reads as
+                              // one solid block, so where you are is obvious
+                              // even with several sections open.
+                              className={cn(
+                                isNavItemActive(item, pathname) &&
+                                  "bg-primary font-medium text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground data-[active=true]:bg-primary data-[active=true]:text-primary-foreground",
+                              )}
                             >
                               <item.icon aria-hidden="true" />
                               <span className="flex-1 truncate">{item.title}</span>
@@ -256,10 +264,8 @@ const DashboardSidebar = ({ userInfo, features }: DashboardSidebarProps) => {
                     ),
                   )}
                 </SidebarMenu>
-              </SidebarGroupContent>
-            </SidebarGroup>
-          );
-        })}
+          </SidebarGroupContent>
+        </SidebarGroup>
       </SidebarContent>
 
       <SidebarFooter>

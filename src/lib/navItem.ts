@@ -106,11 +106,13 @@ export const agencyNavGroups: NavGroup[] = [
         children: [
           { title: "Air Tickets", href: "/dashboard/tickets", icon: Plane, feature: "TICKETING" },
           { title: "Visa", href: "/dashboard/visa", icon: FileCheck, feature: "VISA" },
-          { title: "Hajj & Umrah", href: "/dashboard/hajj", icon: MoonStar, feature: "HAJJ_UMRAH" },
           { title: "Tours", href: "/dashboard/tours", icon: Map, soon: true },
           { title: "Hotel", href: "/dashboard/hotels", icon: BedDouble, soon: true },
         ],
       },
+      // Its own section rather than a travel service: it is sold, booked and
+      // reported on differently, and it will grow its own pages.
+      { title: "Hajj & Umrah", href: "/dashboard/hajj", icon: MoonStar, feature: "HAJJ_UMRAH" },
     ],
   },
   {
