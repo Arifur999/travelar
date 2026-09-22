@@ -28,7 +28,7 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => (
         has something to hold contrast against without flattening the photo. */}
     <div
       aria-hidden="true"
-      className="absolute inset-0 -z-10 bg-linear-to-r from-slate-950/80 via-slate-950/50 to-slate-950/10"
+      className="absolute inset-0 -z-10 bg-linear-to-r from-slate-950/85 via-slate-950/55 to-slate-950/10"
     />
 
     <div className="mx-auto flex min-h-screen w-full max-w-7xl flex-col gap-10 px-4 py-10 lg:flex-row lg:items-center lg:justify-between lg:px-10">
