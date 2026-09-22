@@ -16,7 +16,7 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => (
         describing a photograph that carries no information. `priority`
         because this is the page's largest paint and it is above the fold. */}
     <Image
-      src="/login.jpeg"
+      src="/login3.jpeg"
       alt=""
       fill
       priority
