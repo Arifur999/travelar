@@ -75,6 +75,15 @@ export async function proxy(request: NextRequest) {
       }
     }
 
+    // Rule 0.5 — the root is not a page. There is no marketing site to
+    // land on, so it means "take me in": the workspace if the session is
+    // good, the sign-in page if it is not.
+    if (pathname === "/") {
+      const target =
+        isValidAccessToken && userRole ? getDefaultDashboardRoute(userRole) : "/login";
+      return redirect(new URL(target, request.url));
+    }
+
     // Rule 1 — a signed-in user has no business on an auth page.
     if (isAuth && isValidAccessToken && userRole) {
       return redirect(new URL(getDefaultDashboardRoute(userRole), request.url));

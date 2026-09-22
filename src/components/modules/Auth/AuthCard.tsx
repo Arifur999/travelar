@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 interface AuthCardProps {
@@ -44,11 +43,6 @@ const AuthCard = ({ title, description, children }: AuthCardProps) => (
 
     <div className="mt-8 space-y-5">{children}</div>
 
-    <p className="mt-8 text-center text-xs text-muted-foreground">
-      <Link href="/" className="hover:text-foreground hover:underline">
-        Back to the website
-      </Link>
-    </p>
   </div>
 );
 
