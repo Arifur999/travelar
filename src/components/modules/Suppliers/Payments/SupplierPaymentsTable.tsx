@@ -5,7 +5,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { Banknote, Plus, Receipt } from "lucide-react";
 import { toast } from "sonner";
-import { deleteSupplierPaymentAction } from "@/app/(dashboardLayout)/dashboard/supplier-payments/_action";
+import { deleteSupplierPaymentAction } from "@/app/(dashboardLayout)/dashboard/suppliers/transactions/_action";
 import ConfirmDialog from "@/components/shared/ConfirmDialog";
 import StatsCard from "@/components/shared/StatsCard";
 import DataTable from "@/components/shared/table/DataTable";

@@ -63,7 +63,8 @@ export const buildSetupSteps = (setup: ISetupProgress, features: PlanFeature[]):
     key: "customer",
     title: "Add your first customer",
     description: "Every sale, invoice and due is tracked against a customer.",
-    href: "/dashboard/customers",
+    // The list, not the section's dashboard: this is where the Add button is.
+    href: "/dashboard/customers/list",
     action: "Add a customer",
     done: setup.hasCustomer,
   });

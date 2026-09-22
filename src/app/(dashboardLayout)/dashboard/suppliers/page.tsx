@@ -1,29 +1,20 @@
 import type { Metadata } from "next";
 import { HydrationBoundary, QueryClient, dehydrate } from "@tanstack/react-query";
-import SuppliersTable from "@/components/modules/Suppliers/SuppliersTable";
+import SupplierPayablesChart from "@/components/modules/Suppliers/SupplierPayablesChart";
+import SupplierSummaryCards from "@/components/modules/Suppliers/SupplierSummaryCards";
 import PageHeader from "@/components/shared/PageHeader";
-import { buildQueryString, type PageSearchParams } from "@/lib/queryString";
-import { getSupplierDashboard, getSuppliers } from "@/services/supplier.services";
+import { getSupplierDashboard } from "@/services/supplier.services";
 
 export const metadata: Metadata = { title: "Suppliers" };
 
-const SuppliersPage = async ({ searchParams }: { searchParams: PageSearchParams }) => {
-  const queryString = buildQueryString(await searchParams);
-
+/** The section's landing page: what is owed, and to whom. */
+const SuppliersDashboardPage = async () => {
   const queryClient = new QueryClient();
 
-  await Promise.all([
-    queryClient.prefetchQuery({
-      queryKey: ["suppliers", queryString],
-      queryFn: () => getSuppliers(queryString),
-    }),
-    // Whole-book totals for the headline cards, which must not be a sum of the
-    // current page.
-    queryClient.prefetchQuery({
-      queryKey: ["supplier-dashboard"],
-      queryFn: () => getSupplierDashboard(),
-    }),
-  ]);
+  await queryClient.prefetchQuery({
+    queryKey: ["supplier-dashboard"],
+    queryFn: () => getSupplierDashboard(),
+  });
 
   return (
     <div className="space-y-6">
@@ -33,10 +24,11 @@ const SuppliersPage = async ({ searchParams }: { searchParams: PageSearchParams 
       />
 
       <HydrationBoundary state={dehydrate(queryClient)}>
-        <SuppliersTable initialQueryString={queryString} />
+        <SupplierSummaryCards />
+        <SupplierPayablesChart />
       </HydrationBoundary>
     </div>
   );
 };
 
-export default SuppliersPage;
+export default SuppliersDashboardPage;

@@ -9,13 +9,24 @@ import {
 } from "./navItem";
 import { PLAN_FEATURES, type PlanFeature } from "@/types/enums.types";
 
-const find = (title: string): NavItem => {
-  const hit = agencyNavGroups
+const everyItem = () =>
+  agencyNavGroups
     .flatMap((group) => group.items)
-    .flatMap((item) => [item, ...(item.children ?? [])])
-    .find((item) => item.title === title);
+    .flatMap((item) => [item, ...(item.children ?? [])]);
+
+const find = (title: string): NavItem => {
+  const hit = everyItem().find((item) => item.title === title);
 
   if (!hit) throw new Error(`no nav item titled ${title}`);
+  return hit;
+};
+
+/** Titles repeat across sections — Ledger and Dashboard both do — so
+ * anything about one specific entry looks it up by href. */
+const findByHref = (href: string): NavItem => {
+  const hit = everyItem().find((item) => item.href === href);
+
+  if (!hit) throw new Error(`no nav item for ${href}`);
   return hit;
 };
 
@@ -53,10 +64,14 @@ describe("the menu as a whole", () => {
       "/dashboard/tours",
       "/dashboard/hotels",
       "/dashboard/hajj",
+      "/dashboard/hajj/packages",
       "/dashboard/customers",
+      "/dashboard/customers/list",
+      "/dashboard/customers/ledger",
       "/dashboard/collections",
       "/dashboard/suppliers",
-      "/dashboard/supplier-payments",
+      "/dashboard/suppliers/list",
+      "/dashboard/suppliers/transactions",
       "/dashboard/transfers",
       "/dashboard/accounts",
       "/dashboard/wallet",
@@ -93,8 +108,10 @@ describe("isNavSectionLocked", () => {
   });
 
   it("locks a section once every page inside it is out of the plan", () => {
-    expect(isNavSectionLocked(find("Suppliers"), without("EXPENSE"), "AGENCY_ADMIN")).toBe(true);
-    expect(isNavSectionLocked(find("Suppliers"), [...PLAN_FEATURES], "AGENCY_ADMIN")).toBe(false);
+    const suppliers = findByHref("/dashboard/suppliers");
+
+    expect(isNavSectionLocked(suppliers, without("EXPENSE"), "AGENCY_ADMIN")).toBe(true);
+    expect(isNavSectionLocked(suppliers, [...PLAN_FEATURES], "AGENCY_ADMIN")).toBe(false);
   });
 
   it("says nothing about a page, which has no inside to judge", () => {
@@ -138,7 +155,7 @@ describe("isNavItemActive", () => {
   });
 
   it("keeps an exact child off its siblings' pages", () => {
-    const ledger = find("Ledger");
+    const ledger = findByHref("/dashboard/accounts");
 
     expect(isNavItemActive(ledger, "/dashboard/accounts")).toBe(true);
     expect(isNavItemActive(ledger, "/dashboard/accounts/anything")).toBe(false);
@@ -156,7 +173,12 @@ describe("isNavItemActive", () => {
 describe("findNavItemByPath", () => {
   it("names the page, not its section — that is the breadcrumb", () => {
     expect(findNavItemByPath("/dashboard/transfers", "AGENCY_ADMIN")?.title).toBe("Fund Transfer");
-    expect(findNavItemByPath("/dashboard/hajj", "AGENCY_ADMIN")?.title).toBe("Hajj & Umrah");
+    // /dashboard/hajj is the Bookings page inside the Hajj & Umrah section,
+    // and the title bar names the page you are on.
+    expect(findNavItemByPath("/dashboard/hajj", "AGENCY_ADMIN")?.title).toBe("Bookings");
+    expect(findNavItemByPath("/dashboard/hajj/packages", "AGENCY_ADMIN")?.title).toBe(
+      "Packages",
+    );
   });
 
   it("prefers the longest match", () => {

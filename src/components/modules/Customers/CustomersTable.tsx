@@ -3,18 +3,17 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { HandCoins, Plus, Receipt, Users, Wallet } from "lucide-react";
+import { Plus } from "lucide-react";
 import { toast } from "sonner";
 import { deleteCustomerAction } from "@/app/(dashboardLayout)/dashboard/customers/_action";
 import ConfirmDialog from "@/components/shared/ConfirmDialog";
-import StatsCard from "@/components/shared/StatsCard";
 import DataTable from "@/components/shared/table/DataTable";
 import { Button } from "@/components/ui/button";
 import { useRowActionModalState } from "@/hooks/useRowActionModalState";
 import { useServerManagedDataTable } from "@/hooks/useServerManagedDataTable";
 import { useServerManagedDataTableSearch } from "@/hooks/useServerManagedDataTableSearch";
-import { formatCurrency, formatNumber } from "@/lib/format";
-import { getCustomerDashboard, getCustomers } from "@/services/customer.services";
+
+import { getCustomers } from "@/services/customer.services";
 import { type ICustomer } from "@/types/customer.types";
 import CustomerFormModal from "./CustomerFormModal";
 import CustomerLedgerSheet from "./CustomerLedgerSheet";
@@ -61,13 +60,6 @@ const CustomersTable = ({ initialQueryString }: { initialQueryString: string }) 
     queryFn: () => getCustomers(effectiveQueryString),
   });
 
-  // Whole-book totals, not a sum of the current page.
-  const { data: dashboardData } = useQuery({
-    queryKey: ["customer-dashboard"],
-    queryFn: () => getCustomerDashboard(),
-  });
-
-  const summary = dashboardData?.data.summary;
 
   const { mutateAsync: runDelete, isPending: isDeleting } = useMutation({
     mutationFn: (id: string) => deleteCustomerAction(id),
@@ -93,45 +85,6 @@ const CustomersTable = ({ initialQueryString }: { initialQueryString: string }) 
 
   return (
     <>
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        <StatsCard
-          title="Outstanding due"
-          value={formatCurrency(summary?.totalCurrentDue ?? 0)}
-          icon={Wallet}
-          accent={summary && summary.totalCurrentDue > 0 ? "destructive" : "success"}
-          hint="Opening + billed − collected − discount"
-        />
-        <StatsCard
-          title="Billed all time"
-          value={formatCurrency(summary?.totalPurchase ?? 0)}
-          icon={Receipt}
-          accent="primary"
-          hint="Tickets, visa and Hajj combined"
-        />
-        <StatsCard
-          title="Collected all time"
-          value={formatCurrency(summary?.totalCollections ?? 0)}
-          icon={HandCoins}
-          accent="success"
-          hint={
-            summary?.totalDiscount
-              ? `${formatCurrency(summary.totalDiscount)} discounted`
-              : undefined
-          }
-        />
-        <StatsCard
-          title="Customers"
-          value={formatNumber(summary?.totalCustomers ?? 0)}
-          icon={Users}
-          accent="ledger"
-          hint={
-            summary?.totalOpeningDue
-              ? `${formatCurrency(summary.totalOpeningDue)} carried in`
-              : undefined
-          }
-        />
-      </div>
-
       <DataTable<ICustomer>
         data={data?.data ?? []}
         columns={customersColumns}

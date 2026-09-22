@@ -3,18 +3,17 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { Banknote, Plus, ShoppingCart, Truck, Wallet } from "lucide-react";
+import { Plus } from "lucide-react";
 import { toast } from "sonner";
 import { deleteSupplierAction } from "@/app/(dashboardLayout)/dashboard/suppliers/_action";
 import ConfirmDialog from "@/components/shared/ConfirmDialog";
-import StatsCard from "@/components/shared/StatsCard";
 import DataTable from "@/components/shared/table/DataTable";
 import { Button } from "@/components/ui/button";
 import { useRowActionModalState } from "@/hooks/useRowActionModalState";
 import { useServerManagedDataTable } from "@/hooks/useServerManagedDataTable";
 import { useServerManagedDataTableSearch } from "@/hooks/useServerManagedDataTableSearch";
-import { formatCurrency, formatNumber } from "@/lib/format";
-import { getSupplierDashboard, getSuppliers } from "@/services/supplier.services";
+
+import { getSuppliers } from "@/services/supplier.services";
 import { type ISupplier } from "@/types/supplier.types";
 import SupplierFormModal from "./SupplierFormModal";
 import SupplierLedgerSheet from "./SupplierLedgerSheet";
@@ -61,17 +60,6 @@ const SuppliersTable = ({ initialQueryString }: { initialQueryString: string }) 
     queryFn: () => getSuppliers(effectiveQueryString),
   });
 
-  /**
-   * Whole-book totals come from /suppliers/dashboard, not from summing the
-   * page. The page holds ten rows; the headline has to cover every supplier,
-   * and the old implementation got this wrong by reducing the current page.
-   */
-  const { data: dashboardData } = useQuery({
-    queryKey: ["supplier-dashboard"],
-    queryFn: () => getSupplierDashboard(),
-  });
-
-  const summary = dashboardData?.data.summary;
 
   const { mutateAsync: runDelete, isPending: isDeleting } = useMutation({
     mutationFn: (id: string) => deleteSupplierAction(id),
@@ -97,40 +85,6 @@ const SuppliersTable = ({ initialQueryString }: { initialQueryString: string }) 
 
   return (
     <>
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        <StatsCard
-          title="Owed to suppliers"
-          value={formatCurrency(summary?.totalCurrentPayable ?? 0)}
-          icon={Wallet}
-          accent={summary && summary.totalCurrentPayable > 0 ? "destructive" : "success"}
-          hint="Opening + purchases − payments"
-        />
-        <StatsCard
-          title="Purchased all time"
-          value={formatCurrency(summary?.totalPurchase ?? 0)}
-          icon={ShoppingCart}
-          accent="primary"
-          hint="Ticket cost, date changes included"
-        />
-        <StatsCard
-          title="Paid all time"
-          value={formatCurrency(summary?.totalPaid ?? 0)}
-          icon={Banknote}
-          accent="success"
-        />
-        <StatsCard
-          title="Suppliers"
-          value={formatNumber(summary?.totalSuppliers ?? 0)}
-          icon={Truck}
-          accent="ledger"
-          hint={
-            summary?.totalOpeningPayable
-              ? `${formatCurrency(summary.totalOpeningPayable)} carried in`
-              : undefined
-          }
-        />
-      </div>
-
       <DataTable<ISupplier>
         data={data?.data ?? []}
         columns={suppliersColumns}

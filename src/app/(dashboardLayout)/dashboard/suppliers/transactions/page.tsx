@@ -7,7 +7,7 @@ import { getCashAccounts } from "@/services/account.services";
 import { getUserInfo } from "@/services/auth.services";
 import { getSupplierDashboard, getSupplierTransactions } from "@/services/supplier.services";
 
-export const metadata: Metadata = { title: "Supplier payments" };
+export const metadata: Metadata = { title: "Supplier transactions" };
 
 const SupplierPaymentsPage = async ({ searchParams }: { searchParams: PageSearchParams }) => {
   const queryString = buildQueryString(await searchParams);
@@ -35,8 +35,8 @@ const SupplierPaymentsPage = async ({ searchParams }: { searchParams: PageSearch
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Supplier payments"
-        description="Money paid out to suppliers. Each payment posts against a cash account and reduces what you owe."
+        title="Transactions"
+        description="Money paid out to suppliers. Each payment posts against a cash account and reduces what you owe them."
       />
 
       <HydrationBoundary state={dehydrate(queryClient)}>

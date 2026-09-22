@@ -101,12 +101,6 @@ export const agencyNavGroups: NavGroup[] = [
     label: "Sales",
     items: [
       {
-        // Everything the agency sells, in one place. Hajj & Umrah sat
-        // outside this for a while on the grounds that it is booked and
-        // reported differently — but so is every other line, and a menu
-        // called Travel Services that leaves out the biggest travel service
-        // sends people hunting. The section opens itself on the page being
-        // viewed, so the extra click is only ever the first one.
         title: "Travel Services",
         href: "/dashboard/travel-services",
         icon: Luggage,
@@ -115,18 +109,51 @@ export const agencyNavGroups: NavGroup[] = [
           { title: "Visa", href: "/dashboard/visa", icon: FileCheck, feature: "VISA" },
           { title: "Tours", href: "/dashboard/tours", icon: Map, feature: "TOURS" },
           { title: "Hotel", href: "/dashboard/hotels", icon: BedDouble, feature: "HOTEL" },
+        ],
+      },
+      {
+        // Its own section, not a travel service: an agency that runs Hajj
+        // runs it as a business of its own, with packages and departures to
+        // set up before a single pilgrim can be booked.
+        title: "Hajj & Umrah",
+        href: "/dashboard/hajj",
+        icon: MoonStar,
+        feature: "HAJJ_UMRAH",
+        children: [
           {
-            title: "Hajj & Umrah",
+            title: "Packages",
+            href: "/dashboard/hajj/packages",
+            icon: Layers,
+            feature: "HAJJ_UMRAH",
+          },
+          {
+            title: "Bookings",
             href: "/dashboard/hajj",
             icon: MoonStar,
             feature: "HAJJ_UMRAH",
+            exact: true,
           },
         ],
       },
-      // Kept at the top level, not folded into a section: between them these
-      // two are most of a counter clerk's day.
-      { title: "Customers", href: "/dashboard/customers", icon: Users },
-      { title: "Collections", href: "/dashboard/collections", icon: HandCoins },
+      {
+        // The customer side of the book: what they owe in total, the money
+        // coming in against it, who they are, and the statement behind any
+        // one balance.
+        title: "Customers",
+        href: "/dashboard/customers",
+        icon: Users,
+        children: [
+          {
+            title: "Dashboard",
+            href: "/dashboard/customers",
+            icon: LayoutDashboard,
+            exact: true,
+          },
+          { title: "Collections", href: "/dashboard/collections", icon: HandCoins },
+          { title: "Clients List", href: "/dashboard/customers/list", icon: Users },
+          { title: "Ledger", href: "/dashboard/customers/ledger", icon: ScrollText },
+        ],
+      },
     ],
   },
   {
@@ -194,23 +221,30 @@ export const agencyNavGroups: NavGroup[] = [
     label: "People and partners",
     items: [
       {
-        // The buying side: who the agency owes, and what it has paid them.
-        title: "Suppliers",
+        // The buying side, laid out like the customer side: the totals, the
+        // money going out against them, and who they are.
+        title: "Supplier",
         href: "/dashboard/suppliers",
         icon: Truck,
         feature: "EXPENSE",
         children: [
           {
-            title: "Suppliers",
+            title: "Dashboard",
             href: "/dashboard/suppliers",
-            icon: Truck,
+            icon: LayoutDashboard,
             feature: "EXPENSE",
             exact: true,
           },
           {
-            title: "Supplier payments",
-            href: "/dashboard/supplier-payments",
+            title: "Transactions",
+            href: "/dashboard/suppliers/transactions",
             icon: Banknote,
+            feature: "EXPENSE",
+          },
+          {
+            title: "Supplier List",
+            href: "/dashboard/suppliers/list",
+            icon: Truck,
             feature: "EXPENSE",
           },
         ],

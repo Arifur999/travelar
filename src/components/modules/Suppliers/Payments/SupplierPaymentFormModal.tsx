@@ -4,7 +4,7 @@ import { useForm } from "@tanstack/react-form";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { createSupplierPaymentAction } from "@/app/(dashboardLayout)/dashboard/supplier-payments/_action";
+import { createSupplierPaymentAction } from "@/app/(dashboardLayout)/dashboard/suppliers/transactions/_action";
 import AppField from "@/components/shared/form/AppField";
 import AppSubmitButton from "@/components/shared/form/AppSubmitButton";
 import SearchableSelect from "@/components/shared/form/SearchableSelect";

@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { HydrationBoundary, QueryClient, dehydrate } from "@tanstack/react-query";
 import HajjBookingsTable from "@/components/modules/Hajj/HajjBookingsTable";
-import HajjSetupPanel from "@/components/modules/Hajj/HajjSetupPanel";
 import PageHeader from "@/components/shared/PageHeader";
 import { buildQueryString, type PageSearchParams } from "@/lib/queryString";
 import { getUserInfo } from "@/services/auth.services";
@@ -43,8 +42,8 @@ const HajjPage = async ({ searchParams }: { searchParams: PageSearchParams }) =>
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Hajj & Umrah"
-        description="Pilgrims, their batches and rooms. A booking snapshots its price, and cancelling one frees both the seat and the beds."
+        title="Bookings"
+        description="One row per pilgrim. A booking snapshots its price, and cancelling one frees both the seat and the beds. Packages and departures are set up on the Packages page."
       />
 
       <HydrationBoundary state={dehydrate(queryClient)}>
@@ -52,7 +51,6 @@ const HajjPage = async ({ searchParams }: { searchParams: PageSearchParams }) =>
           initialQueryString={queryString}
           isAdmin={userInfo?.role === "AGENCY_ADMIN"}
         />
-        <HajjSetupPanel />
       </HydrationBoundary>
     </div>
   );
