@@ -1,59 +1,54 @@
 import Link from "next/link";
-import { Plane } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface AuthCardProps {
   title: string;
-  description: string;
+  description?: string;
   children: React.ReactNode;
 }
 
 /**
- * The glass panel every signed-out page sits in.
+ * The form half of the signed-out card: wordmark, a headline you can read
+ * across the room, then the form.
  *
- * Really glass: the photograph shows through it, blurred, instead of being
- * covered by a white card. That only works if everything inside is repainted
- * for a dark, translucent ground — a default shadcn input is a solid white
- * box and would punch a hole straight through the effect. The overrides below
- * do that, scoped to this panel so no other form in the app is touched.
+ * The fields are repainted as soft pills — no visible border, no drawn label —
+ * because that is the shape this page is cut to. Every override is scoped
+ * here, so no other form in the app changes.
  *
- * `.auth-glass` also carries the autofill rule in globals.css: Chrome paints
- * its own opaque slab over an autofilled field, which is exactly the white
- * box this is avoiding.
+ * Hiding the labels only works while every field carries a placeholder: the
+ * label still exists for a screen reader, which a placeholder alone would not
+ * provide. Anything added to these forms needs one.
  */
 const AuthCard = ({ title, description, children }: AuthCardProps) => (
   <div
     className={cn(
-      "auth-glass w-full max-w-2xl rounded-3xl border border-white/25 bg-white/10 p-8 text-white shadow-2xl backdrop-blur-2xl sm:p-10",
-      // Labels, fields and the muted lines under them, repainted for glass.
-      "[&_label]:text-white/90",
-      "[&_input]:border-white/30 [&_input]:bg-white/10 [&_input]:text-white",
-      "[&_input]:focus-visible:border-white/60 [&_input]:focus-visible:ring-white/30",
-      "[&_.text-muted-foreground]:text-white/70",
-      // Links read as part of the panel rather than as blue on a photo.
-      "[&_a]:text-white [&_a]:underline-offset-4 [&_a:hover]:underline",
-      // The password reveal is a ghost button; its light hover would flash a
-      // white square on the glass.
-      "[&_button[aria-label]]:hover:bg-white/15 [&_button[aria-label]]:hover:text-white",
-      // A field error still has to shout, and destructive red goes muddy on a
-      // dark ground.
-      "**:[[role=alert]]:text-red-200",
+      "w-full max-w-md",
+      "[&_label]:sr-only",
+      "[&_input]:h-12 [&_input]:rounded-full [&_input]:border-transparent [&_input]:bg-muted [&_input]:px-5 [&_input]:shadow-none",
+      "[&_input]:focus-visible:border-transparent [&_input]:focus-visible:ring-primary/30",
+      // The reveal toggle is absolutely placed over the right of the field;
+      // without this the password runs underneath it.
+      "[&_input:has(+span)]:pr-12",
+      "[&_button[type=submit]]:h-12 [&_button[type=submit]]:rounded-full [&_button[type=submit]]:text-base",
     )}
   >
-    <Link
-      href="/"
-      className="mb-8 flex items-center gap-2.5 text-xl font-semibold tracking-tight text-white no-underline"
-    >
-      <span className="flex size-10 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm">
-        <Plane className="size-5" aria-hidden="true" />
-      </span>
-      Travelar
-    </Link>
+    <p className="text-center text-lg font-semibold tracking-tight text-primary">Travelar</p>
 
-    <h1 className="text-3xl font-semibold tracking-tight">{title}</h1>
-    <p className="mt-2 text-sm text-white/70">{description}</p>
+    <h1 className="mt-4 text-center text-4xl leading-tight font-bold tracking-tight text-balance">
+      {title}
+    </h1>
 
-    <div className="mt-8 space-y-6">{children}</div>
+    {description && (
+      <p className="mt-3 text-center text-sm text-balance text-muted-foreground">{description}</p>
+    )}
+
+    <div className="mt-8 space-y-5">{children}</div>
+
+    <p className="mt-8 text-center text-xs text-muted-foreground">
+      <Link href="/" className="hover:text-foreground hover:underline">
+        Back to the website
+      </Link>
+    </p>
   </div>
 );
 

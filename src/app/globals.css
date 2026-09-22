@@ -218,28 +218,3 @@
     transform: rotate(360deg);
   }
 }
-
-/**
- * Chrome paints its own opaque slab over an autofilled field — a white box
- * punched straight through the sign-in glass. There is no property that turns
- * that off, so the background is held off with a transition that never
- * arrives, and the field is repainted by hand.
- */
-.auth-glass input:-webkit-autofill,
-.auth-glass input:-webkit-autofill:hover,
-.auth-glass input:-webkit-autofill:focus {
-  -webkit-text-fill-color: #ffffff;
-  caret-color: #ffffff;
-  box-shadow: inset 0 0 0 1000px rgba(255, 255, 255, 0.1);
-  transition: background-color 100000s ease-in-out 0s;
-}
-
-/**
- * The placeholder is the one field colour a utility on the panel cannot
- * win: both it and the input's own `placeholder:text-muted-foreground`
- * weigh the same, so the outcome would depend on stylesheet order. The
- * data-slot attribute settles it without reaching for !important.
- */
-.auth-glass input[data-slot="input"]::placeholder {
-  color: rgba(255, 255, 255, 0.5);
-}

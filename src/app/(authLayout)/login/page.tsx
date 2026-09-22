@@ -18,7 +18,7 @@ const LoginPage = async ({
   const justReset = params.reset === "success";
 
   return (
-    <AuthCard title="Sign in" description="Enter your credentials to reach your workspace.">
+    <AuthCard title="Welcome back" description="Sign in to reach your agency workspace.">
       {justReset && (
         <p role="status" className="rounded-md border border-success/30 bg-success/10 p-3 text-sm">
           Your password was reset and you were signed out everywhere. Sign in with the new one.

@@ -1,54 +1,80 @@
 import Image from "next/image";
+import { Building2, MapPin, Plane } from "lucide-react";
 
 /**
- * The signed-out shell: the photograph fills the window, the form sits on it
- * in glass, on the left.
+ * The signed-out shell: one card floating on the photograph, the form on its
+ * left and the same photograph, sharp, on its right.
+ *
+ * The background is that image blurred and pushed back, so the card reads as a
+ * window onto the picture rather than a box dropped on top of one.
  *
  * Deliberately separate from the marketing layout — an auth page should carry
  * no navigation, so there is nothing to click away to mid-sign-in.
- *
- * Left, not centred, on purpose: the photograph is a wing over cloud with its
- * subject on the right, and a centred card would sit on top of it.
  */
 const AuthLayout = ({ children }: { children: React.ReactNode }) => (
-  <div className="relative isolate min-h-screen">
-    {/* Decorative: the alt is empty so a screen reader skips it rather than
-        describing a photograph that carries no information. `priority`
-        because this is the page's largest paint and it is above the fold. */}
+  <div className="relative isolate flex min-h-screen items-center justify-center overflow-hidden p-4 sm:p-8">
+    {/* Decorative: empty alt so a screen reader skips a photograph that carries
+        no information. Scaled up because a blur this wide eats its own edges. */}
     <Image
       src="/login2.jpeg"
       alt=""
       fill
       priority
       sizes="100vw"
-      className="-z-20 object-cover"
+      className="-z-20 scale-110 object-cover blur-2xl"
     />
+    <div aria-hidden="true" className="absolute inset-0 -z-10 bg-slate-950/25" />
 
-    {/* The form side is darkened and the far side is left alone, so the glass
-        has something to hold contrast against without flattening the photo. */}
-    <div
-      aria-hidden="true"
-      className="absolute inset-0 -z-10 bg-linear-to-r from-slate-950/85 via-slate-950/55 to-slate-950/10"
-    />
+    <div className="w-full max-w-6xl overflow-hidden rounded-[2.5rem] bg-card shadow-2xl">
+      <div className="grid lg:grid-cols-2">
+        <main
+          id="main-content"
+          tabIndex={-1}
+          className="flex items-center justify-center px-6 py-10 sm:px-12 lg:px-14 lg:py-14"
+        >
+          {children}
+        </main>
 
-    <div className="mx-auto flex min-h-screen w-full max-w-7xl flex-col gap-10 px-4 py-10 lg:flex-row lg:items-center lg:justify-between lg:px-10">
-      <main id="main-content" tabIndex={-1} className="flex w-full justify-center lg:w-auto">
-        {children}
-      </main>
+        {/* The picture half carries nothing you need in order to sign in, so it
+            is what goes when the screen is too narrow for both. */}
+        <div className="relative hidden min-h-[36rem] overflow-hidden rounded-[2rem] lg:m-3 lg:block">
+          <Image
+            src="/login2.jpeg"
+            alt=""
+            fill
+            sizes="(min-width: 1024px) 50vw, 0px"
+            className="object-cover"
+          />
 
-      {/* Nothing here is needed to sign in, so it is the part that goes when
-          the screen is too narrow to carry both. */}
-      <aside className="hidden max-w-md text-right text-white lg:block">
-        <p className="text-4xl leading-tight font-semibold tracking-tight drop-shadow-lg">
-          Every seat, every visa,
-          <br />
-          every taka.
-        </p>
-        <p className="mt-4 text-sm text-white/80 drop-shadow">
-          Tickets, visas, Hajj &amp; Umrah, tours and hotels — booked, invoiced and reconciled in
-          one place.
-        </p>
-      </aside>
+          {/* Labels pinned on the photo the way a map pins a place. They say
+              what the product covers — no invented numbers, nothing that has to
+              be kept true later. */}
+          <div className="absolute top-8 left-8 flex items-center gap-3 rounded-2xl bg-slate-900/55 px-4 py-3 text-white backdrop-blur-md">
+            <span className="flex size-9 items-center justify-center rounded-xl bg-white/20">
+              <Plane className="size-4" aria-hidden="true" />
+            </span>
+            <span className="text-sm leading-tight">
+              Air tickets &amp; visas
+              <span className="block font-semibold">booked and invoiced</span>
+            </span>
+          </div>
+
+          <div className="absolute top-1/3 right-8 max-w-52 rounded-2xl bg-slate-900/55 px-4 py-3 text-white backdrop-blur-md">
+            <p className="flex items-center gap-2 text-sm font-semibold">
+              <MapPin className="size-4" aria-hidden="true" />
+              Hajj, Umrah &amp; tours
+            </p>
+            <p className="mt-1 text-xs text-white/80">
+              Seats, rooms and payments on one booking
+            </p>
+          </div>
+
+          <div className="absolute bottom-10 left-1/2 flex -translate-x-1/2 items-center gap-2 rounded-full bg-white/90 px-4 py-2 text-sm font-semibold whitespace-nowrap text-slate-900 backdrop-blur-md">
+            <Building2 className="size-4" aria-hidden="true" />
+            Every seat, every visa, every taka
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 );

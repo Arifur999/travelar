@@ -97,6 +97,7 @@ const ResetPasswordForm = ({ token }: { token: string }) => {
             field={field}
             label="Confirm new password"
             type={showPassword ? "text" : "password"}
+            placeholder="Repeat the new password"
             disabled={isPending}
           />
         )}
