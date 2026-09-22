@@ -36,6 +36,7 @@ import {
   getNavGroupsForRole,
   isNavItemActive,
   isNavItemLocked,
+  isNavSectionLocked,
   isNavItemVisibleToRole,
 } from "@/lib/navItem";
 import { type NavItem } from "@/lib/navItem";
@@ -81,7 +82,9 @@ const DashboardSidebar = ({ userInfo, features }: DashboardSidebarProps) => {
   };
 
   const lockedLabel = (item: NavItem) =>
-    `${PLAN_FEATURE_LABELS[item.feature as PlanFeature]} is not in your plan — upgrade to unlock`;
+    item.feature
+      ? `${PLAN_FEATURE_LABELS[item.feature]} is not in your plan — upgrade to unlock`
+      : "Nothing in this section is in your plan — upgrade to unlock";
 
   /** A top-level entry with no submenu. */
   const renderItem = (item: NavItem) => {
@@ -104,7 +107,11 @@ const DashboardSidebar = ({ userInfo, features }: DashboardSidebarProps) => {
     // A locked module stays visible but routes to billing instead of a page the
     // API would refuse with a 403. Hiding it would make the product look like
     // it lacks the module; showing it locked makes the upgrade findable.
-    if (isNavItemLocked(item, features)) {
+    //
+    // A section lands here too once everything inside it is locked, and it
+    // must: its own href is a section id, not a page, so drawing it as an
+    // ordinary link would send the click to a 404.
+    if (isNavItemLocked(item, features) || isNavSectionLocked(item, features, userInfo.role)) {
       return (
         <Tooltip>
           <TooltipTrigger asChild>
@@ -214,7 +221,10 @@ const DashboardSidebar = ({ userInfo, features }: DashboardSidebarProps) => {
           <SidebarGroupContent>
                 <SidebarMenu>
                   {visibleItems.map((item) =>
-                    item.children ? (
+                    // A section whose every page is locked is drawn as one
+                    // locked row: opening it to find nothing but locks is a
+                    // worse answer than saying so on the row itself.
+                    item.children && !isNavSectionLocked(item, features, userInfo.role) ? (
                       <Collapsible
                         key={item.href}
                         asChild

@@ -24,6 +24,7 @@ import {
   Route,
   ScrollText,
   Settings,
+  Settings2,
   Tags,
   Truck,
   UserCog,
@@ -100,6 +101,12 @@ export const agencyNavGroups: NavGroup[] = [
     label: "Sales",
     items: [
       {
+        // Everything the agency sells, in one place. Hajj & Umrah sat
+        // outside this for a while on the grounds that it is booked and
+        // reported differently — but so is every other line, and a menu
+        // called Travel Services that leaves out the biggest travel service
+        // sends people hunting. The section opens itself on the page being
+        // viewed, so the extra click is only ever the first one.
         title: "Travel Services",
         href: "/dashboard/travel-services",
         icon: Luggage,
@@ -108,63 +115,18 @@ export const agencyNavGroups: NavGroup[] = [
           { title: "Visa", href: "/dashboard/visa", icon: FileCheck, feature: "VISA" },
           { title: "Tours", href: "/dashboard/tours", icon: Map, feature: "TOURS" },
           { title: "Hotel", href: "/dashboard/hotels", icon: BedDouble, feature: "HOTEL" },
+          {
+            title: "Hajj & Umrah",
+            href: "/dashboard/hajj",
+            icon: MoonStar,
+            feature: "HAJJ_UMRAH",
+          },
         ],
       },
-      // Its own section rather than a travel service: it is sold, booked and
-      // reported on differently, and it will grow its own pages.
-      { title: "Hajj & Umrah", href: "/dashboard/hajj", icon: MoonStar, feature: "HAJJ_UMRAH" },
-    ],
-  },
-  {
-    label: "People",
-    items: [
+      // Kept at the top level, not folded into a section: between them these
+      // two are most of a counter clerk's day.
       { title: "Customers", href: "/dashboard/customers", icon: Users },
       { title: "Collections", href: "/dashboard/collections", icon: HandCoins },
-      { title: "Suppliers", href: "/dashboard/suppliers", icon: Truck, feature: "EXPENSE" },
-      {
-        title: "Supplier payments",
-        href: "/dashboard/supplier-payments",
-        icon: Banknote,
-        feature: "EXPENSE",
-      },
-      {
-        title: "Employees",
-        href: "/dashboard/employees",
-        icon: IdCard,
-        feature: "EXPENSE",
-        roles: ["AGENCY_ADMIN"],
-        children: [
-          {
-            title: "Dashboard",
-            href: "/dashboard/employees",
-            icon: LayoutDashboard,
-            feature: "EXPENSE",
-            roles: ["AGENCY_ADMIN"],
-            exact: true,
-          },
-          {
-            title: "Transactions",
-            href: "/dashboard/employees/transactions",
-            icon: Banknote,
-            feature: "EXPENSE",
-            roles: ["AGENCY_ADMIN"],
-          },
-          {
-            title: "Attendance",
-            href: "/dashboard/employees/attendance",
-            icon: CalendarCheck,
-            feature: "EXPENSE",
-            roles: ["AGENCY_ADMIN"],
-          },
-          {
-            title: "Employees List",
-            href: "/dashboard/employees/list",
-            icon: IdCard,
-            feature: "EXPENSE",
-            roles: ["AGENCY_ADMIN"],
-          },
-        ],
-      },
     ],
   },
   {
@@ -229,32 +191,114 @@ export const agencyNavGroups: NavGroup[] = [
     ],
   },
   {
-    label: "Setup",
+    label: "People and partners",
     items: [
-      { title: "Airlines", href: "/dashboard/airlines", icon: PlaneTakeoff, feature: "TICKETING" },
-      { title: "Routes", href: "/dashboard/routes", icon: Route, feature: "TICKETING" },
-      // Visible to staff too: they can see who their teammates are, and the
-      // page hides every change they are not allowed to make.
-      { title: "Team", href: "/dashboard/team", icon: UserCog },
       {
-        title: "Agency profile",
-        href: "/dashboard/settings",
-        icon: Settings,
+        // The buying side: who the agency owes, and what it has paid them.
+        title: "Suppliers",
+        href: "/dashboard/suppliers",
+        icon: Truck,
+        feature: "EXPENSE",
+        children: [
+          {
+            title: "Suppliers",
+            href: "/dashboard/suppliers",
+            icon: Truck,
+            feature: "EXPENSE",
+            exact: true,
+          },
+          {
+            title: "Supplier payments",
+            href: "/dashboard/supplier-payments",
+            icon: Banknote,
+            feature: "EXPENSE",
+          },
+        ],
+      },
+      {
+        title: "Employees",
+        href: "/dashboard/employees",
+        icon: IdCard,
+        feature: "EXPENSE",
         roles: ["AGENCY_ADMIN"],
+        children: [
+          {
+            title: "Dashboard",
+            href: "/dashboard/employees",
+            icon: LayoutDashboard,
+            feature: "EXPENSE",
+            roles: ["AGENCY_ADMIN"],
+            exact: true,
+          },
+          {
+            title: "Transactions",
+            href: "/dashboard/employees/transactions",
+            icon: Banknote,
+            feature: "EXPENSE",
+            roles: ["AGENCY_ADMIN"],
+          },
+          {
+            title: "Attendance",
+            href: "/dashboard/employees/attendance",
+            icon: CalendarCheck,
+            feature: "EXPENSE",
+            roles: ["AGENCY_ADMIN"],
+          },
+          {
+            title: "Employees List",
+            href: "/dashboard/employees/list",
+            icon: IdCard,
+            feature: "EXPENSE",
+            roles: ["AGENCY_ADMIN"],
+          },
+        ],
       },
     ],
   },
   {
-    label: "Account",
+    label: "Setup",
     items: [
       {
-        title: "Billing",
-        href: "/dashboard/billing",
-        icon: CreditCard,
-        roles: ["AGENCY_ADMIN"],
+        // Five pages that are set up once and then left alone. Loose at the
+        // top level they were a third of the menu, sitting between the
+        // person and the pages they open twenty times a day.
+        title: "Setup",
+        href: "/dashboard/setup",
+        icon: Settings2,
+        children: [
+          {
+            title: "Airlines",
+            href: "/dashboard/airlines",
+            icon: PlaneTakeoff,
+            feature: "TICKETING",
+          },
+          { title: "Routes", href: "/dashboard/routes", icon: Route, feature: "TICKETING" },
+          // Visible to staff too: they can see who their teammates are, and
+          // the page hides every change they are not allowed to make.
+          { title: "Team", href: "/dashboard/team", icon: UserCog },
+          {
+            title: "Agency profile",
+            href: "/dashboard/settings",
+            icon: Settings,
+            roles: ["AGENCY_ADMIN"],
+          },
+          {
+            title: "Billing",
+            href: "/dashboard/billing",
+            icon: CreditCard,
+            roles: ["AGENCY_ADMIN"],
+          },
+        ],
       },
-      { title: "Support", href: "/dashboard/support", icon: LifeBuoy },
-      { title: "Announcements", href: "/dashboard/announcements", icon: Megaphone },
+      {
+        title: "Help",
+        href: "/dashboard/help",
+        icon: LifeBuoy,
+        children: [
+          { title: "Support", href: "/dashboard/support", icon: LifeBuoy },
+          { title: "Announcements", href: "/dashboard/announcements", icon: Megaphone },
+        ],
+      },
     ],
   },
 ];
@@ -315,6 +359,26 @@ export const flattenNavItems = (groups: NavGroup[], role: UserRole): NavItem[] =
  */
 export const isNavItemLocked = (item: NavItem, features: PlanFeature[]) =>
   Boolean(item.feature) && !features.includes(item.feature as PlanFeature);
+
+/**
+ * A section is locked only when every page inside it is, because a section
+ * that still leads somewhere must stay open.
+ *
+ * Accounts is the case that matters: it carries the expenses feature, but
+ * Wallet inside it is a base feature on every plan. Locking the section on
+ * its own flag would put Wallet behind an upgrade nobody has to buy.
+ */
+export const isNavSectionLocked = (
+  item: NavItem,
+  features: PlanFeature[],
+  role: UserRole,
+): boolean => {
+  const reachable = (item.children ?? []).filter((child) =>
+    isNavItemVisibleToRole(child, role),
+  );
+
+  return reachable.length > 0 && reachable.every((child) => isNavItemLocked(child, features));
+};
 
 /**
  * Longest-prefix match, so `/dashboard/tickets/abc` highlights Tickets rather
