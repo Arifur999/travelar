@@ -1,12 +1,14 @@
 import { describe, expect, it } from "vitest";
 import {
-  buildAccountBars,
-  buildNetPositionBars,
-  buildSalesMix,
-  buildTrendPoints,
-  isNetPositionEmpty,
-  isTrendEmpty,
-  monthOverMonth,
+  buildModuleRows,
+  totalSalesCount,
+  buildAccountBars,
+  buildNetPositionBars,
+  buildSalesMix,
+  buildTrendPoints,
+  isNetPositionEmpty,
+  isTrendEmpty,
+  monthOverMonth,
 } from "./dashboardCharts";
 import {
   type ICashFlow,
@@ -224,5 +226,39 @@ describe("buildNetPositionBars", () => {
   it("is empty only when every figure is zero", () => {
     expect(isNetPositionEmpty(buildNetPositionBars(cashFlow()))).toBe(true);
     expect(isNetPositionEmpty(buildNetPositionBars(cashFlow({ customerDue: 1 })))).toBe(false);
+  });
+});
+
+describe("the module list", () => {
+  const byModule = {
+    ticketing: { count: 2, sales: 6_000, profit: 1_000 },
+    visa: { count: 1, sales: 2_000, profit: 800 },
+    hajj: { count: 3, sales: 9_000, profit: null as null },
+    tours: { count: 4, sales: 4_000, profit: 900 },
+    hotels: { count: 5, sales: 5_000, profit: 700 },
+  };
+
+  it("gives a row to every module, including the quiet ones", () => {
+    const rows = buildModuleRows({ ...byModule, hotels: { count: 0, sales: 0, profit: 0 } });
+
+    // A module that sold nothing still gets a row: its absence from a
+    // report reads as "we do not do that", not "nothing sold".
+    expect(rows.map((row) => row.label)).toEqual([
+      "Tickets",
+      "Visa",
+      "Hajj & Umrah",
+      "Tours",
+      "Hotel",
+    ]);
+  });
+
+  it("carries a missing margin through as null, never as zero", () => {
+    const hajj = buildModuleRows(byModule).find((row) => row.module === "hajj");
+
+    expect(hajj?.profit).toBeNull();
+  });
+
+  it("counts sales across every module, not the first three", () => {
+    expect(totalSalesCount(byModule)).toBe(15);
   });
 });

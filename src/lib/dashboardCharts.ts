@@ -77,7 +77,16 @@ export interface SalesSlice {
   share: number;
 }
 
-const MODULE_LABELS: Record<SalesModule, string> = {
+/**
+ * Every sales module, in the order the reports read them.
+ *
+ * One list, exported, because three places used to name the modules
+ * themselves — and when Tours and Hotel arrived, two of them carried on
+ * reporting three modules while the totals beside them counted five.
+ */
+export const SALES_MODULES: SalesModule[] = ["ticketing", "visa", "hajj", "tours", "hotels"];
+
+export const SALES_MODULE_LABELS: Record<SalesModule, string> = {
   ticketing: "Tickets",
   visa: "Visa",
   hajj: "Hajj & Umrah",
@@ -85,14 +94,36 @@ const MODULE_LABELS: Record<SalesModule, string> = {
   hotels: "Hotel",
 };
 
+export interface ModuleRow {
+  module: SalesModule;
+  label: string;
+  count: number;
+  sales: number;
+  /** Null where the module records no cost, so no margin can be derived. */
+  profit: number | null;
+}
+
+/** Every module as a row, including the ones that sold nothing this period. */
+export const buildModuleRows = (byModule: IModuleBreakdown): ModuleRow[] =>
+  SALES_MODULES.map((module) => ({
+    module,
+    label: SALES_MODULE_LABELS[module],
+    count: byModule[module].count,
+    sales: byModule[module].sales,
+    profit: byModule[module].profit,
+  }));
+
+/** How many sales the period holds, across every module. */
+export const totalSalesCount = (byModule: IModuleBreakdown): number =>
+  SALES_MODULES.reduce((sum, module) => sum + byModule[module].count, 0);
+
 /**
  * One slice per module that actually sold something. A zero slice is dropped
  * rather than drawn as a hairline, and refunds can in principle push a module
  * below zero — a pie cannot show that, so it is left out of the pie too.
  */
 export const buildSalesMix = (byModule: IModuleBreakdown): SalesSlice[] => {
-  const modules: SalesModule[] = ["ticketing", "visa", "hajj", "tours", "hotels"];
-  const positive = modules
+  const positive = SALES_MODULES
     .map((module) => ({ module, value: byModule[module].sales, count: byModule[module].count }))
     .filter((row) => row.value > 0);
 
@@ -100,7 +131,7 @@ export const buildSalesMix = (byModule: IModuleBreakdown): SalesSlice[] => {
 
   return positive.map((row) => ({
     ...row,
-    label: MODULE_LABELS[row.module],
+    label: SALES_MODULE_LABELS[row.module],
     share: total > 0 ? (row.value / total) * 100 : 0,
   }));
 };

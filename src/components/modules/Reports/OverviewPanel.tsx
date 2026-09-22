@@ -2,6 +2,7 @@
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { buildModuleRows } from "@/lib/dashboardCharts";
 import {
   calculateMarginPercent,
   formatCurrency,
@@ -96,48 +97,34 @@ const OverviewPanel = ({ overview }: { overview: IDashboardOverview }) => {
                 </tr>
               </thead>
               <tbody>
-                <tr className="border-b">
-                  <td className="px-3 py-2 font-medium">Ticketing</td>
-                  <td className="px-3 py-2 text-right tabular-nums">
-                    {formatNumber(byModule.ticketing.count)}
-                  </td>
-                  <td className="px-3 py-2 text-right tabular-nums">
-                    {formatCurrency(byModule.ticketing.sales)}
-                  </td>
-                  <td className="px-3 py-2 text-right tabular-nums">
-                    {formatCurrency(byModule.ticketing.profit)}
-                  </td>
-                </tr>
-                <tr className="border-b">
-                  <td className="px-3 py-2 font-medium">Visa</td>
-                  <td className="px-3 py-2 text-right tabular-nums">
-                    {formatNumber(byModule.visa.count)}
-                  </td>
-                  <td className="px-3 py-2 text-right tabular-nums">
-                    {formatCurrency(byModule.visa.sales)}
-                  </td>
-                  <td className="px-3 py-2 text-right tabular-nums">
-                    {formatCurrency(byModule.visa.profit)}
-                  </td>
-                </tr>
-                <tr>
-                  <td className="px-3 py-2 font-medium">Hajj &amp; Umrah</td>
-                  <td className="px-3 py-2 text-right tabular-nums">
-                    {formatNumber(byModule.hajj.count)}
-                  </td>
-                  <td className="px-3 py-2 text-right tabular-nums">
-                    {formatCurrency(byModule.hajj.sales)}
-                  </td>
-                  <td className="px-3 py-2 text-right">
-                    {/* null, not zero: a booking records no cost, so there is
-                        no margin to report. Showing 0 would read as "made
-                        nothing"; showing the sales as profit would overstate
-                        it by the cost of every pilgrim. */}
-                    <Badge variant="outline" className="text-xs font-normal">
-                      not tracked
-                    </Badge>
-                  </td>
-                </tr>
+                {/* Every module, from one list: the rows were written out
+                    by hand, and two were missed the day Tours and Hotel
+                    shipped — so the table stopped adding up to the total
+                    printed right above it. */}
+                {buildModuleRows(byModule).map((row) => (
+                  <tr key={row.module} className="border-b last:border-0">
+                    <td className="px-3 py-2 font-medium">{row.label}</td>
+                    <td className="px-3 py-2 text-right tabular-nums">
+                      {formatNumber(row.count)}
+                    </td>
+                    <td className="px-3 py-2 text-right tabular-nums">
+                      {formatCurrency(row.sales)}
+                    </td>
+                    <td className="px-3 py-2 text-right">
+                      {row.profit === null ? (
+                        // null, not zero: the module records no cost, so
+                        // there is no margin to report. Zero would read as
+                        // "made nothing", and showing the sales as profit
+                        // would overstate it by the whole cost of the sale.
+                        <Badge variant="outline" className="text-xs font-normal">
+                          not tracked
+                        </Badge>
+                      ) : (
+                        <span className="tabular-nums">{formatCurrency(row.profit)}</span>
+                      )}
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>

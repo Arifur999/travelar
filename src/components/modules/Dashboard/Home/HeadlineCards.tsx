@@ -1,6 +1,6 @@
 import { HandCoins, PiggyBank, TrendingUp, Wallet } from "lucide-react";
 import StatsCard from "@/components/shared/StatsCard";
-import { monthOverMonth } from "@/lib/dashboardCharts";
+import { monthOverMonth, totalSalesCount } from "@/lib/dashboardCharts";
 import {
   calculateMarginPercent,
   formatCurrency,
@@ -21,7 +21,7 @@ const HeadlineCards = ({ summary }: { summary: IDashboardSummary }) => {
   const { thisMonth, cashFlow, trend } = summary;
   const { byModule } = thisMonth;
 
-  const salesCount = byModule.ticketing.count + byModule.visa.count + byModule.hajj.count;
+  const salesCount = totalSalesCount(byModule);
   const margin = calculateMarginPercent(thisMonth.actualProfit, thisMonth.actualSales);
   const accountCount = cashFlow.accounts.length;
 

@@ -77,6 +77,8 @@ export interface NavGroup {
  *   TICKETING  → /ticketing, /airlines, /routes-master
  *   VISA       → /visa
  *   HAJJ_UMRAH → /hajj
+ *   TOURS      → /tours
+ *   HOTEL      → /hotels
  *   EXPENSE    → /accounts, /balance-transfers, /suppliers,
  *                /supplier-transactions, /expenses, /capital, /employees
  *   REPORTS    → /dashboard/custom, /monthly, /yearly, /cash-flow
