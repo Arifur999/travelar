@@ -1,13 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import AuthCard from "@/components/modules/Auth/AuthCard";
 import LoginForm from "@/components/modules/Auth/LoginForm";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 
 export const metadata: Metadata = {
   title: "Sign in",
@@ -24,29 +18,22 @@ const LoginPage = async ({
   const justReset = params.reset === "success";
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="text-xl">Sign in</CardTitle>
-        <CardDescription>Enter your credentials to reach your workspace.</CardDescription>
-      </CardHeader>
-
-      <CardContent className="space-y-6">
-        {justReset && (
-          <p role="status" className="rounded-md border border-success/30 bg-success/10 p-3 text-sm">
-            Your password was reset and you were signed out everywhere. Sign in with the new one.
-          </p>
-        )}
-
-        <LoginForm redirectTo={redirectParam} />
-
-        <p className="text-center text-sm text-muted-foreground">
-          New agency?{" "}
-          <Link href="/register" className="font-medium text-primary hover:underline">
-            Start a free trial
-          </Link>
+    <AuthCard title="Sign in" description="Enter your credentials to reach your workspace.">
+      {justReset && (
+        <p role="status" className="rounded-md border border-success/30 bg-success/10 p-3 text-sm">
+          Your password was reset and you were signed out everywhere. Sign in with the new one.
         </p>
-      </CardContent>
-    </Card>
+      )}
+
+      <LoginForm redirectTo={redirectParam} />
+
+      <p className="text-center text-sm text-muted-foreground">
+        New agency?{" "}
+        <Link href="/register" className="font-medium text-primary hover:underline">
+          Start a free trial
+        </Link>
+      </p>
+    </AuthCard>
   );
 };
 
