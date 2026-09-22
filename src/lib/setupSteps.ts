@@ -41,6 +41,18 @@ const SALE_MODULES: { feature: PlanFeature; href: string; action: string; descri
     action: "Take a booking",
     description: "Take a Hajj or Umrah booking against a package and a batch.",
   },
+  {
+    feature: "TOURS",
+    href: "/dashboard/tours",
+    action: "Sell a seat",
+    description: "Put a tour on sale and book a customer onto it; the seats count themselves.",
+  },
+  {
+    feature: "HOTEL",
+    href: "/dashboard/hotels",
+    action: "Book a stay",
+    description: "Book a hotel stay for a customer; the nights come from the dates.",
+  },
 ];
 
 export const buildSetupSteps = (setup: ISetupProgress, features: PlanFeature[]): SetupStep[] => {

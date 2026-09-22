@@ -27,6 +27,13 @@ describe("buildSetupSteps", () => {
     });
   });
 
+  it("offers a sale on whichever module the plan has, not only the old three", () => {
+    // An agency sold a tours-only plan still has a first sale to make, and
+    // sending them to a module they cannot open would be worse than silence.
+    expect(buildSetupSteps(nothingDone, ["TOURS"]).at(-1)?.href).toBe("/dashboard/tours");
+    expect(buildSetupSteps(nothingDone, ["HOTEL"]).at(-1)?.href).toBe("/dashboard/hotels");
+  });
+
   it("never shows a step the plan does not allow", () => {
     // No EXPENSE: cash accounts are not reachable, so they are not asked for.
     const noMoney = buildSetupSteps(nothingDone, ["TICKETING"]);
