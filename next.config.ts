@@ -12,6 +12,18 @@ const nextConfig: NextConfig = {
   // No "X-Powered-By: Next.js" — it only helps someone pick an exploit.
   poweredByHeader: false,
 
+  experimental: {
+    serverActions: {
+      // An agency's whole book of business arrives through a Server Action on
+      // the Previous data screen, and the default cap is 1MB — a real client's
+      // workbook is several times that, so every upload failed before it ever
+      // reached the API. This is above the API's own 15MB limit on the file,
+      // with room for what multipart adds around it, so the size is refused in
+      // one place with one message rather than three.
+      bodySizeLimit: "20mb",
+    },
+  },
+
   // The headers that never change, on every response including static assets.
   // The Content-Security-Policy is per-request (it carries a nonce), so
   // proxy.ts sets that one.

@@ -20,6 +20,30 @@ import { type IImportPreview, type IImportRun, type ITabPreview } from "@/types/
 import ImportHistory from "./ImportHistory";
 import ImportRunProgress from "./ImportRunProgress";
 
+/**
+ * What the API itself will take, so an oversized file is refused here with a
+ * sentence rather than by a proxy with a status code.
+ */
+const MAX_FILE_BYTES = 15 * 1024 * 1024;
+
+/**
+ * Says what went wrong when the upload never reached the API at all.
+ *
+ * A server action that fails outside our own code — the request too large for
+ * the limit in next.config.ts, or the connection dropped — rejects rather than
+ * returning, and the first version of this screen let that rejection go
+ * nowhere: the button stopped spinning and nothing else happened, which is the
+ * worst thing a page can do with somebody's whole business.
+ */
+const uploadFailureMessage = (error: unknown, file: File | undefined) => {
+  if (file && file.size > MAX_FILE_BYTES) {
+    return "That file is too big to upload. Split the sheet, or ask us to raise the limit.";
+  }
+  return error instanceof Error && error.message
+    ? `The upload did not get through: ${error.message}`
+    : "The upload did not get through. Check your connection and try again.";
+};
+
 /** The headline counts, in the order someone setting up would want them. */
 const CREATED_LABELS: { key: keyof IImportPreview["wouldCreate"]; label: string }[] = [
   { key: "accounts", label: "Cash & bank accounts" },
@@ -153,8 +177,21 @@ const PreviousDataView = () => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
+    const file = inputRef.current?.files?.[0];
+    if (file && file.size > MAX_FILE_BYTES) {
+      toast.error(uploadFailureMessage(null, file));
+      return;
+    }
+
     const form = new FormData(event.currentTarget);
-    const result = await mutateAsync(form);
+
+    let result;
+    try {
+      result = await mutateAsync(form);
+    } catch (error: unknown) {
+      toast.error(uploadFailureMessage(error, file));
+      return;
+    }
 
     if (!result.success) {
       toast.error(result.message || "Could not read that file");
@@ -179,12 +216,23 @@ const PreviousDataView = () => {
       toast.error("Choose the .xlsx file you exported from your sheet");
       return;
     }
+    if (file.size > MAX_FILE_BYTES) {
+      toast.error(uploadFailureMessage(null, file));
+      return;
+    }
 
     const body = new FormData();
     body.append("file", file);
     if (force) body.append("force", "true");
 
-    const result = await startImport(body);
+    let result;
+    try {
+      result = await startImport(body);
+    } catch (error: unknown) {
+      toast.error(uploadFailureMessage(error, file));
+      return;
+    }
+
     if (!result.success) {
       toast.error(result.message || "Could not start the import");
       return;
