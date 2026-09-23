@@ -82,3 +82,27 @@ describe("when the API cannot be reached at all", () => {
     expect(getActionErrorMessage(error, "fallback")).toBe("An import is already running");
   });
 });
+
+describe("when the server says it has not the room", () => {
+  it("shows what the API said, unlike every other 5xx", () => {
+    // 507 is the one 5xx this API writes on purpose: an import bigger than the
+    // memory the server gives it. The message names both figures, and it is
+    // the only way the person finds out the fix is on their own server.
+    const error = apiError(507, {
+      message:
+        "This server gives the API 512 MB of memory, and reading a 3 MB spreadsheet needs about 734 MB.",
+      requestId: "req-507",
+    });
+
+    const message = getActionErrorMessage(error, "fallback");
+
+    expect(message).toContain("512 MB");
+    expect(message).not.toContain("Something went wrong");
+  });
+
+  it("still hides a genuine crash", () => {
+    const error = apiError(500, { message: "Internal Server Error", requestId: "req-500" });
+
+    expect(getActionErrorMessage(error, "fallback")).toContain("Something went wrong");
+  });
+});

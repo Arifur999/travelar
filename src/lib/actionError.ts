@@ -22,6 +22,18 @@ const SAFE_REQUEST_ID = /^[A-Za-z0-9._:-]{8,64}$/;
 const SERVER_ERROR_MESSAGE = "Something went wrong on our side. Please try again.";
 
 /**
+ * The 5xx codes whose message the API wrote on purpose.
+ *
+ * Hiding 5xx text is right almost everywhere — it is a crash dump, and
+ * "Internal Server Error" helps nobody. 507 is the exception: the API sends
+ * it when an import is bigger than the memory the server gives it, and the
+ * message is the only thing that says so. Swallowing that one leaves the
+ * person staring at "something went wrong" with no idea that the fix is a
+ * setting on their own server.
+ */
+const DELIBERATE_SERVER_ERRORS = new Set([507]);
+
+/**
  * The request never landed, so there is no API message — only axios's, and
  * axios names the address it failed to reach. "connect ECONNREFUSED
  * 172.18.0.6:5050" reached a user's screen: it tells them nothing they can
@@ -34,7 +46,11 @@ const UNREACHABLE_MESSAGE =
 export const getActionErrorMessage = (error: unknown, fallbackMessage: string) => {
   const failure = describeApiFailure(error);
 
-  if (failure.status !== undefined && failure.status >= 500) {
+  if (
+    failure.status !== undefined &&
+    failure.status >= 500 &&
+    !DELIBERATE_SERVER_ERRORS.has(failure.status)
+  ) {
     return failure.requestId && SAFE_REQUEST_ID.test(failure.requestId)
       ? `${SERVER_ERROR_MESSAGE} Reference: ${failure.requestId}`
       : SERVER_ERROR_MESSAGE;
