@@ -66,9 +66,6 @@ export const resetTeamMemberPasswordServerZodSchema =
 
 export const agencyProfileFormZodSchema = z.object({
   name: z.string("Agency name is required").trim().min(2, "At least 2 characters").max(120),
-  email: z.string().trim().refine((value) => value === "" || z.email().safeParse(value).success, {
-    message: "A valid email is required",
-  }),
   phone: z.string().max(30, "Phone is too long"),
   address: z.string().max(500, "Address is too long"),
   logo: z.string().trim().refine((value) => value === "" || z.url().safeParse(value).success, {
@@ -80,7 +77,6 @@ export type IAgencyProfileFormValues = z.infer<typeof agencyProfileFormZodSchema
 
 export const updateAgencyProfileServerZodSchema = z.object({
   name: z.string().trim().min(2, "Agency name must be at least 2 characters").max(120),
-  email: z.preprocess(emptyStringToNull, z.email("A valid email is required").nullable()),
   phone: z.preprocess(emptyStringToNull, z.string().trim().max(30).nullable()),
   address: z.preprocess(emptyStringToNull, z.string().trim().max(500).nullable()),
   logo: z.preprocess(emptyStringToNull, z.url("Logo must be a valid URL").nullable()),

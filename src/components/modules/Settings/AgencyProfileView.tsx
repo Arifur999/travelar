@@ -13,6 +13,7 @@ import AppSubmitButton from "@/components/shared/form/AppSubmitButton";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { daysUntil, formatDate, formatNumber } from "@/lib/format";
@@ -37,7 +38,6 @@ const Row = ({ label, value }: { label: string; value: React.ReactNode }) => (
 
 const toFormValues = (profile: IAgencyProfile): IAgencyProfileFormValues => ({
   name: profile.name,
-  email: profile.email ?? "",
   phone: profile.phone ?? "",
   address: profile.address ?? "",
   logo: profile.logo ?? "",
@@ -101,17 +101,23 @@ const ProfileForm = ({ profile, canEdit }: { profile: IAgencyProfile; canEdit: b
           </form.Field>
 
           <div className="grid gap-4 sm:grid-cols-2">
-            <form.Field name="email" validators={{ onChange: agencyProfileFormZodSchema.shape.email }}>
-              {(field) => (
-                <AppField
-                  field={field}
-                  label="Contact email"
-                  type="email"
-                  disabled={disabled}
-                  hint="Shown to customers. Not a login."
-                />
-              )}
-            </form.Field>
+            {/* Fixed at registration: invoices and every subscription notice
+                are addressed to it, so it is shown but never edited. The API
+                does not accept it either. */}
+            <div className="space-y-1.5">
+              <Label htmlFor="agency-contact-email">Contact email</Label>
+              <Input
+                id="agency-contact-email"
+                type="email"
+                value={profile.email ?? ""}
+                readOnly
+                disabled
+                aria-describedby="agency-contact-email-hint"
+              />
+              <p id="agency-contact-email-hint" className="text-xs text-muted-foreground">
+                The address this agency registered with. Shown to customers, and cannot be changed.
+              </p>
+            </div>
             <form.Field name="phone" validators={{ onChange: agencyProfileFormZodSchema.shape.phone }}>
               {(field) => <AppField field={field} label="Phone" type="tel" disabled={disabled} />}
             </form.Field>

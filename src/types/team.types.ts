@@ -67,10 +67,10 @@ export interface IAgencyProfile {
   };
 }
 
+/** The contact email is absent: the API fixes it at registration. */
 export interface IUpdateAgencyProfilePayload {
   name?: string;
   /** null clears the field on the API; undefined leaves it untouched. */
-  email?: string | null;
   phone?: string | null;
   address?: string | null;
   logo?: string | null;

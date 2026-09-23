@@ -35,10 +35,21 @@ describe("updateTeamMemberServerZodSchema", () => {
 });
 
 describe("agency profile schemas", () => {
-  const form = { name: "Sonar Bangla Travels", email: "", phone: "", address: "", logo: "" };
+  // No email: the contact address is fixed at registration, and neither
+  // schema carries it any more — the API would strip it.
+  const form = { name: "Sonar Bangla Travels", phone: "", address: "", logo: "" };
 
   it("the form accepts blank optional fields", () => {
     expect(agencyProfileFormZodSchema.safeParse(form).success).toBe(true);
+  });
+
+  it("has no email field to send", () => {
+    // Regression: the agency contact email is set when the agency registers and
+    // is never editable, so neither schema may carry it.
+    expect("email" in agencyProfileFormZodSchema.shape).toBe(false);
+    const parsed = updateAgencyProfileServerZodSchema.safeParse({ ...form, email: "new@example.test" });
+    expect(parsed.success).toBe(true);
+    if (parsed.success) expect(parsed.data).not.toHaveProperty("email");
   });
 
   // The API treats null as "clear this field" and undefined as "leave it".
@@ -46,12 +57,11 @@ describe("agency profile schemas", () => {
     const result = updateAgencyProfileServerZodSchema.safeParse({ ...form, phone: "  " });
     expect(result.success).toBe(true);
     if (result.success) {
-      expect(result.data).toMatchObject({ email: null, phone: null, address: null, logo: null });
+      expect(result.data).toMatchObject({ phone: null, address: null, logo: null });
     }
   });
 
-  it("rejects a malformed email or logo URL", () => {
-    expect(updateAgencyProfileServerZodSchema.safeParse({ ...form, email: "not-an-email" }).success).toBe(false);
+  it("rejects a malformed logo URL", () => {
     expect(updateAgencyProfileServerZodSchema.safeParse({ ...form, logo: "logo.png" }).success).toBe(false);
     expect(agencyProfileFormZodSchema.safeParse({ ...form, logo: "ftp//nope" }).success).toBe(false);
   });
