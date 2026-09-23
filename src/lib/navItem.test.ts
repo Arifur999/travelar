@@ -88,6 +88,7 @@ describe("the menu as a whole", () => {
       "/dashboard/team",
       "/dashboard/settings",
       "/dashboard/billing",
+      "/dashboard/previous-data",
       "/dashboard/support",
       "/dashboard/announcements",
     ]) {

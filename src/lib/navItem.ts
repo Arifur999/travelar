@@ -7,6 +7,7 @@ import {
   ChartColumn,
   CreditCard,
   FileCheck,
+  FileSpreadsheet,
   HandCoins,
   IdCard,
   Landmark,
@@ -322,6 +323,15 @@ export const agencyNavGroups: NavGroup[] = [
             title: "Billing",
             href: "/dashboard/billing",
             icon: CreditCard,
+            roles: ["AGENCY_ADMIN"],
+          },
+          {
+            // Where an agency moving off a spreadsheet starts, so it sits
+            // with the rest of the once-only setup rather than in the
+            // day-to-day menu.
+            title: "Previous data",
+            href: "/dashboard/previous-data",
+            icon: FileSpreadsheet,
             roles: ["AGENCY_ADMIN"],
           },
         ],

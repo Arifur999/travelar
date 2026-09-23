@@ -250,6 +250,10 @@ const typeKeysFromText = (text) => {
 };
 
 const VERBS = { post: "POST", put: "PUT", patch: "PATCH", postFormData: "POST", patchFormData: "PATCH" };
+
+// An upload carries a file, not fields: there is no JSON body for a schema
+// to check, and the route's upload filter is what decides what is allowed.
+const FILE_UPLOAD_VERBS = new Set(["postFormData", "patchFormData"]);
 const webCalls = [];
 
 for (const name of fs.readdirSync(path.join(WEB, "services")).filter((f) => f.endsWith(".ts"))) {
@@ -258,6 +262,7 @@ for (const name of fs.readdirSync(path.join(WEB, "services")).filter((f) => f.en
     if (call.expression.expression.getText() !== "httpClient") return;
     const method = VERBS[call.expression.name.text];
     if (!method) return;
+    const isUpload = FILE_UPLOAD_VERBS.has(call.expression.name.text);
 
     let fn = call.parent;
     while (fn && !ts.isArrowFunction(fn) && !ts.isFunctionDeclaration(fn)) fn = fn.parent;
@@ -289,7 +294,7 @@ for (const name of fs.readdirSync(path.join(WEB, "services")).filter((f) => f.en
       keys = null;
     }
 
-    webCalls.push({ where: `src/services/${name} ${fnName}`, method, path: normalisePath(rawPath), rawPath, typeText, keys });
+    webCalls.push({ where: `src/services/${name} ${fnName}`, method, path: normalisePath(rawPath), rawPath, typeText, keys, isUpload });
   });
 }
 
@@ -304,6 +309,11 @@ for (const call of webCalls) {
 
   if (!route) {
     problems.push(`${label}\n    no API route answers ${call.method} ${call.path}`);
+    continue;
+  }
+
+  if (call.isUpload) {
+    notes.push(`${label}\n    file upload — checked by the route's upload filter, not by a schema`);
     continue;
   }
 
