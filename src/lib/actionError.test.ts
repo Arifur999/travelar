@@ -56,3 +56,29 @@ describe("getActionErrorMessage", () => {
     );
   });
 });
+
+describe("when the API cannot be reached at all", () => {
+  it("does not repeat the address axios failed to connect to", () => {
+    // Exactly what a user saw while the API container was restarting.
+    const error = {
+      code: "ECONNREFUSED",
+      message: "connect ECONNREFUSED 172.18.0.6:5050",
+      config: { method: "post", url: "/imports/run" },
+    };
+
+    const message = getActionErrorMessage(error, "Could not start the import");
+
+    expect(message).not.toContain("172.18.0.6");
+    expect(message).not.toContain("ECONNREFUSED");
+    expect(message).toMatch(/try again/i);
+  });
+
+  it("still prefers what the API itself said, when it answered", () => {
+    const error = {
+      code: "ERR_BAD_REQUEST",
+      response: { status: 409, data: { message: "An import is already running" } },
+    };
+
+    expect(getActionErrorMessage(error, "fallback")).toBe("An import is already running");
+  });
+});
