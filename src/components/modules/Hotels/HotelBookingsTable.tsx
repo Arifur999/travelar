@@ -125,7 +125,7 @@ const HotelBookingsTable = ({ initialQueryString, isAdmin }: HotelBookingsTableP
           title="Billed"
           value={formatCurrency(summary?.totalRevenue ?? 0)}
           icon={BedDouble}
-          accent="primary"
+          accent="hotel"
           hint="Live bookings only"
         />
         <StatsCard

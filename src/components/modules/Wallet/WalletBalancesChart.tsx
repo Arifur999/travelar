@@ -16,7 +16,8 @@ import { buildWalletBars } from "@/lib/walletCharts";
 import { getWalletHolders } from "@/services/wallet.services";
 
 const chartConfig = {
-  balance: { label: "Held", color: "var(--chart-2)" },
+  // The ledger colour: this is money the agency is holding, not a module.
+  balance: { label: "Held", color: "var(--ledger)" },
 } satisfies ChartConfig;
 
 /** Who is holding the most, so a large balance cannot sit unnoticed. */

@@ -2,7 +2,16 @@ import { type LucideIcon } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
-export type StatsCardAccent = "primary" | "visa" | "hajj" | "expense" | "ledger" | "success" | "destructive";
+export type StatsCardAccent =
+  | "primary"
+  | "visa"
+  | "hajj"
+  | "tour"
+  | "hotel"
+  | "expense"
+  | "ledger"
+  | "success"
+  | "destructive";
 
 /**
  * Tailwind cannot see a class assembled at runtime, so each accent is written
@@ -12,6 +21,8 @@ const ACCENT_CLASSES: Record<StatsCardAccent, string> = {
   primary: "bg-primary/10 text-primary",
   visa: "bg-visa/10 text-visa",
   hajj: "bg-hajj/10 text-hajj",
+  tour: "bg-tour/10 text-tour",
+  hotel: "bg-hotel/10 text-hotel",
   expense: "bg-expense/10 text-expense",
   ledger: "bg-ledger/10 text-ledger",
   success: "bg-success/10 text-success",

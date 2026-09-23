@@ -16,8 +16,10 @@ import { buildDepartureBars } from "@/lib/tourCharts";
 import { getTours } from "@/services/tour.services";
 
 const chartConfig = {
-  sold: { label: "Sold", color: "var(--chart-1)" },
-  free: { label: "Free", color: "var(--chart-3)" },
+  sold: { label: "Sold", color: "var(--tour)" },
+  // Empty seats are the absence of the thing, so they get the quiet
+  // colour rather than a second module colour.
+  free: { label: "Free", color: "var(--secondary)" },
 } satisfies ChartConfig;
 
 /** How full the next departures are, so a half-empty trip is visible early. */

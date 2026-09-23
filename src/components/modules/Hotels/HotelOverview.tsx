@@ -14,11 +14,15 @@ import { formatCurrency, formatDate, formatNumber, formatPercent } from "@/lib/f
 import { buildStatusSlices } from "@/lib/hotelCharts";
 import { getHotelSummary } from "@/services/hotel.services";
 
+/**
+ * The status colours, not chart colours: a slice has to match the badge on
+ * the row it counts, or the same booking is two colours on one screen.
+ */
 const chartConfig = {
-  RESERVED: { label: "Reserved", color: "var(--chart-3)" },
-  CONFIRMED: { label: "Confirmed", color: "var(--chart-1)" },
-  COMPLETED: { label: "Checked out", color: "var(--chart-2)" },
-  CANCELLED: { label: "Cancelled", color: "var(--chart-5)" },
+  RESERVED: { label: "Reserved", color: "var(--warning)" },
+  CONFIRMED: { label: "Confirmed", color: "var(--success)" },
+  COMPLETED: { label: "Checked out", color: "var(--info)" },
+  CANCELLED: { label: "Cancelled", color: "var(--destructive)" },
 } satisfies ChartConfig;
 
 /**

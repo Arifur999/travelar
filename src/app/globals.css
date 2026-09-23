@@ -33,6 +33,8 @@
 
   --color-visa: var(--visa);
   --color-hajj: var(--hajj);
+  --color-tour: var(--tour);
+  --color-hotel: var(--hotel);
   --color-expense: var(--expense);
   --color-ledger: var(--ledger);
 
@@ -91,9 +93,12 @@
   /* Semantic status colours, separate from the per-module accents below: a
      badge saying APPROVED must not borrow the Hajj green, or the two meanings
      drift apart the first time a module is recoloured. */
-  --success: #059669;
+  /* Contrast on the white card, for the ones that get drawn as text:
+     emerald-600 came to 3.8:1 and amber-600 to 3.2:1, both under the 4.5:1
+     a figure needs to be read. One step darker, same hue, ~5:1. */
+  --success: #047857;
   --success-foreground: #ecfdf5;
-  --warning: #d97706;
+  --warning: #b45309;
   --warning-foreground: #fffbeb;
   --info: #2563eb;
   --info-foreground: #eff6ff;
@@ -103,16 +108,24 @@
   --ring: #2563eb;
 
   /* Per-module accents. Used for stat tiles, badges and module headers; the
-     core chrome stays blue and white so the app reads as one product. */
+     core chrome stays blue and white so the app reads as one product.
+
+     Every sales module owns one. Tours and Hotel were added without theirs
+     and borrowed whatever chart slot was free — tours came out in the
+     expense orange on a statement and the hotel in the visa purple, which
+     is the drift this block exists to prevent. */
   --visa: #9333ea;
-  --hajj: #059669;
-  --expense: #ea580c;
+  --hajj: #047857;
+  --tour: #0e7490;
+  --hotel: #be185d;
+  --expense: #c2410c;
   --ledger: #4f46e5;
 
+  /* The same five, so a chart and a badge for one thing cannot disagree. */
   --chart-1: #2563eb;
   --chart-2: #9333ea;
-  --chart-3: #059669;
-  --chart-4: #ea580c;
+  --chart-3: #047857;
+  --chart-4: #c2410c;
   --chart-5: #4f46e5;
 
   --sidebar: #ffffff;
@@ -162,6 +175,8 @@
 
   --visa: #c084fc;
   --hajj: #34d399;
+  --tour: #22d3ee;
+  --hotel: #f472b6;
   --expense: #fb923c;
   --ledger: #818cf8;
 

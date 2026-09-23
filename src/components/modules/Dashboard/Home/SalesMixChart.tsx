@@ -15,19 +15,21 @@ import { type IModuleBreakdown } from "@/types/dashboard.types";
 
 // Each module keeps the accent it has everywhere else in the product.
 const chartConfig = {
-  ticketing: { label: "Tickets", color: "var(--chart-1)" },
-  visa: { label: "Visa", color: "var(--chart-2)" },
-  hajj: { label: "Hajj & Umrah", color: "var(--chart-3)" },
-  tours: { label: "Tours", color: "var(--chart-4)" },
-  hotels: { label: "Hotel", color: "var(--chart-5)" },
+  // Each slice is the colour that module wears everywhere else, rather
+  // than a chart slot — so the pie, the badges and the stat tiles agree.
+  ticketing: { label: "Tickets", color: "var(--primary)" },
+  visa: { label: "Visa", color: "var(--visa)" },
+  hajj: { label: "Hajj & Umrah", color: "var(--hajj)" },
+  tours: { label: "Tours", color: "var(--tour)" },
+  hotels: { label: "Hotel", color: "var(--hotel)" },
 } satisfies ChartConfig;
 
 const DOT_CLASSES = {
-  ticketing: "bg-chart-1",
-  visa: "bg-chart-2",
-  hajj: "bg-chart-3",
-  tours: "bg-chart-4",
-  hotels: "bg-chart-5",
+  ticketing: "bg-primary",
+  visa: "bg-visa",
+  hajj: "bg-hajj",
+  tours: "bg-tour",
+  hotels: "bg-hotel",
 } as const;
 
 const SalesMixChart = ({ byModule }: { byModule: IModuleBreakdown }) => {

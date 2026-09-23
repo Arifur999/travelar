@@ -140,7 +140,7 @@ const TourBookingsTable = ({ initialQueryString, isAdmin }: TourBookingsTablePro
           title="Billed"
           value={formatCurrency(summary?.totalRevenue ?? 0)}
           icon={Map}
-          accent="primary"
+          accent="tour"
           hint="Live bookings only"
         />
         <StatsCard
