@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { AlertTriangle, CheckCircle2, XCircle } from "lucide-react";
+import { AlertTriangle, CheckCircle2, RefreshCw, XCircle } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { getImportRunAction } from "@/app/(dashboardLayout)/dashboard/previous-data/_action";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -31,6 +32,11 @@ const COUNT_LABELS: [string, string][] = [
 const TOTAL_LABELS: [string, string][] = [
   ["cost", "Total buying"],
   ["fare", "Total selling"],
+  // Both sides of a date change, because profit counts them and a panel whose
+  // own figures do not add up is worse than one that shows fewer of them:
+  // profit = selling + change fee − buying − change cost.
+  ["dateChangeCost", "Date change cost"],
+  ["dateChangeFee", "Date change fee"],
   ["profit", "Profit"],
   ["ticketPayments", "Taken on tickets"],
   ["collections", "Collected"],
@@ -38,6 +44,7 @@ const TOTAL_LABELS: [string, string][] = [
   ["expenses", "Expenses"],
   ["invested", "Invested"],
   ["withdrawn", "Withdrawn"],
+  ["profitWithdrawn", "Profit withdrawn"],
 ];
 
 const ProgressBar = ({ percent }: { percent: number }) => (
@@ -73,7 +80,7 @@ interface ImportRunProgressProps {
  * the progress lives on the run, not in this component.
  */
 const ImportRunProgress = ({ importId, onSettled }: ImportRunProgressProps) => {
-  const { data: run } = useQuery({
+  const { data: run, error, refetch } = useQuery({
     queryKey: ["import-run", importId],
     queryFn: async () => {
       const result = await getImportRunAction(importId);
@@ -86,15 +93,55 @@ const ImportRunProgress = ({ importId, onSettled }: ImportRunProgressProps) => {
     refetchOnWindowFocus: false,
   });
 
-  const settled = run && run.status !== "RUNNING";
+  // Whether this card has watched the run go. Opening a finished import from
+  // the history is not the import finishing, and treating it as one refreshed
+  // the whole dashboard every time somebody looked back at an old run.
+  const wasRunning = useRef(false);
 
   useEffect(() => {
-    if (settled && run) onSettled?.(run);
+    if (!run) return;
+
+    if (run.status === "RUNNING") {
+      wasRunning.current = true;
+      return;
+    }
+
+    if (wasRunning.current) {
+      wasRunning.current = false;
+      onSettled?.(run);
+    }
     // Once per run, when it stops: re-running on every render would refetch
     // the rest of the dashboard on a loop.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [settled, run?.id, run?.status]);
+  }, [run?.id, run?.status]);
 
+  // A run that cannot be read is not a run that is not there. Rendering
+  // nothing would leave somebody who was just told the import had started
+  // looking at an empty page — which is the thing this card exists to stop.
+  if (error) {
+    return (
+      <Card className="border-destructive/40">
+        <CardHeader>
+          <div className="flex items-center gap-2">
+            <XCircle className="size-5 text-destructive" aria-hidden="true" />
+            <CardTitle className="text-base">Cannot tell how the import is going</CardTitle>
+          </div>
+          <CardDescription>
+            {error instanceof Error ? error.message : "The server did not answer."} The import
+            itself is not affected — it runs on the server, not in this page.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Button type="button" variant="outline" onClick={() => void refetch()}>
+            <RefreshCw className="size-4" aria-hidden="true" />
+            Check again
+          </Button>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  // Nothing yet on the very first fetch; the toast already said it started.
   if (!run) return null;
 
   if (run.status === "RUNNING") {
@@ -154,6 +201,10 @@ const ImportRunProgress = ({ importId, onSettled }: ImportRunProgressProps) => {
   const counts = COUNT_LABELS.filter(([key]) => (run.counts[key] ?? 0) > 0);
   const totals = TOTAL_LABELS.filter(([key]) => run.result?.totals?.[key] !== undefined);
   const problems = run.result?.problems ?? [];
+  // The API keeps every problem in the count but only sends the first hundred,
+  // so the list's length would under-report a sheet with thousands of bad rows
+  // — on the one screen whose job is reconciling the books against it.
+  const problemCount = run.counts.problems ?? problems.length;
   const skipped = Object.entries(run.result?.skipped ?? {}).filter(([, value]) => value > 0);
 
   return (
@@ -217,9 +268,12 @@ const ImportRunProgress = ({ importId, onSettled }: ImportRunProgressProps) => {
             <p className="flex items-start gap-2 text-sm">
               <AlertTriangle className="mt-0.5 size-4 shrink-0 text-warning" aria-hidden="true" />
               <span>
-                {formatNumber(problems.length)}{" "}
-                {problems.length === 1 ? "row was" : "rows were"} left out. Fix them in the sheet
-                and upload it again — everything already in stays as it is.
+                {formatNumber(problemCount)} {problemCount === 1 ? "row was" : "rows were"} left
+                out. Fix them in the sheet and upload it again — everything already in stays as it
+                is.
+                {problemCount > problems.length
+                  ? ` The first ${formatNumber(problems.length)} are listed below.`
+                  : ""}
               </span>
             </p>
 

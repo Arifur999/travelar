@@ -3,12 +3,13 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { History, Undo2 } from "lucide-react";
+import { History, RefreshCw, Undo2 } from "lucide-react";
 import { toast } from "sonner";
 import {
   getImportRunsAction,
   revertImportAction,
 } from "@/app/(dashboardLayout)/dashboard/previous-data/_action";
+import { isStaleServerAction, STALE_PAGE_MESSAGE } from "@/lib/actionError";
 import ConfirmDialog from "@/components/shared/ConfirmDialog";
 import Loader from "@/components/shared/Loader";
 import { Badge } from "@/components/ui/badge";
@@ -44,27 +45,46 @@ const summarise = (counts: Record<string, number>) => {
   return parts.length > 0 ? parts.join(" · ") : "Nothing new";
 };
 
+interface ImportHistoryProps {
+  onSelect?: (importId: string) => void;
+  /**
+   * True while the card above is already following the running import.
+   *
+   * Only one import can run at a time, so when that card is polling there is
+   * nothing here worth asking for a second time: two polls of the same run
+   * meant roughly three API calls a second from one open tab, every one of
+   * them a Server Action that makes the proxy fetch the session as well.
+   */
+  liveElsewhere?: boolean;
+}
+
 /**
  * Every upload this agency has made, and the way back out of any of them.
  *
  * An import nobody can reverse is an import nobody dares run on real books, so
  * this is not a log — it is the undo button, with the date beside it.
  */
-const ImportHistory = ({ onSelect }: { onSelect?: (importId: string) => void }) => {
+const ImportHistory = ({ onSelect, liveElsewhere }: ImportHistoryProps) => {
   const [undoing, setUndoing] = useState<IImportRun | null>(null);
   const queryClient = useQueryClient();
   const router = useRouter();
 
-  const { data: runs, isLoading } = useQuery({
+  const {
+    data: runs,
+    isLoading,
+    error,
+    refetch,
+  } = useQuery({
     queryKey: ["import-runs"],
     queryFn: async () => {
       const result = await getImportRunsAction();
       if (!result.success) throw new Error(result.message);
       return result.data;
     },
-    // While one is still going, its row has to keep up with it.
+    // While one is still going, its row has to keep up with it — unless the
+    // card above is already watching that same run.
     refetchInterval: (query) =>
-      query.state.data?.some((run) => run.status === "RUNNING") ? 2000 : false,
+      !liveElsewhere && query.state.data?.some((run) => run.status === "RUNNING") ? 4000 : false,
   });
 
   const { mutateAsync: undo, isPending } = useMutation({
@@ -74,7 +94,27 @@ const ImportHistory = ({ onSelect }: { onSelect?: (importId: string) => void }) 
   const handleUndo = async () => {
     if (!undoing) return;
 
-    const result = await undo(undoing.id);
+    const undoneId = undoing.id;
+
+    let result;
+    try {
+      result = await undo(undoneId);
+    } catch (error: unknown) {
+      // The action itself failed rather than answering — a page left open
+      // across a release, or a dropped connection. Without this the dialog sat
+      // there with its button live and nothing said, and the obvious thing to
+      // do was press it again.
+      if (isStaleServerAction(error)) {
+        toast.error(STALE_PAGE_MESSAGE, {
+          duration: 15_000,
+          action: { label: "Reload", onClick: () => window.location.reload() },
+        });
+      } else {
+        toast.error("Could not undo that import — nothing was changed. Try again.");
+      }
+      return;
+    }
+
     if (!result.success) {
       toast.error(result.message || "Could not undo that import");
       return;
@@ -84,6 +124,8 @@ const ImportHistory = ({ onSelect }: { onSelect?: (importId: string) => void }) 
     setUndoing(null);
     await queryClient.invalidateQueries({ queryKey: ["import-runs"] });
     await queryClient.refetchQueries({ queryKey: ["import-runs"], type: "active" });
+    // The card above may be showing this very run as "Everything is in".
+    await queryClient.invalidateQueries({ queryKey: ["import-run", undoneId] });
     // Everything else on the dashboard was reading those rows.
     router.refresh();
   };
@@ -93,6 +135,29 @@ const ImportHistory = ({ onSelect }: { onSelect?: (importId: string) => void }) 
       <div className="flex h-24 items-center justify-center">
         <Loader size={24} label="Loading your imports" />
       </div>
+    );
+  }
+
+  // An empty history and a history that could not be read look the same to a
+  // component that renders nothing for both — and this table is the only way
+  // back out of an import, so its absence has to be explained.
+  if (error) {
+    return (
+      <Card className="border-warning/40">
+        <CardHeader>
+          <CardTitle className="text-base">Cannot show your earlier uploads</CardTitle>
+          <CardDescription>
+            {error instanceof Error ? error.message : "The server did not answer."} Nothing has
+            been lost — this is the list, not the imports themselves.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Button type="button" variant="outline" onClick={() => void refetch()}>
+            <RefreshCw className="size-4" aria-hidden="true" />
+            Try again
+          </Button>
+        </CardContent>
+      </Card>
     );
   }
 

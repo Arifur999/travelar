@@ -5,9 +5,9 @@ import { describe, expect, it } from "vitest";
 /**
  * The chain a spreadsheet has to get through to be imported.
  *
- * There are three limits between the file picker and the reader — the proxy,
- * the Server Action, and the API's own upload filter — and they are in three
- * repositories' worth of configuration. When the smallest of them is lower
+ * There are four limits between the file picker and the reader — nginx, the
+ * proxy's body clone, the Server Action, and the API's own upload filter — and
+ * they are spread across two repositories' worth of configuration. When the smallest of them is lower
  * than the one the screen advertises, the upload fails at a layer that has no
  * way to explain itself: a client's 3.5 MB workbook hit the Server Action's
  * 1 MB default, the action rejected, and the page went quiet.
@@ -30,6 +30,17 @@ const sizeToMb = (value: string) => {
 };
 
 describe("the limits an uploaded spreadsheet has to clear", () => {
+  it("lets the proxy clone a whole workbook too", () => {
+    const config = readFileSync(join(process.cwd(), "next.config.ts"), "utf8");
+    const limit = /proxyClientMaxBodySize:\s*"([^"]+)"/.exec(config)?.[1];
+
+    // The quietest of the four. Next clones the body for middleware with its
+    // own 10MB cap, and over that it truncates the stream and only warns in
+    // the server log — so the file arrives cut in half and fails to parse.
+    expect(limit).toBeDefined();
+    expect(sizeToMb(limit as string)).toBeGreaterThan(API_FILE_LIMIT_MB);
+  });
+
   it("lets a Server Action carry a whole workbook", () => {
     const config = readFileSync(join(process.cwd(), "next.config.ts"), "utf8");
     const limit = /bodySizeLimit:\s*"([^"]+)"/.exec(config)?.[1];

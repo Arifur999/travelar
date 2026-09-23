@@ -13,6 +13,14 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
 
   experimental: {
+    // proxy.ts covers /dashboard, so every Server Action POST there is run
+    // through it — and Next clones the body for that separately, capped at
+    // 10MB of its own. Past that it pushes null and carries on with a
+    // truncated stream, warning only in the server log: the upload would
+    // arrive cut off mid-file and fail to parse, with nothing on screen to
+    // say why. Matched to the action limit below, so there is one ceiling.
+    proxyClientMaxBodySize: "20mb",
+
     serverActions: {
       // An agency's whole book of business arrives through a Server Action on
       // the Previous data screen, and the default cap is 1MB — a real client's

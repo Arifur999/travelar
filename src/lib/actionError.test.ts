@@ -126,3 +126,26 @@ describe("when the page is a version behind the server", () => {
     expect(isStaleServerAction(null)).toBe(false);
   });
 });
+
+describe("when the server is slow rather than absent", () => {
+  it("does not tell someone to retry something that is still running", () => {
+    // Reading a large workbook takes longer than the client waits. The server
+    // is parsing it the whole time; retrying just starts a second one.
+    const error = {
+      code: "ECONNABORTED",
+      message: "timeout of 30000ms exceeded",
+      config: { method: "post", url: "/imports/preview" },
+    };
+
+    const message = getActionErrorMessage(error, "fallback");
+
+    expect(message).toMatch(/took too long/i);
+    expect(message).not.toMatch(/may be restarting/i);
+  });
+
+  it("still says restarting when nothing answered at all", () => {
+    const error = { code: "ECONNREFUSED", message: "connect ECONNREFUSED 10.0.0.1:5050" };
+
+    expect(getActionErrorMessage(error, "fallback")).toMatch(/may be restarting/i);
+  });
+});

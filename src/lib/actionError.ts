@@ -62,6 +62,20 @@ export const STALE_PAGE_MESSAGE =
 const UNREACHABLE_MESSAGE =
   "Could not reach the server. It may be restarting — wait a moment and try again.";
 
+/**
+ * A request that reached the server and was still waiting when we gave up.
+ *
+ * Not the same as not reaching it, and telling someone to try again in a
+ * moment is wrong: reading a large spreadsheet takes longer than the client
+ * waits, and the server is working on it the whole time. Trying again only
+ * starts the same slow thing twice.
+ */
+const TIMEOUT_MESSAGE =
+  "The server took too long to answer. It may still be working on it — wait a little, then reload before trying again.";
+
+/** Axios codes for stopping the wait, as against nothing answering. */
+const TIMEOUT_CODES = new Set(["ECONNABORTED", "ETIMEDOUT"]);
+
 export const getActionErrorMessage = (error: unknown, fallbackMessage: string) => {
   if (isStaleServerAction(error)) return STALE_PAGE_MESSAGE;
 
@@ -81,9 +95,10 @@ export const getActionErrorMessage = (error: unknown, fallbackMessage: string) =
     return failure.message;
   }
 
-  // A transport code and no status: the call never got an answer.
+  // A transport code and no status: the call never got an answer. Which of
+  // the two things went wrong changes what there is to do about it.
   if (failure.status === undefined && failure.code) {
-    return UNREACHABLE_MESSAGE;
+    return TIMEOUT_CODES.has(failure.code) ? TIMEOUT_MESSAGE : UNREACHABLE_MESSAGE;
   }
 
   if (error instanceof Error) {

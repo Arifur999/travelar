@@ -36,9 +36,18 @@ const MAX_FILE_BYTES = 15 * 1024 * 1024;
  * nowhere: the button stopped spinning and nothing else happened, which is the
  * worst thing a page can do with somebody's whole business.
  */
+/** What the API will accept. The picker's accept="" is only a suggestion. */
+const isSpreadsheet = (file: File) => file.name.toLowerCase().endsWith(".xlsx");
+
 const uploadFailureMessage = (error: unknown, file: File | undefined) => {
   if (file && file.size > MAX_FILE_BYTES) {
     return "That file is too big to upload. Split the sheet, or ask us to raise the limit.";
+  }
+  if (file && !isSpreadsheet(file)) {
+    // The API drops a non-xlsx in its upload filter and then answers "attach
+    // the spreadsheet as `file`", which reads like nonsense to somebody who
+    // just attached one. The format is the problem, so say that.
+    return "That file is not an .xlsx. In Google Sheets: File → Download → Microsoft Excel (.xlsx).";
   }
   if (isStaleServerAction(error)) return STALE_PAGE_MESSAGE;
 
@@ -201,7 +210,7 @@ const PreviousDataView = () => {
     event.preventDefault();
 
     const file = inputRef.current?.files?.[0];
-    if (file && file.size > MAX_FILE_BYTES) {
+    if (file && (!isSpreadsheet(file) || file.size > MAX_FILE_BYTES)) {
       reportUploadFailure(null, file);
       return;
     }
@@ -239,7 +248,7 @@ const PreviousDataView = () => {
       toast.error("Choose the .xlsx file you exported from your sheet");
       return;
     }
-    if (file.size > MAX_FILE_BYTES) {
+    if (!isSpreadsheet(file) || file.size > MAX_FILE_BYTES) {
       reportUploadFailure(null, file);
       return;
     }
@@ -269,6 +278,11 @@ const PreviousDataView = () => {
     setAlreadyIn(null);
     setWatching(result.data.importId);
     toast.success("Bringing your spreadsheet in");
+
+    // The history table decides whether to keep up with a run by looking at
+    // what it has cached, so without this the new run never appears in it and
+    // its polling never starts.
+    await queryClient.invalidateQueries({ queryKey: ["import-runs"] });
   };
 
   /** The run has finished: everything else on the dashboard is now stale. */
@@ -301,6 +315,15 @@ const PreviousDataView = () => {
                 required
                 disabled={isPending || isStarting}
                 className="w-full sm:w-96"
+                // A report belongs to the file it was read from. Choosing
+                // another one and pressing Import would otherwise import a
+                // workbook whose figures nobody had looked at, under a report
+                // describing the previous one.
+                onChange={() => {
+                  setPreview(null);
+                  setAlreadyIn(null);
+                  setWatching(null);
+                }}
               />
             </div>
 
@@ -342,7 +365,8 @@ const PreviousDataView = () => {
               You brought <strong>{alreadyIn.filename}</strong> in on{" "}
               {formatDateTime(alreadyIn.createdAt)}, and it is all still here. There is nothing
               left in this file to import. If you have corrected a row, upload the corrected
-              sheet — only what changed will come in.
+              sheet — only what changed will come in. To bring this same file in again, undo that
+              import below first.
             </CardDescription>
           </CardHeader>
 
@@ -363,7 +387,7 @@ const PreviousDataView = () => {
         <ImportRunProgress key={watching} importId={watching} onSettled={handleSettled} />
       )}
 
-      <ImportHistory onSelect={setWatching} />
+      <ImportHistory onSelect={setWatching} liveElsewhere={watching !== null} />
 
       {preview && !isPending && (
         <>
