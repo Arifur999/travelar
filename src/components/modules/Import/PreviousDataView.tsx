@@ -1,18 +1,24 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { useMutation } from "@tanstack/react-query";
-import { AlertTriangle, FileSpreadsheet, Upload } from "lucide-react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
+import { CheckCircle2, FileSpreadsheet, PlayCircle, Upload } from "lucide-react";
 import { toast } from "sonner";
-import { previewImportAction } from "@/app/(dashboardLayout)/dashboard/previous-data/_action";
+import {
+  previewImportAction,
+  startImportAction,
+} from "@/app/(dashboardLayout)/dashboard/previous-data/_action";
 import Loader from "@/components/shared/Loader";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { formatCurrency, formatNumber } from "@/lib/format";
-import { type IImportPreview, type ITabPreview } from "@/types/import.types";
+import { formatCurrency, formatDateTime, formatNumber } from "@/lib/format";
+import { type IImportPreview, type IImportRun, type ITabPreview } from "@/types/import.types";
+import ImportHistory from "./ImportHistory";
+import ImportRunProgress from "./ImportRunProgress";
 
 /** The headline counts, in the order someone setting up would want them. */
 const CREATED_LABELS: { key: keyof IImportPreview["wouldCreate"]; label: string }[] = [
@@ -27,6 +33,7 @@ const CREATED_LABELS: { key: keyof IImportPreview["wouldCreate"]; label: string 
   { key: "supplierPayments", label: "Supplier payments" },
   { key: "expenses", label: "Expenses" },
   { key: "capitalFlows", label: "Investment & withdrawals" },
+  { key: "profitWithdrawals", label: "Profit withdrawals" },
 ];
 
 const TabReport = ({ tab }: { tab: ITabPreview }) => {
@@ -129,10 +136,18 @@ const TabReport = ({ tab }: { tab: ITabPreview }) => {
  */
 const PreviousDataView = () => {
   const [preview, setPreview] = useState<IImportPreview | null>(null);
+  const [watching, setWatching] = useState<string | null>(null);
+  const [alreadyIn, setAlreadyIn] = useState<IImportRun | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const queryClient = useQueryClient();
+  const router = useRouter();
 
   const { mutateAsync, isPending } = useMutation({
     mutationFn: (formData: FormData) => previewImportAction(formData),
+  });
+
+  const { mutateAsync: startImport, isPending: isStarting } = useMutation({
+    mutationFn: (formData: FormData) => startImportAction(formData),
   });
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -147,7 +162,49 @@ const PreviousDataView = () => {
     }
 
     setPreview(result.data);
+    setAlreadyIn(null);
     toast.success(`Read ${result.data.filename}`);
+  };
+
+  /**
+   * Starts the run and hands over to the progress card.
+   *
+   * The second argument is the second press: the same workbook is refused once,
+   * because uploading it twice is nearly always a mistake, and allowed when the
+   * answer to "are you sure" is yes.
+   */
+  const handleImport = async (force: boolean) => {
+    const file = inputRef.current?.files?.[0];
+    if (!file) {
+      toast.error("Choose the .xlsx file you exported from your sheet");
+      return;
+    }
+
+    const body = new FormData();
+    body.append("file", file);
+    if (force) body.append("force", "true");
+
+    const result = await startImport(body);
+    if (!result.success) {
+      toast.error(result.message || "Could not start the import");
+      return;
+    }
+
+    if (result.data.alreadyImported) {
+      setAlreadyIn(result.data.alreadyImported);
+      setWatching(null);
+      return;
+    }
+
+    setAlreadyIn(null);
+    setWatching(result.data.importId);
+    toast.success("Bringing your spreadsheet in");
+  };
+
+  /** The run has finished: everything else on the dashboard is now stale. */
+  const handleSettled = async () => {
+    await queryClient.invalidateQueries({ queryKey: ["import-runs"] });
+    router.refresh();
   };
 
   return (
@@ -172,14 +229,25 @@ const PreviousDataView = () => {
                 type="file"
                 accept=".xlsx"
                 required
-                disabled={isPending}
+                disabled={isPending || isStarting}
                 className="w-full sm:w-96"
               />
             </div>
 
-            <Button type="submit" disabled={isPending}>
+            <Button type="submit" variant="outline" disabled={isPending || isStarting}>
               <Upload className="size-4" aria-hidden="true" />
               {isPending ? "Reading..." : "Read the file"}
+            </Button>
+
+            {/* Reading first is a good idea, not a rule: an agency that knows
+                its own sheet should not have to read a report to get in. */}
+            <Button
+              type="button"
+              onClick={() => handleImport(false)}
+              disabled={isPending || isStarting}
+            >
+              <PlayCircle className="size-4" aria-hidden="true" />
+              {isStarting ? "Starting..." : "Import everything"}
             </Button>
           </form>
         </CardContent>
@@ -190,6 +258,44 @@ const PreviousDataView = () => {
           <Loader size={28} label="Reading the spreadsheet" />
         </div>
       )}
+
+      {alreadyIn && (
+        <Card className="border-info/40">
+          <CardHeader>
+            <div className="flex flex-wrap items-center gap-2">
+              <CheckCircle2 className="size-5 text-info" aria-hidden="true" />
+              <CardTitle className="text-base">This spreadsheet is already in</CardTitle>
+            </div>
+            <CardDescription>
+              {/* The same file twice is the commonest mistake here: a second
+                  click, or a second person not knowing the first had done it. */}
+              You brought <strong>{alreadyIn.filename}</strong> in on{" "}
+              {formatDateTime(alreadyIn.createdAt)}. Importing it again would find every row
+              already there and add nothing.
+            </CardDescription>
+          </CardHeader>
+
+          <CardContent className="flex flex-wrap items-center gap-3">
+            <Button type="button" variant="outline" onClick={() => setWatching(alreadyIn.id)}>
+              See what it brought in
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              disabled={isStarting}
+              onClick={() => handleImport(true)}
+            >
+              Import it again anyway
+            </Button>
+          </CardContent>
+        </Card>
+      )}
+
+      {watching && (
+        <ImportRunProgress key={watching} importId={watching} onSettled={handleSettled} />
+      )}
+
+      <ImportHistory onSelect={setWatching} />
 
       {preview && !isPending && (
         <>
@@ -232,13 +338,17 @@ const PreviousDataView = () => {
             <TabReport key={tab.tab} tab={tab} />
           ))}
 
-          <p className="flex items-start gap-2 rounded-lg border border-warning/30 bg-warning/10 p-3 text-sm">
-            <AlertTriangle className="mt-0.5 size-4 shrink-0 text-warning" aria-hidden="true" />
-            <span>
-              Nothing has been imported. Importing is the next step, and it will go in this order:
-              accounts, categories, airlines and suppliers first, then customers, then the history.
-            </span>
-          </p>
+          <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border bg-muted/30 p-4">
+            <p className="text-sm">
+              Nothing has been imported yet. When the figures above look right, bring it all in:
+              accounts, categories, airlines, routes and suppliers first, then customers, then the
+              history on top.
+            </p>
+            <Button type="button" onClick={() => handleImport(false)} disabled={isStarting}>
+              <PlayCircle className="size-4" aria-hidden="true" />
+              {isStarting ? "Starting..." : "Import everything"}
+            </Button>
+          </div>
         </>
       )}
     </div>
