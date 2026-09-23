@@ -142,11 +142,12 @@ const CustomerStatement = ({ customer, enabled = true }: CustomerStatementProps)
                     </Badge>
                     <span className="text-muted-foreground">{row.description}</span>
                   </td>
+                  {/* A figure column always shows a figure: 0, never a dash. */}
                   <td className="px-3 py-2 text-right tabular-nums">
-                    {row.debit ? formatCurrency(row.debit) : "—"}
+                    {formatCurrency(row.debit)}
                   </td>
                   <td className="px-3 py-2 text-right tabular-nums text-success">
-                    {row.credit ? formatCurrency(row.credit) : "—"}
+                    {formatCurrency(row.credit)}
                   </td>
                   <td className="px-3 py-2 text-right font-medium tabular-nums">
                     {formatCurrency(row.runningDue)}

@@ -113,11 +113,13 @@ const WalletStatementSheet = ({ open, onOpenChange, holder }: WalletStatementShe
                         </Badge>
                         <span className="text-muted-foreground">{movement.description}</span>
                       </td>
+                      {/* Both columns always show a figure: the side this
+                          movement is not shows 0, never a dash. */}
                       <td className="px-3 py-2 text-right tabular-nums text-success">
-                        {movement.type === "PAID_IN" ? formatCurrency(movement.amount) : "—"}
+                        {formatCurrency(movement.type === "PAID_IN" ? movement.amount : 0)}
                       </td>
                       <td className="px-3 py-2 text-right tabular-nums">
-                        {movement.type === "SPENT" ? formatCurrency(movement.amount) : "—"}
+                        {formatCurrency(movement.type === "SPENT" ? movement.amount : 0)}
                       </td>
                       <td className="px-3 py-2 text-right font-medium tabular-nums">
                         {formatCurrency(movement.balance)}

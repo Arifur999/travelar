@@ -98,7 +98,7 @@ const WalletHoldersTable = () => {
                           {formatCurrency(holder.paidIn)}
                         </td>
                         <td className="px-3 py-2 text-right tabular-nums text-muted-foreground">
-                          {holder.usedUp ? formatCurrency(holder.usedUp) : "—"}
+                          {formatCurrency(holder.usedUp)}
                         </td>
                         <td className="px-3 py-2 text-right font-medium tabular-nums text-success">
                           {formatCurrency(holder.balance)}
