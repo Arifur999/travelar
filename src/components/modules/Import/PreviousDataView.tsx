@@ -229,11 +229,11 @@ const PreviousDataView = () => {
   /**
    * Starts the run and hands over to the progress card.
    *
-   * The second argument is the second press: the same workbook is refused once,
-   * because uploading it twice is nearly always a mistake, and allowed when the
-   * answer to "are you sure" is yes.
+   * There is no way to force a second run of the same file from here. It could
+   * only ever report that everything was already there, which is a confusing
+   * thing to make somebody wait for.
    */
-  const handleImport = async (force: boolean) => {
+  const handleImport = async () => {
     const file = inputRef.current?.files?.[0];
     if (!file) {
       toast.error("Choose the .xlsx file you exported from your sheet");
@@ -246,7 +246,6 @@ const PreviousDataView = () => {
 
     const body = new FormData();
     body.append("file", file);
-    if (force) body.append("force", "true");
 
     let result;
     try {
@@ -314,7 +313,7 @@ const PreviousDataView = () => {
                 its own sheet should not have to read a report to get in. */}
             <Button
               type="button"
-              onClick={() => handleImport(false)}
+              onClick={() => handleImport()}
               disabled={isPending || isStarting}
             >
               <PlayCircle className="size-4" aria-hidden="true" />
@@ -341,22 +340,20 @@ const PreviousDataView = () => {
               {/* The same file twice is the commonest mistake here: a second
                   click, or a second person not knowing the first had done it. */}
               You brought <strong>{alreadyIn.filename}</strong> in on{" "}
-              {formatDateTime(alreadyIn.createdAt)}. Importing it again would find every row
-              already there and add nothing.
+              {formatDateTime(alreadyIn.createdAt)}, and it is all still here. There is nothing
+              left in this file to import. If you have corrected a row, upload the corrected
+              sheet — only what changed will come in.
             </CardDescription>
           </CardHeader>
 
-          <CardContent className="flex flex-wrap items-center gap-3">
+          <CardContent>
+            {/* No way back in from here on purpose. Importing the same file a
+                second time cannot add anything — every row would be recognised
+                and skipped — so offering it only invites someone to sit through
+                a run that does nothing and then wonder whether it worked. A
+                corrected sheet is a different file and imports normally. */}
             <Button type="button" variant="outline" onClick={() => setWatching(alreadyIn.id)}>
               See what it brought in
-            </Button>
-            <Button
-              type="button"
-              variant="ghost"
-              disabled={isStarting}
-              onClick={() => handleImport(true)}
-            >
-              Import it again anyway
             </Button>
           </CardContent>
         </Card>
@@ -415,7 +412,7 @@ const PreviousDataView = () => {
               accounts, categories, airlines, routes and suppliers first, then customers, then the
               history on top.
             </p>
-            <Button type="button" onClick={() => handleImport(false)} disabled={isStarting}>
+            <Button type="button" onClick={() => handleImport()} disabled={isStarting}>
               <PlayCircle className="size-4" aria-hidden="true" />
               {isStarting ? "Starting..." : "Import everything"}
             </Button>
