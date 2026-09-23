@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { getActionErrorMessage } from "./actionError";
+import { getActionErrorMessage, isStaleServerAction } from "./actionError";
 
 /** Builds the shape axios hands an `_action` when the API answered. */
 const apiError = (status: number, data: unknown) => ({ response: { status, data } });
@@ -104,5 +104,25 @@ describe("when the server says it has not the room", () => {
     const error = apiError(500, { message: "Internal Server Error", requestId: "req-500" });
 
     expect(getActionErrorMessage(error, "fallback")).toContain("Something went wrong");
+  });
+});
+
+describe("when the page is a version behind the server", () => {
+  it("says to reload rather than repeating Next's id", () => {
+    // Exactly what a user saw seconds after a release went out with their tab
+    // already open. The id is meaningless to them and alarming to look at.
+    const error = new Error(
+      'Server Action "40b3f778a9c7b7703b508147a3f8e458897935b50e" was not found on the server.',
+    );
+
+    const message = getActionErrorMessage(error, "Could not start the import");
+
+    expect(message).not.toContain("40b3f778");
+    expect(message).toMatch(/reload/i);
+  });
+
+  it("is not confused by an ordinary failure", () => {
+    expect(isStaleServerAction(new Error("connect ECONNREFUSED 10.0.0.1:5050"))).toBe(false);
+    expect(isStaleServerAction(null)).toBe(false);
   });
 });

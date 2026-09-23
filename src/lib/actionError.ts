@@ -34,6 +34,25 @@ const SERVER_ERROR_MESSAGE = "Something went wrong on our side. Please try again
 const DELIBERATE_SERVER_ERRORS = new Set([507]);
 
 /**
+ * Whether this failure is a page left open across a deployment.
+ *
+ * Next gives every server action an id derived from the build, so a tab
+ * that was already open when a release went out calls an id the new server
+ * has never heard of. It looks alarming — "Server Action
+ * 40b3f778...35b50e was not found on the server" — and it means nothing
+ * worse than: this page is from the previous version. Every action in the
+ * app can hit it, so it is recognised in one place.
+ */
+export const isStaleServerAction = (error: unknown) => {
+  const message = error instanceof Error ? error.message : String(error ?? "");
+  return /server action .* was not found|failed to find server action/i.test(message);
+};
+
+/** What to tell someone whose page is a version behind. */
+export const STALE_PAGE_MESSAGE =
+  "The app was updated while this page was open. Reload the page and try again.";
+
+/**
  * The request never landed, so there is no API message — only axios's, and
  * axios names the address it failed to reach. "connect ECONNREFUSED
  * 172.18.0.6:5050" reached a user's screen: it tells them nothing they can
@@ -44,6 +63,8 @@ const UNREACHABLE_MESSAGE =
   "Could not reach the server. It may be restarting — wait a moment and try again.";
 
 export const getActionErrorMessage = (error: unknown, fallbackMessage: string) => {
+  if (isStaleServerAction(error)) return STALE_PAGE_MESSAGE;
+
   const failure = describeApiFailure(error);
 
   if (

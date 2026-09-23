@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { isStaleServerAction, STALE_PAGE_MESSAGE } from "@/lib/actionError";
 import { formatCurrency, formatDateTime, formatNumber } from "@/lib/format";
 import { type IImportPreview, type IImportRun, type ITabPreview } from "@/types/import.types";
 import ImportHistory from "./ImportHistory";
@@ -39,9 +40,31 @@ const uploadFailureMessage = (error: unknown, file: File | undefined) => {
   if (file && file.size > MAX_FILE_BYTES) {
     return "That file is too big to upload. Split the sheet, or ask us to raise the limit.";
   }
+  if (isStaleServerAction(error)) return STALE_PAGE_MESSAGE;
+
   return error instanceof Error && error.message
     ? `The upload did not get through: ${error.message}`
     : "The upload did not get through. Check your connection and try again.";
+};
+
+/**
+ * An upload that failed, said so, and offered the way out where there is one.
+ *
+ * A page left open across a release cannot fix itself by trying again, so the
+ * toast carries the reload rather than describing it.
+ */
+const reportUploadFailure = (error: unknown, file: File | undefined) => {
+  const message = uploadFailureMessage(error, file);
+
+  if (message === STALE_PAGE_MESSAGE) {
+    toast.error(message, {
+      duration: 15_000,
+      action: { label: "Reload", onClick: () => window.location.reload() },
+    });
+    return;
+  }
+
+  toast.error(message);
 };
 
 /** The headline counts, in the order someone setting up would want them. */
@@ -179,7 +202,7 @@ const PreviousDataView = () => {
 
     const file = inputRef.current?.files?.[0];
     if (file && file.size > MAX_FILE_BYTES) {
-      toast.error(uploadFailureMessage(null, file));
+      reportUploadFailure(null, file);
       return;
     }
 
@@ -189,7 +212,7 @@ const PreviousDataView = () => {
     try {
       result = await mutateAsync(form);
     } catch (error: unknown) {
-      toast.error(uploadFailureMessage(error, file));
+      reportUploadFailure(error, file);
       return;
     }
 
@@ -217,7 +240,7 @@ const PreviousDataView = () => {
       return;
     }
     if (file.size > MAX_FILE_BYTES) {
-      toast.error(uploadFailureMessage(null, file));
+      reportUploadFailure(null, file);
       return;
     }
 
@@ -229,7 +252,7 @@ const PreviousDataView = () => {
     try {
       result = await startImport(body);
     } catch (error: unknown) {
-      toast.error(uploadFailureMessage(error, file));
+      reportUploadFailure(error, file);
       return;
     }
 
