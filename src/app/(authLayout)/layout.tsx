@@ -21,23 +21,25 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => (
       fill
       priority
       sizes="100vw"
-      className="-z-20 scale-105 object-cover blur-md"
+      className="-z-20 scale-110 object-cover blur-2xl"
     />
-    <div aria-hidden="true" className="absolute inset-0 -z-10 bg-slate-950/15" />
+    <div aria-hidden="true" className="absolute inset-0 -z-10 bg-slate-950/25" />
 
-    <div className="w-full max-w-[88rem] overflow-hidden rounded-[2.5rem] bg-card shadow-2xl">
-      <div className="grid lg:grid-cols-2">
+    <div className="w-full max-w-7xl overflow-hidden rounded-[2.5rem] bg-card shadow-2xl">
+      {/* Not an even split: the form side carries the work, and at half of
+          this card it came out narrower than it was before. */}
+      <div className="grid lg:grid-cols-[1.15fr_1fr]">
         <main
           id="main-content"
           tabIndex={-1}
-          className="flex items-center justify-center px-6 py-12 sm:px-12 lg:px-16 lg:py-16"
+          className="flex items-center justify-center px-6 py-10 sm:px-12 lg:px-14 lg:py-14"
         >
           {children}
         </main>
 
         {/* The picture half carries nothing you need in order to sign in, so it
             is what goes when the screen is too narrow for both. */}
-        <div className="relative hidden min-h-[40rem] overflow-hidden rounded-[2rem] lg:m-3 lg:block">
+        <div className="relative hidden min-h-[36rem] overflow-hidden rounded-[2rem] lg:m-3 lg:block">
           <Image
             src="/login2.jpeg"
             alt=""
