@@ -53,8 +53,16 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 
-  --font-sans: var(--font-work-sans);
-  --font-display: var(--font-fraunces);
+  --color-heading: var(--heading);
+  --color-primary-strong: var(--primary-strong);
+
+  /* Inter for everything. This is a dashboard: dense tables, money columns and
+     small labels, which is exactly what Inter was drawn for — and its tabular
+     figures keep a column of taka aligned. Montserrat is the wider, more
+     geometric of the two and reads well in a headline, but it costs width and
+     legibility at 12–14px, which is where most of this product lives. */
+  --font-sans: var(--font-inter);
+  --font-display: var(--font-inter);
 
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -62,30 +70,49 @@
   --radius-xl: calc(var(--radius) + 4px);
 }
 
-/* Travelar brand: blue primary on white, carried over from the app this
-   replaces. Every token is defined here first; .dark below only overrides, so
-   nothing can be left undefined in one theme. */
+/* Travelar brand, from the agency's four blues:
+
+     #E3F2FD  the ground the app sits on, and every tinted surface
+     #90CAF9  edges and the blue that carries on a dark ground
+     #2196F3  the brand blue: fills, rings, charts, the bright end of a button
+     #0D47A1  headings, links and anything blue that has to be read
+
+   Which one a token gets is decided by contrast, measured, not by eye:
+   white on #2196F3 is 3.12:1 — fine behind an icon or a chart bar, too weak
+   for a label — while white on #0D47A1 is 8.63:1 and #0D47A1 on #E3F2FD is
+   7.56:1. So the bright blue fills and the deep blue speaks.
+
+   Every token is defined here first; .dark below only overrides, so nothing
+   can be left undefined in one theme. */
 :root {
   --radius: 0.625rem;
 
-  --background: #f9fafb;
+  --background: #e3f2fd;
   --foreground: #1f2937;
+  /* Page and section headings. Body text stays near-black: a whole paragraph
+     in brand blue is harder to read than it is memorable. */
+  --heading: #0d47a1;
 
   --card: #ffffff;
   --card-foreground: #1f2937;
   --popover: #ffffff;
   --popover-foreground: #1f2937;
 
-  --primary: #2563eb;
-  --primary-foreground: #eff6ff;
-  --secondary: #dbeafe;
-  --secondary-foreground: #1e40af;
+  --primary: #2196f3;
+  --primary-foreground: #ffffff;
+  /* The blue for text and links on a light ground, where #2196F3 would be
+     3.12:1 and unreadable. */
+  --primary-strong: #0d47a1;
+  --secondary: #e3f2fd;
+  --secondary-foreground: #0d47a1;
 
-  --muted: #f3f4f6;
-  --muted-foreground: #6b7280;
+  --muted: #f1f6fd;
+  /* One step darker than the old grey: on the blue ground #6b7280 fell to
+     4.23:1, just under what a label needs. This is 6.62:1. */
+  --muted-foreground: #4b5563;
 
-  --accent: #eff6ff;
-  --accent-foreground: #1d4ed8;
+  --accent: #e3f2fd;
+  --accent-foreground: #0d47a1;
 
   --destructive: #dc2626;
   --destructive-foreground: #fef2f2;
@@ -103,9 +130,15 @@
   --info: #2563eb;
   --info-foreground: #eff6ff;
 
-  --border: #e5e7eb;
-  --input: #e5e7eb;
-  --ring: #2563eb;
+  --border: #bbdefb;
+  --input: #bbdefb;
+  --ring: #2196f3;
+
+  /* Buttons. The bright blue stays in the corner and the deep blue is under
+     the label: at 20% across a button the mix is already 4.6:1 against white,
+     and 8.63:1 by the middle. A flat #2196F3 fill would have been 3.12:1. */
+  --gradient-primary: linear-gradient(135deg, #2196f3 0%, #0d47a1 55%);
+  --gradient-primary-hover: linear-gradient(135deg, #42a5f5 0%, #1257b5 65%);
 
   /* Per-module accents. Used for stat tiles, badges and module headers; the
      core chrome stays blue and white so the app reads as one product.
@@ -121,8 +154,10 @@
   --expense: #c2410c;
   --ledger: #4f46e5;
 
-  /* The same five, so a chart and a badge for one thing cannot disagree. */
-  --chart-1: #2563eb;
+  /* The same five, so a chart and a badge for one thing cannot disagree.
+     Only the first is the brand blue: the rest keep their own hues, because a
+     pie of five blues cannot be read. */
+  --chart-1: #2196f3;
   --chart-2: #9333ea;
   --chart-3: #047857;
   --chart-4: #c2410c;
@@ -130,12 +165,12 @@
 
   --sidebar: #ffffff;
   --sidebar-foreground: #1f2937;
-  --sidebar-primary: #2563eb;
-  --sidebar-primary-foreground: #eff6ff;
-  --sidebar-accent: #eff6ff;
-  --sidebar-accent-foreground: #1d4ed8;
-  --sidebar-border: #e5e7eb;
-  --sidebar-ring: #2563eb;
+  --sidebar-primary: #2196f3;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #e3f2fd;
+  --sidebar-accent-foreground: #0d47a1;
+  --sidebar-border: #bbdefb;
+  --sidebar-ring: #2196f3;
 }
 
 .dark {
@@ -147,17 +182,20 @@
   --popover: #131c2e;
   --popover-foreground: #e5e7eb;
 
-  /* Roles swap: the light blue carries on the dark ground. */
-  --primary: #93c5fd;
-  --primary-foreground: #0b1120;
-  --secondary: #1e3a8a;
-  --secondary-foreground: #dbeafe;
+  /* Roles swap: the light blue carries on the dark ground (#90CAF9 is 10.76:1
+     there), and the deep blue becomes a surface rather than an ink. */
+  --heading: #90caf9;
+  --primary: #90caf9;
+  --primary-foreground: #0d47a1;
+  --primary-strong: #90caf9;
+  --secondary: #0d47a1;
+  --secondary-foreground: #e3f2fd;
 
   --muted: #1b2537;
   --muted-foreground: #9aa5b8;
 
-  --accent: #1b2537;
-  --accent-foreground: #dbeafe;
+  --accent: #16233a;
+  --accent-foreground: #e3f2fd;
 
   --destructive: #f87171;
   --destructive-foreground: #0b1120;
@@ -169,9 +207,17 @@
   --info: #93c5fd;
   --info-foreground: #0b1120;
 
-  --border: rgba(229, 231, 235, 0.12);
-  --input: rgba(229, 231, 235, 0.16);
-  --ring: #93c5fd;
+  --border: rgba(144, 202, 249, 0.18);
+  --input: rgba(144, 202, 249, 0.22);
+  --ring: #90caf9;
+
+  /* On the dark ground the button runs the other way: the two pale blues are
+     the surface and the deep blue is the label, so it stays bright against the
+     navy instead of sinking into it. Measured on the rendered button, the
+     label holds 4.93:1 at the darkest end and 7.56:1 at the lightest — a
+     #90CAF9 -> #42A5F5 gradient looked better but fell to 3.64:1. */
+  --gradient-primary: linear-gradient(135deg, #e3f2fd 0%, #90caf9 100%);
+  --gradient-primary-hover: linear-gradient(135deg, #ffffff 0%, #bbdefb 100%);
 
   --visa: #c084fc;
   --hajj: #34d399;
@@ -180,7 +226,7 @@
   --expense: #fb923c;
   --ledger: #818cf8;
 
-  --chart-1: #93c5fd;
+  --chart-1: #90caf9;
   --chart-2: #c084fc;
   --chart-3: #34d399;
   --chart-4: #fb923c;
@@ -188,12 +234,12 @@
 
   --sidebar: #131c2e;
   --sidebar-foreground: #e5e7eb;
-  --sidebar-primary: #93c5fd;
-  --sidebar-primary-foreground: #0b1120;
-  --sidebar-accent: #1b2537;
-  --sidebar-accent-foreground: #dbeafe;
-  --sidebar-border: rgba(229, 231, 235, 0.12);
-  --sidebar-ring: #93c5fd;
+  --sidebar-primary: #90caf9;
+  --sidebar-primary-foreground: #0d47a1;
+  --sidebar-accent: #16233a;
+  --sidebar-accent-foreground: #e3f2fd;
+  --sidebar-border: rgba(144, 202, 249, 0.18);
+  --sidebar-ring: #90caf9;
 }
 
 @layer base {
@@ -202,6 +248,25 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+  /* Headings carry the deep blue; body copy stays near-black. Anything that
+     sets its own colour — a destructive title, a figure in success green —
+     still wins, because this is the base layer. */
+  h1,
+  h2,
+  h3 {
+    color: var(--heading);
+  }
+}
+
+@layer components {
+  /* The one place the button gradient is written. Both themes define
+     --gradient-primary, so this follows the theme without a dark: variant. */
+  .bg-gradient-primary {
+    background-image: var(--gradient-primary);
+  }
+  .bg-gradient-primary:hover:not(:disabled) {
+    background-image: var(--gradient-primary-hover);
   }
 }
 

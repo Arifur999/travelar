@@ -28,8 +28,10 @@ const SetupChecklist = ({
 
   const done = steps.filter((step) => step.done).length;
 
+  // A white card with a blue edge: on the blue page ground a tinted card would
+  // melt into it.
   return (
-    <Card className="border-primary/30 bg-primary/[0.03]">
+    <Card className="border-primary/40 bg-card">
       <CardHeader>
         <CardTitle className="text-base">Finish setting up your workspace</CardTitle>
         <CardDescription>

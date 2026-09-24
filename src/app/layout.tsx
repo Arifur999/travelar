@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
-import { Fraunces, Work_Sans } from "next/font/google";
+import { Inter } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import QueryProviders from "./providers/QueryProvider";
 import ThemeProvider from "./providers/ThemeProvider";
 import "./globals.css";
 
-const workSans = Work_Sans({ subsets: ["latin"], variable: "--font-work-sans" });
-const fraunces = Fraunces({ subsets: ["latin"], variable: "--font-fraunces" });
+// One family for the whole product: a dashboard of tables and figures reads
+// better in Inter than in anything wider.
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 export const metadata: Metadata = {
   title: {
@@ -29,7 +30,7 @@ export default async function RootLayout({
     // suppressHydrationWarning is required by next-themes, which writes the
     // theme class onto <html> before React hydrates.
     <html lang="en" suppressHydrationWarning>
-      <body className={`${workSans.variable} ${fraunces.variable} font-sans antialiased`}>
+      <body className={`${inter.variable} font-sans antialiased`}>
         <a
           href="#main-content"
           className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:rounded-md focus:bg-background focus:p-4"
