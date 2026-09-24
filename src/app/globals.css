@@ -140,6 +140,16 @@
   --gradient-primary: linear-gradient(135deg, #2196f3 0%, #0d47a1 55%);
   --gradient-primary-hover: linear-gradient(135deg, #42a5f5 0%, #1257b5 65%);
 
+  /* Boxes: the sky-blue wash from the brand sheet. It has to stay pale —
+     a card carries body text and figures at 12–14px, and #1F2937 needs
+     4.5:1, which it keeps on this (12.4:1 at the deepest corner). The vivid
+     blue of the brand sheet's hero cards lives on buttons instead, where the
+     label is white. */
+  --gradient-card: linear-gradient(160deg, #ffffff 0%, #f2f8fe 45%, #dcecfd 100%);
+  /* One step stronger, for a box that should read as a panel rather than a
+     sheet of paper: stat tiles, empty states, the setup card. */
+  --gradient-panel: linear-gradient(160deg, #f4f9fe 0%, #dbeafd 60%, #cce5ff 100%);
+
   /* Per-module accents. Used for stat tiles, badges and module headers; the
      core chrome stays blue and white so the app reads as one product.
 
@@ -219,6 +229,11 @@
   --gradient-primary: linear-gradient(135deg, #e3f2fd 0%, #90caf9 100%);
   --gradient-primary-hover: linear-gradient(135deg, #ffffff 0%, #bbdefb 100%);
 
+  /* The same wash, in navy. Light text needs the card to stay dark, so this
+     leans on the blue rather than lightening it. */
+  --gradient-card: linear-gradient(160deg, #131c2e 0%, #15203a 55%, #16294a 100%);
+  --gradient-panel: linear-gradient(160deg, #15203a 0%, #16294a 60%, #173156 100%);
+
   --visa: #c084fc;
   --hajj: #34d399;
   --tour: #22d3ee;
@@ -267,6 +282,16 @@
   }
   .bg-gradient-primary:hover:not(:disabled) {
     background-image: var(--gradient-primary-hover);
+  }
+
+  /* Every box gets the wash from one place, so a card, a tile and an empty
+     state cannot drift apart. Both themes define the tokens, so neither needs
+     a dark: variant. */
+  .bg-gradient-card {
+    background-image: var(--gradient-card);
+  }
+  .bg-gradient-panel {
+    background-image: var(--gradient-panel);
   }
 }
 

@@ -6,7 +6,10 @@ function Card({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="card"
       className={cn(
-        "flex flex-col gap-6 rounded-xl border bg-card py-6 text-card-foreground shadow-sm",
+        // bg-card stays as the base colour underneath, so a card is still
+        // solid if the gradient is ever overridden; bg-gradient-card paints
+        // the brand's sky-blue wash over it (globals.css).
+        "flex flex-col gap-6 rounded-xl border bg-card bg-gradient-card py-6 text-card-foreground shadow-sm",
         className
       )}
       {...props}
