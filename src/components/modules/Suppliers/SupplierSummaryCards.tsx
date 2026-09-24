@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { Banknote, ShoppingCart, Truck, Wallet } from "lucide-react";
+import { RiCashLine, RiShoppingCartLine, RiTruckLine, RiWallet3Line } from "@remixicon/react";
 import StatsCard from "@/components/shared/StatsCard";
 import { formatCurrency, formatNumber } from "@/lib/format";
 import { getSupplierDashboard } from "@/services/supplier.services";
@@ -23,27 +23,27 @@ const SupplierSummaryCards = () => {
       <StatsCard
         title="Owed to suppliers"
         value={formatCurrency(summary?.totalCurrentPayable ?? 0)}
-        icon={Wallet}
+        icon={RiWallet3Line}
         accent={summary && summary.totalCurrentPayable > 0 ? "destructive" : "success"}
         hint="Opening + purchases − payments"
       />
       <StatsCard
         title="Purchased all time"
         value={formatCurrency(summary?.totalPurchase ?? 0)}
-        icon={ShoppingCart}
+        icon={RiShoppingCartLine}
         accent="primary"
         hint="Ticket cost, date changes included"
       />
       <StatsCard
         title="Paid all time"
         value={formatCurrency(summary?.totalPaid ?? 0)}
-        icon={Banknote}
+        icon={RiCashLine}
         accent="success"
       />
       <StatsCard
         title="Suppliers"
         value={formatNumber(summary?.totalSuppliers ?? 0)}
-        icon={Truck}
+        icon={RiTruckLine}
         accent="ledger"
         hint={
           summary?.totalOpeningPayable

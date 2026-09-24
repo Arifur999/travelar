@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Receipt } from "lucide-react";
+import { RiReceiptLine } from "@remixicon/react";
 import WalletStatementSheet from "@/components/modules/Wallet/WalletStatementSheet";
 import Loader from "@/components/shared/Loader";
 import { Button } from "@/components/ui/button";
@@ -115,7 +115,7 @@ const WalletHoldersTable = () => {
                             size="sm"
                             onClick={() => setStatementFor(holder)}
                           >
-                            <Receipt className="size-4" aria-hidden="true" />
+                            <RiReceiptLine className="size-4" aria-hidden="true" />
                             Statement
                           </Button>
                         </td>

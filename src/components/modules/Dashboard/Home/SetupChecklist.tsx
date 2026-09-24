@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, Check } from "lucide-react";
+import { RiArrowRightLine, RiCheckLine } from "@remixicon/react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { buildSetupSteps, isSetupComplete } from "@/lib/setupSteps";
@@ -58,7 +58,7 @@ const SetupChecklist = ({
                 )}
                 aria-hidden="true"
               >
-                {step.done ? <Check className="size-3.5" /> : index + 1}
+                {step.done ? <RiCheckLine className="size-3.5" /> : index + 1}
               </span>
 
               <div className="min-w-0 flex-1">
@@ -75,7 +75,7 @@ const SetupChecklist = ({
                 <Button asChild size="sm" variant="outline" className="shrink-0">
                   <Link href={step.href}>
                     {step.action}
-                    <ArrowRight className="size-3.5" aria-hidden="true" />
+                    <RiArrowRightLine className="size-3.5" aria-hidden="true" />
                   </Link>
                 </Button>
               )}

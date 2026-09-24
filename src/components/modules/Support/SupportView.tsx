@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useForm } from "@tanstack/react-form";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { MessageSquarePlus, Send } from "lucide-react";
+import { RiChatNewLine, RiSendPlaneLine } from "@remixicon/react";
 import { toast } from "sonner";
 import {
   addTicketMessageAction,
@@ -148,7 +148,7 @@ const SupportView = () => {
             </CardDescription>
           </div>
           <Button type="button" size="sm" onClick={() => setIsCreateOpen(true)}>
-            <MessageSquarePlus className="size-4" aria-hidden="true" />
+            <RiChatNewLine className="size-4" aria-hidden="true" />
             New ticket
           </Button>
         </CardHeader>
@@ -424,7 +424,7 @@ const SupportView = () => {
                   disabled={isSending || reply.trim().length === 0}
                   aria-label="Send reply"
                 >
-                  <Send className="size-4" aria-hidden="true" />
+                  <RiSendPlaneLine className="size-4" aria-hidden="true" />
                 </Button>
               </div>
             )}

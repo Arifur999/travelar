@@ -2,7 +2,13 @@
 
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
-import { AlertTriangle, Building2, LifeBuoy, TrendingUp, Wallet } from "lucide-react";
+import {
+  RiAlertLine,
+  RiArrowUpCircleLine,
+  RiBuilding2Line,
+  RiLifebuoyLine,
+  RiWallet3Line,
+} from "@remixicon/react";
 import Loader from "@/components/shared/Loader";
 import StatsCard from "@/components/shared/StatsCard";
 import StatusBadge from "@/components/shared/cell/StatusBadge";
@@ -48,14 +54,14 @@ const PlatformOverview = () => {
         <StatsCard
           title="Agencies"
           value={formatNumber(stats.totalAgencies)}
-          icon={Building2}
+          icon={RiBuilding2Line}
           accent="primary"
           hint={`${formatNumber(active)} paying, ${formatNumber(trial)} on trial`}
         />
         <StatsCard
           title="MRR"
           value={formatCurrency(stats.mrr)}
-          icon={TrendingUp}
+          icon={RiArrowUpCircleLine}
           accent="success"
           // Every active plan normalised to a 30-day month, so a yearly plan
           // counts a twelfth of its price rather than all of it.
@@ -64,14 +70,14 @@ const PlatformOverview = () => {
         <StatsCard
           title="Revenue to date"
           value={formatCurrency(stats.totalRevenue)}
-          icon={Wallet}
+          icon={RiWallet3Line}
           accent="ledger"
           hint={`${formatCurrency(stats.onlineRevenue)} online · ${formatCurrency(stats.manualRevenue)} manual`}
         />
         <StatsCard
           title="Open tickets"
           value={formatNumber(stats.openTickets)}
-          icon={LifeBuoy}
+          icon={RiLifebuoyLine}
           accent={stats.openTickets > 0 ? "expense" : "success"}
           hint="Open or in progress"
         />
@@ -79,7 +85,7 @@ const PlatformOverview = () => {
 
       {stats.expiringSoon > 0 && (
         <div className="flex flex-col gap-3 rounded-lg border border-warning/30 bg-warning/10 p-4 sm:flex-row sm:items-center">
-          <AlertTriangle className="size-5 shrink-0 text-warning" aria-hidden="true" />
+          <RiAlertLine className="size-5 shrink-0 text-warning" aria-hidden="true" />
           <p className="flex-1 text-sm">
             <span className="font-medium">
               {formatNumber(stats.expiringSoon)}{" "}

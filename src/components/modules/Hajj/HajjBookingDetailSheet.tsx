@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { BedDouble, HandCoins, RefreshCcw, Trash2 } from "lucide-react";
+import { RiDeleteBin6Line, RiHandCoinLine, RiHotelBedLine, RiRefreshLine } from "@remixicon/react";
 import { toast } from "sonner";
 import {
   assignHajjRoomAction,
@@ -309,7 +309,7 @@ const HajjBookingDetailSheet = ({
                 onClick={() => setIsPaymentOpen(true)}
                 disabled={current.dueAmount <= 0 || isFinal}
               >
-                <HandCoins className="size-4" aria-hidden="true" />
+                <RiHandCoinLine className="size-4" aria-hidden="true" />
                 Take payment
               </Button>
               <Button
@@ -319,7 +319,7 @@ const HajjBookingDetailSheet = ({
                 onClick={() => setIsStatusOpen(true)}
                 disabled={isFinal}
               >
-                <RefreshCcw className="size-4" aria-hidden="true" />
+                <RiRefreshLine className="size-4" aria-hidden="true" />
                 Change status
               </Button>
               <InvoiceButton kind="hajj" id={current.id} />
@@ -370,7 +370,7 @@ const HajjBookingDetailSheet = ({
             {/* Rooms */}
             <section>
               <h3 className="mb-2 flex items-center gap-2 text-sm font-medium">
-                <BedDouble className="size-4" aria-hidden="true" />
+                <RiHotelBedLine className="size-4" aria-hidden="true" />
                 Rooms
               </h3>
               <div className="grid gap-3 rounded-lg border p-3 sm:grid-cols-2">
@@ -482,7 +482,7 @@ const HajjBookingDetailSheet = ({
                                 onClick={() => setDeletingPayment(payment)}
                                 aria-label={`Reverse payment of ${formatCurrency(payment.amount)}`}
                               >
-                                <Trash2 className="size-3.5" aria-hidden="true" />
+                                <RiDeleteBin6Line className="size-3.5" aria-hidden="true" />
                               </Button>
                             </td>
                           )}

@@ -2,7 +2,7 @@
 
 import { useTransition } from "react";
 import Link from "next/link";
-import { KeyRound, LogOut, Settings, User } from "lucide-react";
+import { RiKey2Line, RiLogoutBoxRLine, RiSettings3Line, RiUserLine } from "@remixicon/react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -51,14 +51,14 @@ const UserMenu = ({ userInfo }: { userInfo: IUser }) => {
 
         <DropdownMenuItem asChild>
           <Link href="/my-profile">
-            <User className="size-4" aria-hidden="true" />
+            <RiUserLine className="size-4" aria-hidden="true" />
             My profile
           </Link>
         </DropdownMenuItem>
 
         <DropdownMenuItem asChild>
           <Link href="/change-password">
-            <KeyRound className="size-4" aria-hidden="true" />
+            <RiKey2Line className="size-4" aria-hidden="true" />
             Change password
           </Link>
         </DropdownMenuItem>
@@ -66,7 +66,7 @@ const UserMenu = ({ userInfo }: { userInfo: IUser }) => {
         {userInfo.role === "AGENCY_ADMIN" && (
           <DropdownMenuItem asChild>
             <Link href="/dashboard/settings">
-              <Settings className="size-4" aria-hidden="true" />
+              <RiSettings3Line className="size-4" aria-hidden="true" />
               Agency profile
             </Link>
           </DropdownMenuItem>
@@ -84,7 +84,7 @@ const UserMenu = ({ userInfo }: { userInfo: IUser }) => {
             });
           }}
         >
-          <LogOut className="size-4" aria-hidden="true" />
+          <RiLogoutBoxRLine className="size-4" aria-hidden="true" />
           {isPending ? "Signing out..." : "Sign out"}
         </DropdownMenuItem>
       </DropdownMenuContent>

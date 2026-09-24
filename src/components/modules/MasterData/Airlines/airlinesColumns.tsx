@@ -1,4 +1,4 @@
-import { PlaneTakeoff } from "lucide-react";
+import { RiFlightTakeoffLine } from "@remixicon/react";
 import DateCell from "@/components/shared/cell/DateCell";
 import { Badge } from "@/components/ui/badge";
 import { truncate } from "@/lib/format";
@@ -45,7 +45,7 @@ export const airlinesColumns: AppColumnDef<IAirline>[] = [
                 loading="lazy"
               />
             ) : (
-              <PlaneTakeoff className="size-4" aria-hidden="true" />
+              <RiFlightTakeoffLine className="size-4" aria-hidden="true" />
             )}
           </span>
           <span className="font-medium">{airline.name}</span>

@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { Plane, Plus, TrendingUp, Wallet } from "lucide-react";
+import { RiAddLine, RiArrowUpCircleLine, RiPlaneLine, RiWallet3Line } from "@remixicon/react";
 import { toast } from "sonner";
 import { deleteTicketAction } from "@/app/(dashboardLayout)/dashboard/tickets/_action";
 import ConfirmDialog from "@/components/shared/ConfirmDialog";
@@ -167,14 +167,14 @@ const TicketsTable = ({ initialQueryString, isAdmin }: TicketsTableProps) => {
         <StatsCard
           title="Sales"
           value={formatCurrency(summary?.totalSales ?? 0)}
-          icon={Plane}
+          icon={RiPlaneLine}
           accent="primary"
           hint="Fare + date change fees − refunds"
         />
         <StatsCard
           title="Profit"
           value={formatCurrency(summary?.totalProfit ?? 0)}
-          icon={TrendingUp}
+          icon={RiArrowUpCircleLine}
           accent={summary && summary.totalProfit < 0 ? "destructive" : "success"}
           // null rather than 0.0% when there are no sales — a measured zero and
           // "nothing sold yet" are different things.
@@ -183,13 +183,13 @@ const TicketsTable = ({ initialQueryString, isAdmin }: TicketsTableProps) => {
         <StatsCard
           title="Collected"
           value={formatCurrency(summary?.totalPaid ?? 0)}
-          icon={Wallet}
+          icon={RiWallet3Line}
           accent="success"
         />
         <StatsCard
           title="Outstanding"
           value={formatCurrency(summary?.totalDue ?? 0)}
-          icon={Wallet}
+          icon={RiWallet3Line}
           accent={summary && summary.totalDue > 0 ? "destructive" : "success"}
           hint="Across every ticket, not this page"
         />
@@ -223,7 +223,7 @@ const TicketsTable = ({ initialQueryString, isAdmin }: TicketsTableProps) => {
         }}
         toolbarAction={
           <Button type="button" onClick={() => setIsCreateOpen(true)}>
-            <Plus className="size-4" aria-hidden="true" />
+            <RiAddLine className="size-4" aria-hidden="true" />
             Issue ticket
           </Button>
         }

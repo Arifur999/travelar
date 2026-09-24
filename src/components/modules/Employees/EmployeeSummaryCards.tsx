@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { Banknote, CalendarCheck, Users } from "lucide-react";
+import { RiCalendarCheckLine, RiCashLine, RiGroupLine } from "@remixicon/react";
 import StatsCard from "@/components/shared/StatsCard";
 import { formatCurrency, formatNumber } from "@/lib/format";
 import { getAttendanceSummary, getEmployeeDashboard } from "@/services/employee.services";
@@ -26,7 +26,7 @@ const EmployeeSummaryCards = () => {
       <StatsCard
         title="Active staff"
         value={formatNumber(summary?.activeCount ?? 0)}
-        icon={Users}
+        icon={RiGroupLine}
         accent="primary"
         hint={
           summary?.resignedCount
@@ -37,19 +37,19 @@ const EmployeeSummaryCards = () => {
       <StatsCard
         title="Salary paid"
         value={formatCurrency(summary?.totalSalary ?? 0)}
-        icon={Banknote}
+        icon={RiCashLine}
         accent="expense"
       />
       <StatsCard
         title="Bonus paid"
         value={formatCurrency(summary?.totalBonus ?? 0)}
-        icon={Banknote}
+        icon={RiCashLine}
         accent="ledger"
       />
       <StatsCard
         title="Attendance"
         value={`${formatNumber(attendanceSummary?.presentCount ?? 0)} present`}
-        icon={CalendarCheck}
+        icon={RiCalendarCheckLine}
         accent="success"
         hint={
           attendanceSummary

@@ -1,7 +1,12 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { ArrowDownLeft, ArrowUpRight, Users, Wallet } from "lucide-react";
+import {
+  RiArrowLeftDownLine,
+  RiArrowRightUpLine,
+  RiGroupLine,
+  RiWallet3Line,
+} from "@remixicon/react";
 import StatsCard from "@/components/shared/StatsCard";
 import { formatCurrency, formatNumber } from "@/lib/format";
 import { getWalletSummary } from "@/services/wallet.services";
@@ -25,27 +30,27 @@ const WalletSummaryCards = () => {
       <StatsCard
         title="Held for customers"
         value={formatCurrency(summary?.totalHeld ?? 0)}
-        icon={Wallet}
+        icon={RiWallet3Line}
         accent="success"
         hint="Paid in but not yet used against an invoice"
       />
       <StatsCard
         title="Customers in credit"
         value={formatNumber(summary?.customersInCredit ?? 0)}
-        icon={Users}
+        icon={RiGroupLine}
         accent="primary"
       />
       <StatsCard
         title="Paid in"
         value={formatCurrency(summary?.paidIn ?? 0)}
-        icon={ArrowDownLeft}
+        icon={RiArrowLeftDownLine}
         accent="ledger"
         hint="Collections from these customers"
       />
       <StatsCard
         title="Used up"
         value={formatCurrency(summary?.usedUp ?? 0)}
-        icon={ArrowUpRight}
+        icon={RiArrowRightUpLine}
         accent="expense"
         hint="Settled against tickets, visas and packages"
       />

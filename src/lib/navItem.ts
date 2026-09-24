@@ -1,44 +1,44 @@
 import {
-  ArrowLeftRight,
-  Banknote,
-  BedDouble,
-  Building2,
-  CalendarCheck,
-  ChartColumn,
-  CreditCard,
-  FileCheck,
-  FileSpreadsheet,
-  HandCoins,
-  IdCard,
-  Landmark,
-  LayoutDashboard,
-  Layers,
-  LifeBuoy,
-  Luggage,
-  Map,
-  Megaphone,
-  MoonStar,
-  PiggyBank,
-  Plane,
-  PlaneTakeoff,
-  Receipt,
-  Route,
-  ScrollText,
-  Settings,
-  Settings2,
-  Tags,
-  Truck,
-  UserCog,
-  Users,
-  Wallet,
-  type LucideIcon,
-} from "lucide-react";
+  RiArrowLeftRightLine,
+  RiBankCardLine,
+  RiBankLine,
+  RiBarChartLine,
+  RiBuilding2Line,
+  RiCalendarCheckLine,
+  RiCashLine,
+  RiDashboardLine,
+  RiEqualizerLine,
+  RiFileExcel2Line,
+  RiFileList2Line,
+  RiFlightTakeoffLine,
+  RiFundsBoxLine,
+  RiGroupLine,
+  RiHandCoinLine,
+  RiHotelBedLine,
+  RiIdCardLine,
+  RiLifebuoyLine,
+  RiMegaphoneLine,
+  RiMoonClearLine,
+  RiPassportLine,
+  RiPlaneLine,
+  RiPriceTag3Line,
+  RiReceiptLine,
+  RiRoadMapLine,
+  RiRouteLine,
+  RiSettings3Line,
+  RiStackLine,
+  RiSuitcase2Line,
+  RiTruckLine,
+  RiUserSettingsLine,
+  RiWallet3Line,
+  type RemixiconComponentType,
+} from "@remixicon/react";
 import { type PlanFeature, type UserRole } from "@/types/enums.types";
 
 export interface NavItem {
   title: string;
   href: string;
-  icon: LucideIcon;
+  icon: RemixiconComponentType;
   /**
    * Submenu entries. A parent with children is not a link itself — the sidebar
    * turns it into a collapsible section, open while one of its children is the
@@ -96,8 +96,8 @@ export const agencyNavGroups: NavGroup[] = [
   {
     label: "Overview",
     items: [
-      { title: "Dashboard", href: "/dashboard", icon: LayoutDashboard, exact: true },
-      { title: "Reports", href: "/dashboard/reports", icon: ChartColumn, feature: "REPORTS" },
+      { title: "Dashboard", href: "/dashboard", icon: RiDashboardLine, exact: true },
+      { title: "Reports", href: "/dashboard/reports", icon: RiBarChartLine, feature: "REPORTS" },
     ],
   },
   {
@@ -106,12 +106,12 @@ export const agencyNavGroups: NavGroup[] = [
       {
         title: "Travel Services",
         href: "/dashboard/travel-services",
-        icon: Luggage,
+        icon: RiSuitcase2Line,
         children: [
-          { title: "Air Tickets", href: "/dashboard/tickets", icon: Plane, feature: "TICKETING" },
-          { title: "Visa", href: "/dashboard/visa", icon: FileCheck, feature: "VISA" },
-          { title: "Tours", href: "/dashboard/tours", icon: Map, feature: "TOURS" },
-          { title: "Hotel", href: "/dashboard/hotels", icon: BedDouble, feature: "HOTEL" },
+          { title: "Air Tickets", href: "/dashboard/tickets", icon: RiPlaneLine, feature: "TICKETING" },
+          { title: "Visa", href: "/dashboard/visa", icon: RiPassportLine, feature: "VISA" },
+          { title: "Tours", href: "/dashboard/tours", icon: RiRoadMapLine, feature: "TOURS" },
+          { title: "Hotel", href: "/dashboard/hotels", icon: RiHotelBedLine, feature: "HOTEL" },
         ],
       },
       {
@@ -120,19 +120,19 @@ export const agencyNavGroups: NavGroup[] = [
         // set up before a single pilgrim can be booked.
         title: "Hajj & Umrah",
         href: "/dashboard/hajj",
-        icon: MoonStar,
+        icon: RiMoonClearLine,
         feature: "HAJJ_UMRAH",
         children: [
           {
             title: "Packages",
             href: "/dashboard/hajj/packages",
-            icon: Layers,
+            icon: RiStackLine,
             feature: "HAJJ_UMRAH",
           },
           {
             title: "Bookings",
             href: "/dashboard/hajj",
-            icon: MoonStar,
+            icon: RiMoonClearLine,
             feature: "HAJJ_UMRAH",
             exact: true,
           },
@@ -144,17 +144,17 @@ export const agencyNavGroups: NavGroup[] = [
         // one balance.
         title: "Customers",
         href: "/dashboard/customers",
-        icon: Users,
+        icon: RiGroupLine,
         children: [
           {
             title: "Dashboard",
             href: "/dashboard/customers",
-            icon: LayoutDashboard,
+            icon: RiDashboardLine,
             exact: true,
           },
-          { title: "Collections", href: "/dashboard/collections", icon: HandCoins },
-          { title: "Clients List", href: "/dashboard/customers/list", icon: Users },
-          { title: "Ledger", href: "/dashboard/customers/ledger", icon: ScrollText },
+          { title: "Collections", href: "/dashboard/collections", icon: RiHandCoinLine },
+          { title: "Clients List", href: "/dashboard/customers/list", icon: RiGroupLine },
+          { title: "Ledger", href: "/dashboard/customers/ledger", icon: RiFileList2Line },
         ],
       },
     ],
@@ -165,48 +165,48 @@ export const agencyNavGroups: NavGroup[] = [
       {
         title: "Accounts",
         href: "/dashboard/accounts",
-        icon: Landmark,
+        icon: RiBankLine,
         feature: "EXPENSE",
         children: [
           {
             title: "Fund Transfer",
             href: "/dashboard/transfers",
-            icon: ArrowLeftRight,
+            icon: RiArrowLeftRightLine,
             feature: "EXPENSE",
           },
           {
             title: "Ledger",
             href: "/dashboard/accounts",
-            icon: ScrollText,
+            icon: RiFileList2Line,
             feature: "EXPENSE",
             exact: true,
           },
-          { title: "Wallet", href: "/dashboard/wallet", icon: Wallet },
+          { title: "Wallet", href: "/dashboard/wallet", icon: RiWallet3Line },
         ],
       },
       {
         title: "Expenses",
         href: "/dashboard/expenses",
-        icon: Receipt,
+        icon: RiReceiptLine,
         feature: "EXPENSE",
         children: [
           {
             title: "Dashboard",
             href: "/dashboard/expenses",
-            icon: LayoutDashboard,
+            icon: RiDashboardLine,
             feature: "EXPENSE",
             exact: true,
           },
           {
             title: "Category",
             href: "/dashboard/expenses/categories",
-            icon: Tags,
+            icon: RiPriceTag3Line,
             feature: "EXPENSE",
           },
           {
             title: "Transactions",
             href: "/dashboard/expenses/transactions",
-            icon: Receipt,
+            icon: RiReceiptLine,
             feature: "EXPENSE",
           },
         ],
@@ -214,7 +214,7 @@ export const agencyNavGroups: NavGroup[] = [
       {
         title: "Capital",
         href: "/dashboard/capital",
-        icon: PiggyBank,
+        icon: RiFundsBoxLine,
         feature: "EXPENSE",
         roles: ["AGENCY_ADMIN"],
       },
@@ -228,26 +228,26 @@ export const agencyNavGroups: NavGroup[] = [
         // money going out against them, and who they are.
         title: "Supplier",
         href: "/dashboard/suppliers",
-        icon: Truck,
+        icon: RiTruckLine,
         feature: "EXPENSE",
         children: [
           {
             title: "Dashboard",
             href: "/dashboard/suppliers",
-            icon: LayoutDashboard,
+            icon: RiDashboardLine,
             feature: "EXPENSE",
             exact: true,
           },
           {
             title: "Transactions",
             href: "/dashboard/suppliers/transactions",
-            icon: Banknote,
+            icon: RiCashLine,
             feature: "EXPENSE",
           },
           {
             title: "Supplier List",
             href: "/dashboard/suppliers/list",
-            icon: Truck,
+            icon: RiTruckLine,
             feature: "EXPENSE",
           },
         ],
@@ -255,14 +255,14 @@ export const agencyNavGroups: NavGroup[] = [
       {
         title: "Employees",
         href: "/dashboard/employees",
-        icon: IdCard,
+        icon: RiIdCardLine,
         feature: "EXPENSE",
         roles: ["AGENCY_ADMIN"],
         children: [
           {
             title: "Dashboard",
             href: "/dashboard/employees",
-            icon: LayoutDashboard,
+            icon: RiDashboardLine,
             feature: "EXPENSE",
             roles: ["AGENCY_ADMIN"],
             exact: true,
@@ -270,21 +270,21 @@ export const agencyNavGroups: NavGroup[] = [
           {
             title: "Transactions",
             href: "/dashboard/employees/transactions",
-            icon: Banknote,
+            icon: RiCashLine,
             feature: "EXPENSE",
             roles: ["AGENCY_ADMIN"],
           },
           {
             title: "Attendance",
             href: "/dashboard/employees/attendance",
-            icon: CalendarCheck,
+            icon: RiCalendarCheckLine,
             feature: "EXPENSE",
             roles: ["AGENCY_ADMIN"],
           },
           {
             title: "Employees List",
             href: "/dashboard/employees/list",
-            icon: IdCard,
+            icon: RiIdCardLine,
             feature: "EXPENSE",
             roles: ["AGENCY_ADMIN"],
           },
@@ -301,28 +301,28 @@ export const agencyNavGroups: NavGroup[] = [
         // person and the pages they open twenty times a day.
         title: "Setup",
         href: "/dashboard/setup",
-        icon: Settings2,
+        icon: RiEqualizerLine,
         children: [
           {
             title: "Airlines",
             href: "/dashboard/airlines",
-            icon: PlaneTakeoff,
+            icon: RiFlightTakeoffLine,
             feature: "TICKETING",
           },
-          { title: "Routes", href: "/dashboard/routes", icon: Route, feature: "TICKETING" },
+          { title: "Routes", href: "/dashboard/routes", icon: RiRouteLine, feature: "TICKETING" },
           // Visible to staff too: they can see who their teammates are, and
           // the page hides every change they are not allowed to make.
-          { title: "Team", href: "/dashboard/team", icon: UserCog },
+          { title: "Team", href: "/dashboard/team", icon: RiUserSettingsLine },
           {
             title: "Agency profile",
             href: "/dashboard/settings",
-            icon: Settings,
+            icon: RiSettings3Line,
             roles: ["AGENCY_ADMIN"],
           },
           {
             title: "Billing",
             href: "/dashboard/billing",
-            icon: CreditCard,
+            icon: RiBankCardLine,
             roles: ["AGENCY_ADMIN"],
           },
           {
@@ -331,7 +331,7 @@ export const agencyNavGroups: NavGroup[] = [
             // day-to-day menu.
             title: "Previous data",
             href: "/dashboard/previous-data",
-            icon: FileSpreadsheet,
+            icon: RiFileExcel2Line,
             roles: ["AGENCY_ADMIN"],
           },
         ],
@@ -339,10 +339,10 @@ export const agencyNavGroups: NavGroup[] = [
       {
         title: "Help",
         href: "/dashboard/help",
-        icon: LifeBuoy,
+        icon: RiLifebuoyLine,
         children: [
-          { title: "Support", href: "/dashboard/support", icon: LifeBuoy },
-          { title: "Announcements", href: "/dashboard/announcements", icon: Megaphone },
+          { title: "Support", href: "/dashboard/support", icon: RiLifebuoyLine },
+          { title: "Announcements", href: "/dashboard/announcements", icon: RiMegaphoneLine },
         ],
       },
     ],
@@ -358,17 +358,17 @@ export const platformNavGroups: NavGroup[] = [
   {
     label: "Platform",
     items: [
-      { title: "Overview", href: "/admin/dashboard", icon: LayoutDashboard, exact: true },
-      { title: "Agencies", href: "/admin/dashboard/agencies", icon: Building2 },
-      { title: "Plans", href: "/admin/dashboard/plans", icon: Layers },
+      { title: "Overview", href: "/admin/dashboard", icon: RiDashboardLine, exact: true },
+      { title: "Agencies", href: "/admin/dashboard/agencies", icon: RiBuilding2Line },
+      { title: "Plans", href: "/admin/dashboard/plans", icon: RiStackLine },
     ],
   },
   {
     label: "Operations",
     items: [
-      { title: "Support", href: "/admin/dashboard/support", icon: LifeBuoy },
-      { title: "Announcements", href: "/admin/dashboard/announcements", icon: Megaphone },
-      { title: "Activity log", href: "/admin/dashboard/activity", icon: ScrollText },
+      { title: "Support", href: "/admin/dashboard/support", icon: RiLifebuoyLine },
+      { title: "Announcements", href: "/admin/dashboard/announcements", icon: RiMegaphoneLine },
+      { title: "Activity log", href: "/admin/dashboard/activity", icon: RiFileList2Line },
     ],
   },
 ];

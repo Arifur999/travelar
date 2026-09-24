@@ -3,7 +3,12 @@
 import { useRef, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { CheckCircle2, FileSpreadsheet, PlayCircle, Upload } from "lucide-react";
+import {
+  RiCheckboxCircleLine,
+  RiFileExcel2Line,
+  RiPlayCircleLine,
+  RiUploadLine,
+} from "@remixicon/react";
 import { toast } from "sonner";
 import {
   previewImportAction,
@@ -328,7 +333,7 @@ const PreviousDataView = () => {
             </div>
 
             <Button type="submit" variant="outline" disabled={isPending || isStarting}>
-              <Upload className="size-4" aria-hidden="true" />
+              <RiUploadLine className="size-4" aria-hidden="true" />
               {isPending ? "Reading..." : "Read the file"}
             </Button>
 
@@ -339,7 +344,7 @@ const PreviousDataView = () => {
               onClick={() => handleImport()}
               disabled={isPending || isStarting}
             >
-              <PlayCircle className="size-4" aria-hidden="true" />
+              <RiPlayCircleLine className="size-4" aria-hidden="true" />
               {isStarting ? "Starting..." : "Import everything"}
             </Button>
           </form>
@@ -356,7 +361,7 @@ const PreviousDataView = () => {
         <Card className="border-info/40">
           <CardHeader>
             <div className="flex flex-wrap items-center gap-2">
-              <CheckCircle2 className="size-5 text-info" aria-hidden="true" />
+              <RiCheckboxCircleLine className="size-5 text-info" aria-hidden="true" />
               <CardTitle className="text-base">This spreadsheet is already in</CardTitle>
             </div>
             <CardDescription>
@@ -394,7 +399,7 @@ const PreviousDataView = () => {
           <Card>
             <CardHeader>
               <div className="flex items-center gap-2">
-                <FileSpreadsheet className="size-5 text-primary" aria-hidden="true" />
+                <RiFileExcel2Line className="size-5 text-primary" aria-hidden="true" />
                 <CardTitle>What this file would bring in</CardTitle>
               </div>
               <CardDescription>
@@ -437,7 +442,7 @@ const PreviousDataView = () => {
               history on top.
             </p>
             <Button type="button" onClick={() => handleImport()} disabled={isStarting}>
-              <PlayCircle className="size-4" aria-hidden="true" />
+              <RiPlayCircleLine className="size-4" aria-hidden="true" />
               {isStarting ? "Starting..." : "Import everything"}
             </Button>
           </div>

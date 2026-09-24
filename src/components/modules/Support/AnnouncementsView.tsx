@@ -2,7 +2,7 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { Check } from "lucide-react";
+import { RiCheckLine } from "@remixicon/react";
 import { toast } from "sonner";
 import { markAnnouncementReadAction } from "@/app/(dashboardLayout)/dashboard/support/_action";
 import Loader from "@/components/shared/Loader";
@@ -103,7 +103,7 @@ const AnnouncementsView = () => {
                     onClick={() => handleMarkRead(announcement.id)}
                     disabled={isPending}
                   >
-                    <Check className="size-3.5" aria-hidden="true" />
+                    <RiCheckLine className="size-3.5" aria-hidden="true" />
                     Mark as read
                   </Button>
                 )}

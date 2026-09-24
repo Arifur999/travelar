@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { UserCheck } from "lucide-react";
+import { RiUserFollowLine } from "@remixicon/react";
 import { toast } from "sonner";
 import { deleteAttendanceAction } from "@/app/(dashboardLayout)/dashboard/employees/_action";
 import ConfirmDialog from "@/components/shared/ConfirmDialog";
@@ -84,7 +84,7 @@ const EmployeeAttendanceTable = ({ initialQueryString }: { initialQueryString: s
         }}
         toolbarAction={
           <Button type="button" onClick={() => setIsRecordOpen(true)}>
-            <UserCheck className="size-4" aria-hidden="true" />
+            <RiUserFollowLine className="size-4" aria-hidden="true" />
             Record
           </Button>
         }

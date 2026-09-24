@@ -1,4 +1,9 @@
-import { HandCoins, PiggyBank, TrendingUp, Wallet } from "lucide-react";
+import {
+  RiArrowUpCircleLine,
+  RiFundsBoxLine,
+  RiHandCoinLine,
+  RiWallet3Line,
+} from "@remixicon/react";
 import StatsCard from "@/components/shared/StatsCard";
 import { monthOverMonth, totalSalesCount } from "@/lib/dashboardCharts";
 import {
@@ -37,7 +42,7 @@ const HeadlineCards = ({ summary }: { summary: IDashboardSummary }) => {
       <StatsCard
         title="Cash in hand"
         value={formatCurrency(cashFlow.accountBalance, { whole: true })}
-        icon={Wallet}
+        icon={RiWallet3Line}
         accent={cashFlow.accountBalance < 0 ? "destructive" : "ledger"}
         hint={
           accountCount === 0
@@ -49,7 +54,7 @@ const HeadlineCards = ({ summary }: { summary: IDashboardSummary }) => {
       <StatsCard
         title="Sales this month"
         value={formatCurrency(thisMonth.actualSales, { whole: true })}
-        icon={TrendingUp}
+        icon={RiArrowUpCircleLine}
         accent="primary"
         hint={salesHint}
       />
@@ -57,7 +62,7 @@ const HeadlineCards = ({ summary }: { summary: IDashboardSummary }) => {
       <StatsCard
         title="Profit this month"
         value={formatCurrency(thisMonth.actualProfit, { whole: true })}
-        icon={PiggyBank}
+        icon={RiFundsBoxLine}
         accent={thisMonth.actualProfit < 0 ? "destructive" : "success"}
         // Margin is null without sales — "0.0%" would read as a measured zero.
         hint={margin === null ? "No sales yet this month" : `${formatPercent(margin)} margin`}
@@ -66,7 +71,7 @@ const HeadlineCards = ({ summary }: { summary: IDashboardSummary }) => {
       <StatsCard
         title="Customers owe you"
         value={formatCurrency(cashFlow.customerDue, { whole: true })}
-        icon={HandCoins}
+        icon={RiHandCoinLine}
         accent="visa"
         hint={`You owe suppliers ${formatCurrency(cashFlow.supplierPayable, { whole: true })}`}
       />

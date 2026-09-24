@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "@tanstack/react-form";
 import { useMutation } from "@tanstack/react-query";
-import { Eye, EyeOff } from "lucide-react";
+import { RiEyeLine, RiEyeOffLine } from "@remixicon/react";
 import { toast } from "sonner";
 import { loginAction } from "@/app/(authLayout)/login/_action";
 import AppField from "@/components/shared/form/AppField";
@@ -99,9 +99,9 @@ const LoginForm = ({ redirectTo }: { redirectTo?: string }) => {
                 aria-label={showPassword ? "Hide password" : "Show password"}
               >
                 {showPassword ? (
-                  <EyeOff className="size-4" aria-hidden="true" />
+                  <RiEyeOffLine className="size-4" aria-hidden="true" />
                 ) : (
-                  <Eye className="size-4" aria-hidden="true" />
+                  <RiEyeLine className="size-4" aria-hidden="true" />
                 )}
               </Button>
             }

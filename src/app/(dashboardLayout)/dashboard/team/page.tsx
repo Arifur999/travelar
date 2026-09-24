@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { HydrationBoundary, QueryClient, dehydrate } from "@tanstack/react-query";
-import { ShieldCheck, UserRoundX, Users, UsersRound } from "lucide-react";
+import { RiGroupLine, RiShieldCheckLine, RiTeamLine, RiUserUnfollowLine } from "@remixicon/react";
 import TeamTable from "@/components/modules/Team/TeamTable";
 import PageHeader from "@/components/shared/PageHeader";
 import StatsCard from "@/components/shared/StatsCard";
@@ -54,13 +54,13 @@ const TeamPage = async ({ searchParams }: { searchParams: PageSearchParams }) =>
 
       {team && (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <StatsCard title="Members" value={formatNumber(team.total)} icon={Users} />
-          <StatsCard title="Admins" value={formatNumber(team.admins)} icon={ShieldCheck} accent="ledger" />
-          <StatsCard title="Staff" value={formatNumber(team.staff)} icon={UsersRound} accent="hajj" />
+          <StatsCard title="Members" value={formatNumber(team.total)} icon={RiGroupLine} />
+          <StatsCard title="Admins" value={formatNumber(team.admins)} icon={RiShieldCheckLine} accent="ledger" />
+          <StatsCard title="Staff" value={formatNumber(team.staff)} icon={RiTeamLine} accent="hajj" />
           <StatsCard
             title="Blocked"
             value={formatNumber(team.blocked)}
-            icon={UserRoundX}
+            icon={RiUserUnfollowLine}
             accent={team.blocked > 0 ? "destructive" : "primary"}
           />
         </div>

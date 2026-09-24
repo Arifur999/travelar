@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { AlertTriangle, Clock } from "lucide-react";
+import { RiAlertLine, RiTimeLine } from "@remixicon/react";
 import { Button } from "@/components/ui/button";
 import { daysUntil, formatDate } from "@/lib/format";
 import { type UserRole } from "@/types/enums.types";
@@ -31,7 +31,7 @@ const SubscriptionBanner = ({ myFeatures, role }: SubscriptionBannerProps) => {
 
     return (
       <div className="flex flex-col gap-3 rounded-lg border border-destructive/30 bg-destructive/10 p-4 sm:flex-row sm:items-center">
-        <AlertTriangle className="size-5 shrink-0 text-destructive" aria-hidden="true" />
+        <RiAlertLine className="size-5 shrink-0 text-destructive" aria-hidden="true" />
         <p className="flex-1 text-sm">
           <span className="font-medium">{reason}</span>{" "}
           <span className="text-muted-foreground">
@@ -52,7 +52,7 @@ const SubscriptionBanner = ({ myFeatures, role }: SubscriptionBannerProps) => {
 
     return (
       <div className="flex flex-col gap-3 rounded-lg border border-primary/30 bg-primary/5 p-4 sm:flex-row sm:items-center">
-        <Clock className="size-5 shrink-0 text-primary" aria-hidden="true" />
+        <RiTimeLine className="size-5 shrink-0 text-primary" aria-hidden="true" />
         <p className="flex-1 text-sm">
           <span className="font-medium">
             {daysLeft === null
@@ -81,7 +81,7 @@ const SubscriptionBanner = ({ myFeatures, role }: SubscriptionBannerProps) => {
 
   return (
     <div className="flex flex-col gap-3 rounded-lg border border-expense/30 bg-expense/5 p-4 sm:flex-row sm:items-center">
-      <Clock className="size-5 shrink-0 text-expense" aria-hidden="true" />
+      <RiTimeLine className="size-5 shrink-0 text-expense" aria-hidden="true" />
       <p className="flex-1 text-sm">
         <span className="font-medium">
           {daysLeft <= 1

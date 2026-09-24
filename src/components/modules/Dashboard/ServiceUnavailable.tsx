@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
-import { RefreshCw, ServerOff } from "lucide-react";
+import { RiCloudOffLine, RiRefreshLine } from "@remixicon/react";
 import { Button } from "@/components/ui/button";
 
 /**
@@ -22,7 +22,7 @@ const ServiceUnavailable = () => {
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
         <div className="mx-auto flex size-14 items-center justify-center rounded-full bg-muted">
-          <ServerOff className="size-7 text-muted-foreground" aria-hidden="true" />
+          <RiCloudOffLine className="size-7 text-muted-foreground" aria-hidden="true" />
         </div>
 
         <h1 className="mt-6 text-xl font-semibold">Can&apos;t reach Travelar right now</h1>
@@ -36,7 +36,7 @@ const ServiceUnavailable = () => {
           disabled={isRetrying}
           className="mt-6 rounded-full"
         >
-          <RefreshCw className={`size-4 ${isRetrying ? "animate-spin" : ""}`} aria-hidden="true" />
+          <RiRefreshLine className={`size-4 ${isRetrying ? "animate-spin" : ""}`} aria-hidden="true" />
           {isRetrying ? "Checking..." : "Try again"}
         </Button>
 

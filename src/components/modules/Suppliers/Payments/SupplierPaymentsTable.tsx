@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { Banknote, Plus, Receipt } from "lucide-react";
+import { RiAddLine, RiCashLine, RiReceiptLine } from "@remixicon/react";
 import { toast } from "sonner";
 import { deleteSupplierPaymentAction } from "@/app/(dashboardLayout)/dashboard/suppliers/transactions/_action";
 import ConfirmDialog from "@/components/shared/ConfirmDialog";
@@ -161,13 +161,13 @@ const SupplierPaymentsTable = ({
         <StatsCard
           title="Paid all time"
           value={formatCurrency(summary?.totalPaid ?? 0)}
-          icon={Banknote}
+          icon={RiCashLine}
           accent="success"
         />
         <StatsCard
           title="Payments recorded"
           value={formatNumber(summary?.totalCount ?? 0)}
-          icon={Receipt}
+          icon={RiReceiptLine}
           accent="primary"
         />
       </div>
@@ -200,7 +200,7 @@ const SupplierPaymentsTable = ({
         }}
         toolbarAction={
           <Button type="button" onClick={() => setIsCreateOpen(true)}>
-            <Plus className="size-4" aria-hidden="true" />
+            <RiAddLine className="size-4" aria-hidden="true" />
             Pay a supplier
           </Button>
         }

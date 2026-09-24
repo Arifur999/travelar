@@ -1,4 +1,4 @@
-import { ArrowRight } from "lucide-react";
+import { RiArrowRightLine } from "@remixicon/react";
 import DateCell from "@/components/shared/cell/DateCell";
 import MoneyCell from "@/components/shared/cell/MoneyCell";
 import { truncate } from "@/lib/format";
@@ -21,7 +21,7 @@ export const transfersColumns: AppColumnDef<IBalanceTransfer>[] = [
     cell: ({ row }) => (
       <div className="flex items-center gap-2 text-sm whitespace-nowrap">
         <span className="font-medium">{row.original.fromAccount.name}</span>
-        <ArrowRight className="size-3.5 shrink-0 text-muted-foreground" aria-hidden="true" />
+        <RiArrowRightLine className="size-3.5 shrink-0 text-muted-foreground" aria-hidden="true" />
         <span className="font-medium">{row.original.toAccount.name}</span>
       </div>
     ),

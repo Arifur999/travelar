@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { Plus } from "lucide-react";
+import { RiAddLine } from "@remixicon/react";
 import { toast } from "sonner";
 import { deleteTourAction } from "@/app/(dashboardLayout)/dashboard/tours/_action";
 import ConfirmDialog from "@/components/shared/ConfirmDialog";
@@ -71,7 +71,7 @@ const ToursPanel = ({ isAdmin }: { isAdmin: boolean }) => {
             </CardDescription>
           </div>
           <Button type="button" size="sm" variant="outline" onClick={() => setIsCreateOpen(true)}>
-            <Plus className="size-4" aria-hidden="true" />
+            <RiAddLine className="size-4" aria-hidden="true" />
             Add tour
           </Button>
         </CardHeader>

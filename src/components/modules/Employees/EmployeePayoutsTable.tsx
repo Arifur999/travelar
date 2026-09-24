@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { Plus } from "lucide-react";
+import { RiAddLine } from "@remixicon/react";
 import { toast } from "sonner";
 import { deletePayoutAction } from "@/app/(dashboardLayout)/dashboard/employees/_action";
 import ConfirmDialog from "@/components/shared/ConfirmDialog";
@@ -103,7 +103,7 @@ const EmployeePayoutsTable = ({
               </span>
             )}
             <Button type="button" onClick={() => setIsPayoutOpen(true)}>
-              <Plus className="size-4" aria-hidden="true" />
+              <RiAddLine className="size-4" aria-hidden="true" />
               Pay
             </Button>
           </div>

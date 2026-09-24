@@ -2,7 +2,12 @@
 
 import { useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { AlertTriangle, CheckCircle2, RefreshCw, XCircle } from "lucide-react";
+import {
+  RiAlertLine,
+  RiCheckboxCircleLine,
+  RiCloseCircleLine,
+  RiRefreshLine,
+} from "@remixicon/react";
 import { Button } from "@/components/ui/button";
 import { getImportRunAction } from "@/app/(dashboardLayout)/dashboard/previous-data/_action";
 import { Badge } from "@/components/ui/badge";
@@ -123,7 +128,7 @@ const ImportRunProgress = ({ importId, onSettled }: ImportRunProgressProps) => {
       <Card className="border-destructive/40">
         <CardHeader>
           <div className="flex items-center gap-2">
-            <XCircle className="size-5 text-destructive" aria-hidden="true" />
+            <RiCloseCircleLine className="size-5 text-destructive" aria-hidden="true" />
             <CardTitle className="text-base">Cannot tell how the import is going</CardTitle>
           </div>
           <CardDescription>
@@ -133,7 +138,7 @@ const ImportRunProgress = ({ importId, onSettled }: ImportRunProgressProps) => {
         </CardHeader>
         <CardContent>
           <Button type="button" variant="outline" onClick={() => void refetch()}>
-            <RefreshCw className="size-4" aria-hidden="true" />
+            <RiRefreshLine className="size-4" aria-hidden="true" />
             Check again
           </Button>
         </CardContent>
@@ -183,7 +188,7 @@ const ImportRunProgress = ({ importId, onSettled }: ImportRunProgressProps) => {
       <Card className="border-destructive/40">
         <CardHeader>
           <div className="flex items-center gap-2">
-            <XCircle className="size-5 text-destructive" aria-hidden="true" />
+            <RiCloseCircleLine className="size-5 text-destructive" aria-hidden="true" />
             <CardTitle className="text-base">The import stopped</CardTitle>
           </div>
           <CardDescription>{run.note ?? "Something went wrong part of the way through."}</CardDescription>
@@ -211,7 +216,7 @@ const ImportRunProgress = ({ importId, onSettled }: ImportRunProgressProps) => {
     <Card className="border-success/40">
       <CardHeader>
         <div className="flex flex-wrap items-center gap-2">
-          <CheckCircle2 className="size-5 text-success" aria-hidden="true" />
+          <RiCheckboxCircleLine className="size-5 text-success" aria-hidden="true" />
           <CardTitle className="text-base">
             {run.status === "REVERTED" ? "This import was undone" : "Everything is in"}
           </CardTitle>
@@ -266,7 +271,7 @@ const ImportRunProgress = ({ importId, onSettled }: ImportRunProgressProps) => {
         {problems.length > 0 && (
           <div className="space-y-2">
             <p className="flex items-start gap-2 text-sm">
-              <AlertTriangle className="mt-0.5 size-4 shrink-0 text-warning" aria-hidden="true" />
+              <RiAlertLine className="mt-0.5 size-4 shrink-0 text-warning" aria-hidden="true" />
               <span>
                 {formatNumber(problemCount)} {problemCount === 1 ? "row was" : "rows were"} left
                 out. Fix them in the sheet and upload it again — everything already in stays as it

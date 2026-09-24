@@ -1,7 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-react";
+import {
+  RiArrowLeftDoubleLine,
+  RiArrowLeftSLine,
+  RiArrowRightDoubleLine,
+  RiArrowRightSLine,
+} from "@remixicon/react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -148,7 +153,7 @@ const DataTablePagination = ({
             disabled={!canPrevious || disabled}
             aria-label="First page"
           >
-            <ChevronsLeft className="size-4" aria-hidden="true" />
+            <RiArrowLeftDoubleLine className="size-4" aria-hidden="true" />
           </Button>
           <Button
             type="button"
@@ -159,7 +164,7 @@ const DataTablePagination = ({
             disabled={!canPrevious || disabled}
             aria-label="Previous page"
           >
-            <ChevronLeft className="size-4" aria-hidden="true" />
+            <RiArrowLeftSLine className="size-4" aria-hidden="true" />
           </Button>
 
           {buildPageSlots(currentPage, safePageCount).map((slot, index) => {
@@ -208,7 +213,7 @@ const DataTablePagination = ({
             disabled={!canNext || disabled}
             aria-label="Next page"
           >
-            <ChevronRight className="size-4" aria-hidden="true" />
+            <RiArrowRightSLine className="size-4" aria-hidden="true" />
           </Button>
           <Button
             type="button"
@@ -219,7 +224,7 @@ const DataTablePagination = ({
             disabled={!canNext || disabled}
             aria-label="Last page"
           >
-            <ChevronsRight className="size-4" aria-hidden="true" />
+            <RiArrowRightDoubleLine className="size-4" aria-hidden="true" />
           </Button>
         </nav>
       </div>

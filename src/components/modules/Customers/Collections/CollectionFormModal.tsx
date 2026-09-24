@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useForm } from "@tanstack/react-form";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { Plus, X } from "lucide-react";
+import { RiAddLine, RiCloseLine } from "@remixicon/react";
 import { toast } from "sonner";
 import { createDueReceiptAction } from "@/app/(dashboardLayout)/dashboard/collections/_action";
 import AppField from "@/components/shared/form/AppField";
@@ -245,7 +245,7 @@ const CollectionFormModal = ({
                                 form.setFieldValue("amount2", "");
                               }}
                             >
-                              <X className="size-3" aria-hidden="true" />
+                              <RiCloseLine className="size-3" aria-hidden="true" />
                               Remove
                             </Button>
                           </div>
@@ -292,7 +292,7 @@ const CollectionFormModal = ({
                     onClick={() => setShowSplit(true)}
                     disabled={isPending}
                   >
-                    <Plus className="size-3.5" aria-hidden="true" />
+                    <RiAddLine className="size-3.5" aria-hidden="true" />
                     Split across two accounts
                   </Button>
                 )}

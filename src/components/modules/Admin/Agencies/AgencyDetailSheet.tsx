@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { CalendarPlus, Layers, ShieldCheck } from "lucide-react";
+import { RiCalendarEventLine, RiShieldCheckLine, RiStackLine } from "@remixicon/react";
 import { toast } from "sonner";
 import {
   assignPlanAction,
@@ -174,7 +174,7 @@ const AgencyDetailSheet = ({ open, onOpenChange, agency }: AgencyDetailSheetProp
               {/* Status */}
               <section className="space-y-2 rounded-lg border p-3">
                 <h3 className="flex items-center gap-2 text-sm font-medium">
-                  <ShieldCheck className="size-4" aria-hidden="true" />
+                  <RiShieldCheckLine className="size-4" aria-hidden="true" />
                   Status
                 </h3>
                 <p className="text-xs text-muted-foreground">
@@ -214,7 +214,7 @@ const AgencyDetailSheet = ({ open, onOpenChange, agency }: AgencyDetailSheetProp
               {/* Plan */}
               <section className="space-y-2 rounded-lg border p-3">
                 <h3 className="flex items-center gap-2 text-sm font-medium">
-                  <Layers className="size-4" aria-hidden="true" />
+                  <RiStackLine className="size-4" aria-hidden="true" />
                   Assign a plan
                 </h3>
                 <p className="text-xs text-muted-foreground">
@@ -251,7 +251,7 @@ const AgencyDetailSheet = ({ open, onOpenChange, agency }: AgencyDetailSheetProp
               {/* Trial */}
               <section className="space-y-2 rounded-lg border p-3">
                 <h3 className="flex items-center gap-2 text-sm font-medium">
-                  <CalendarPlus className="size-4" aria-hidden="true" />
+                  <RiCalendarEventLine className="size-4" aria-hidden="true" />
                   Extend trial
                 </h3>
                 <p className="text-xs text-muted-foreground">

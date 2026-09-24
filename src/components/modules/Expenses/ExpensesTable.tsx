@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { Plus } from "lucide-react";
+import { RiAddLine } from "@remixicon/react";
 import { toast } from "sonner";
 import { deleteExpenseAction } from "@/app/(dashboardLayout)/dashboard/expenses/_action";
 import ConfirmDialog from "@/components/shared/ConfirmDialog";
@@ -169,7 +169,7 @@ const ExpensesTable = ({ initialQueryString }: { initialQueryString: string }) =
         }}
         toolbarAction={
           <Button type="button" onClick={() => setIsCreateOpen(true)}>
-            <Plus className="size-4" aria-hidden="true" />
+            <RiAddLine className="size-4" aria-hidden="true" />
             Record expense
           </Button>
         }

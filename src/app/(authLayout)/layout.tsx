@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { Building2, MapPin, Plane } from "lucide-react";
+import { RiBuilding2Line, RiMapPinLine, RiPlaneLine } from "@remixicon/react";
 
 /**
  * The signed-out shell: one card floating on the photograph, the form on its
@@ -51,7 +51,7 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => (
               be kept true later. */}
           <div className="absolute top-8 left-8 flex items-center gap-3 rounded-2xl bg-slate-900/55 px-4 py-3 text-white backdrop-blur-md">
             <span className="flex size-9 items-center justify-center rounded-xl bg-white/20">
-              <Plane className="size-4" aria-hidden="true" />
+              <RiPlaneLine className="size-4" aria-hidden="true" />
             </span>
             <span className="text-sm leading-tight">
               Air tickets &amp; visas
@@ -61,7 +61,7 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => (
 
           <div className="absolute top-1/3 right-8 max-w-52 rounded-2xl bg-slate-900/55 px-4 py-3 text-white backdrop-blur-md">
             <p className="flex items-center gap-2 text-sm font-semibold">
-              <MapPin className="size-4" aria-hidden="true" />
+              <RiMapPinLine className="size-4" aria-hidden="true" />
               Hajj, Umrah &amp; tours
             </p>
             <p className="mt-1 text-xs text-white/80">
@@ -70,7 +70,7 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => (
           </div>
 
           <div className="absolute bottom-10 left-1/2 flex -translate-x-1/2 items-center gap-2 rounded-full bg-white/90 px-4 py-2 text-sm font-semibold whitespace-nowrap text-slate-900 backdrop-blur-md">
-            <Building2 className="size-4" aria-hidden="true" />
+            <RiBuilding2Line className="size-4" aria-hidden="true" />
             Every seat, every visa, every taka
           </div>
         </div>

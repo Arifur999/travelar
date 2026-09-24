@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { CalendarDays, Receipt, Tags } from "lucide-react";
+import { RiCalendar2Line, RiPriceTag3Line, RiReceiptLine } from "@remixicon/react";
 import StatsCard from "@/components/shared/StatsCard";
 import { formatCurrency } from "@/lib/format";
 import { getExpenseDashboard } from "@/services/expense.services";
@@ -20,26 +20,26 @@ const ExpenseSummaryCards = () => {
       <StatsCard
         title="Spent all time"
         value={formatCurrency(dashboard?.totalExpenses ?? 0)}
-        icon={Receipt}
+        icon={RiReceiptLine}
         accent="expense"
       />
       <StatsCard
         title="This month"
         value={formatCurrency(dashboard?.thisMonthTotal ?? 0)}
-        icon={CalendarDays}
+        icon={RiCalendar2Line}
         accent="expense"
       />
       <StatsCard
         title="This year"
         value={formatCurrency(dashboard?.thisYearTotal ?? 0)}
-        icon={CalendarDays}
+        icon={RiCalendar2Line}
         accent="ledger"
       />
       <StatsCard
         title="Biggest category"
         // null when nothing has been spent — "—" is honest, "0" would not be.
         value={dashboard?.topExpenseCategory?.name ?? "—"}
-        icon={Tags}
+        icon={RiPriceTag3Line}
         accent="primary"
         hint={
           dashboard?.topExpenseCategory

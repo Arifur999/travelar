@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { HandCoins, Receipt, Users, Wallet } from "lucide-react";
+import { RiGroupLine, RiHandCoinLine, RiReceiptLine, RiWallet3Line } from "@remixicon/react";
 import StatsCard from "@/components/shared/StatsCard";
 import { formatCurrency, formatNumber } from "@/lib/format";
 import { getCustomerDashboard } from "@/services/customer.services";
@@ -20,21 +20,21 @@ const CustomerSummaryCards = () => {
       <StatsCard
         title="Outstanding due"
         value={formatCurrency(summary?.totalCurrentDue ?? 0)}
-        icon={Wallet}
+        icon={RiWallet3Line}
         accent={summary && summary.totalCurrentDue > 0 ? "destructive" : "success"}
         hint="Opening + billed − collected − discount"
       />
       <StatsCard
         title="Billed all time"
         value={formatCurrency(summary?.totalPurchase ?? 0)}
-        icon={Receipt}
+        icon={RiReceiptLine}
         accent="primary"
         hint="Every sales module combined"
       />
       <StatsCard
         title="Collected all time"
         value={formatCurrency(summary?.totalCollections ?? 0)}
-        icon={HandCoins}
+        icon={RiHandCoinLine}
         accent="success"
         hint={
           summary?.totalDiscount
@@ -45,7 +45,7 @@ const CustomerSummaryCards = () => {
       <StatsCard
         title="Customers"
         value={formatNumber(summary?.totalCustomers ?? 0)}
-        icon={Users}
+        icon={RiGroupLine}
         accent="ledger"
         hint={
           summary?.totalOpeningDue

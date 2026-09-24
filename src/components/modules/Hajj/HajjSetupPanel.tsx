@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { Plus } from "lucide-react";
+import { RiAddLine } from "@remixicon/react";
 import { toast } from "sonner";
 import {
   deleteHajjBatchAction,
@@ -103,7 +103,7 @@ const HajjSetupPanel = () => {
               variant="outline"
               onClick={() => setIsPackageOpen(true)}
             >
-              <Plus className="size-4" aria-hidden="true" />
+              <RiAddLine className="size-4" aria-hidden="true" />
               Add package
             </Button>
           </CardHeader>
@@ -127,7 +127,7 @@ const HajjSetupPanel = () => {
               </CardDescription>
             </div>
             <Button type="button" size="sm" variant="outline" onClick={() => setIsBatchOpen(true)}>
-              <Plus className="size-4" aria-hidden="true" />
+              <RiAddLine className="size-4" aria-hidden="true" />
               Add batch
             </Button>
           </CardHeader>

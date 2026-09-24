@@ -1,7 +1,7 @@
 "use client";
 
 import { useTheme } from "next-themes";
-import { Moon, Sun } from "lucide-react";
+import { RiMoonLine, RiSunLine } from "@remixicon/react";
 import { Button } from "@/components/ui/button";
 
 /**
@@ -27,8 +27,8 @@ const ThemeToggle = () => {
       // label that flips would be announced wrongly on first paint.
       aria-label="Toggle theme"
     >
-      <Sun className="size-4 dark:hidden" aria-hidden="true" />
-      <Moon className="hidden size-4 dark:block" aria-hidden="true" />
+      <RiSunLine className="size-4 dark:hidden" aria-hidden="true" />
+      <RiMoonLine className="hidden size-4 dark:block" aria-hidden="true" />
     </Button>
   );
 };

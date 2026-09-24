@@ -2,7 +2,12 @@
 
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { CalendarRange, TrendingDown, TrendingUp, Wallet } from "lucide-react";
+import {
+  RiArrowDownCircleLine,
+  RiArrowUpCircleLine,
+  RiCalendarLine,
+  RiWallet3Line,
+} from "@remixicon/react";
 import Loader from "@/components/shared/Loader";
 import StatsCard from "@/components/shared/StatsCard";
 import { Button } from "@/components/ui/button";
@@ -83,26 +88,26 @@ const ReportsView = () => {
         <StatsCard
           title="In accounts"
           value={formatCurrency(flow?.accountBalance ?? 0)}
-          icon={Wallet}
+          icon={RiWallet3Line}
           accent="primary"
         />
         <StatsCard
           title="Owed to you"
           value={formatCurrency(flow?.customerDue ?? 0)}
-          icon={TrendingUp}
+          icon={RiArrowUpCircleLine}
           accent="success"
           hint={flow ? `${formatCurrency(flow.totalAssets)} total assets` : undefined}
         />
         <StatsCard
           title="You owe"
           value={formatCurrency(flow?.supplierPayable ?? 0)}
-          icon={TrendingDown}
+          icon={RiArrowDownCircleLine}
           accent="destructive"
         />
         <StatsCard
           title="Net position"
           value={formatCurrency(flow?.netCashFlow ?? 0)}
-          icon={Wallet}
+          icon={RiWallet3Line}
           accent="ledger"
           hint={
             flow
@@ -196,7 +201,7 @@ const ReportsView = () => {
                   onClick={() => setAppliedRange({ from, to })}
                   disabled={!from || !to || from > to}
                 >
-                  <CalendarRange className="size-4" aria-hidden="true" />
+                  <RiCalendarLine className="size-4" aria-hidden="true" />
                   Apply
                 </Button>
                 {from && to && from > to && (

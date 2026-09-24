@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { Banknote, PiggyBank, Plus, TrendingDown } from "lucide-react";
+import { RiAddLine, RiArrowDownCircleLine, RiCashLine, RiFundsBoxLine } from "@remixicon/react";
 import { toast } from "sonner";
 import {
   deleteCapitalFlowAction,
@@ -135,27 +135,27 @@ const CapitalPanel = ({ initialQueryString }: { initialQueryString: string }) =>
         <StatsCard
           title="Net investment"
           value={formatCurrency(summary?.netInvestment ?? 0)}
-          icon={PiggyBank}
+          icon={RiFundsBoxLine}
           accent="ledger"
           hint="Invested − withdrawn"
         />
         <StatsCard
           title="Invested"
           value={formatCurrency(summary?.totalInvest ?? 0)}
-          icon={Banknote}
+          icon={RiCashLine}
           accent="success"
         />
         <StatsCard
           title="Capital withdrawn"
           value={formatCurrency(summary?.totalWithdraw ?? 0)}
-          icon={TrendingDown}
+          icon={RiArrowDownCircleLine}
           accent="expense"
           hint="Reduces the stake"
         />
         <StatsCard
           title="Profit withdrawn"
           value={formatCurrency(withdrawalSummary?.totalWithdrawn ?? 0)}
-          icon={TrendingDown}
+          icon={RiArrowDownCircleLine}
           accent="destructive"
           hint="Does not reduce the stake"
         />
@@ -232,7 +232,7 @@ const CapitalPanel = ({ initialQueryString }: { initialQueryString: string }) =>
           }}
           toolbarAction={
             <Button type="button" onClick={() => setIsFlowOpen(true)}>
-              <Plus className="size-4" aria-hidden="true" />
+              <RiAddLine className="size-4" aria-hidden="true" />
               Record capital
             </Button>
           }
@@ -255,7 +255,7 @@ const CapitalPanel = ({ initialQueryString }: { initialQueryString: string }) =>
           }}
           toolbarAction={
             <Button type="button" variant="outline" onClick={() => setIsWithdrawalOpen(true)}>
-              <Plus className="size-4" aria-hidden="true" />
+              <RiAddLine className="size-4" aria-hidden="true" />
               Withdraw profit
             </Button>
           }

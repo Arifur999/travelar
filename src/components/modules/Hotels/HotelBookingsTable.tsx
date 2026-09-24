@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { BedDouble, HandCoins, Plus, Wallet } from "lucide-react";
+import { RiAddLine, RiHandCoinLine, RiHotelBedLine, RiWallet3Line } from "@remixicon/react";
 import { toast } from "sonner";
 import { deleteHotelBookingAction } from "@/app/(dashboardLayout)/dashboard/hotels/_action";
 import ConfirmDialog from "@/components/shared/ConfirmDialog";
@@ -124,27 +124,27 @@ const HotelBookingsTable = ({ initialQueryString, isAdmin }: HotelBookingsTableP
         <StatsCard
           title="Billed"
           value={formatCurrency(summary?.totalRevenue ?? 0)}
-          icon={BedDouble}
+          icon={RiHotelBedLine}
           accent="hotel"
           hint="Live bookings only"
         />
         <StatsCard
           title="Profit"
           value={formatCurrency(summary?.totalProfit ?? 0)}
-          icon={BedDouble}
+          icon={RiHotelBedLine}
           accent={summary && summary.totalProfit < 0 ? "destructive" : "success"}
           hint="Price less what the rooms cost"
         />
         <StatsCard
           title="Collected"
           value={formatCurrency(summary?.totalPaid ?? 0)}
-          icon={HandCoins}
+          icon={RiHandCoinLine}
           accent="success"
         />
         <StatsCard
           title="Outstanding"
           value={formatCurrency(summary?.totalDue ?? 0)}
-          icon={Wallet}
+          icon={RiWallet3Line}
           accent={summary && summary.totalDue > 0 ? "destructive" : "success"}
         />
       </div>
@@ -177,7 +177,7 @@ const HotelBookingsTable = ({ initialQueryString, isAdmin }: HotelBookingsTableP
         }}
         toolbarAction={
           <Button type="button" onClick={() => setIsCreateOpen(true)}>
-            <Plus className="size-4" aria-hidden="true" />
+            <RiAddLine className="size-4" aria-hidden="true" />
             New booking
           </Button>
         }

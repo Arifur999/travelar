@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Check, ChevronsUpDown, X } from "lucide-react";
+import { RiCheckLine, RiCloseLine, RiExpandUpDownLine } from "@remixicon/react";
 import { Button } from "@/components/ui/button";
 import {
   Command,
@@ -116,7 +116,7 @@ const SearchableSelect = ({
               placeholder
             )}
           </span>
-          <ChevronsUpDown className="size-4 shrink-0 opacity-50" aria-hidden="true" />
+          <RiExpandUpDownLine className="size-4 shrink-0 opacity-50" aria-hidden="true" />
         </Button>
       </PopoverTrigger>
 
@@ -136,7 +136,7 @@ const SearchableSelect = ({
                   }}
                   className="text-muted-foreground"
                 >
-                  <X className="size-4" aria-hidden="true" />
+                  <RiCloseLine className="size-4" aria-hidden="true" />
                   Clear selection
                 </CommandItem>
               )}
@@ -153,7 +153,7 @@ const SearchableSelect = ({
                     setOpen(false);
                   }}
                 >
-                  <Check
+                  <RiCheckLine
                     className={cn("size-4", option.value === value ? "opacity-100" : "opacity-0")}
                     aria-hidden="true"
                   />

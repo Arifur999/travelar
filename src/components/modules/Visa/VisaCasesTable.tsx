@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { FileCheck, HandCoins, Plus, Wallet } from "lucide-react";
+import { RiAddLine, RiFileCheckLine, RiHandCoinLine, RiWallet3Line } from "@remixicon/react";
 import { toast } from "sonner";
 import { deleteVisaCaseAction } from "@/app/(dashboardLayout)/dashboard/visa/_action";
 import ConfirmDialog from "@/components/shared/ConfirmDialog";
@@ -154,20 +154,20 @@ const VisaCasesTable = ({ initialQueryString, isAdmin }: VisaCasesTableProps) =>
         <StatsCard
           title="Billed"
           value={formatCurrency(summary?.totalRevenue ?? 0)}
-          icon={FileCheck}
+          icon={RiFileCheckLine}
           accent="visa"
           hint="Service + embassy fees"
         />
         <StatsCard
           title="Collected"
           value={formatCurrency(summary?.totalPaid ?? 0)}
-          icon={HandCoins}
+          icon={RiHandCoinLine}
           accent="success"
         />
         <StatsCard
           title="Outstanding"
           value={formatCurrency(summary?.totalDue ?? 0)}
-          icon={Wallet}
+          icon={RiWallet3Line}
           accent={summary && summary.totalDue > 0 ? "destructive" : "success"}
           hint="Across every case"
         />
@@ -201,7 +201,7 @@ const VisaCasesTable = ({ initialQueryString, isAdmin }: VisaCasesTableProps) =>
         }}
         toolbarAction={
           <Button type="button" onClick={() => setIsCreateOpen(true)}>
-            <Plus className="size-4" aria-hidden="true" />
+            <RiAddLine className="size-4" aria-hidden="true" />
             New case
           </Button>
         }

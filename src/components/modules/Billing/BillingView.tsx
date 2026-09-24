@@ -2,7 +2,12 @@
 
 import { useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { CalendarClock, Check, CreditCard, ExternalLink } from "lucide-react";
+import {
+  RiBankCardLine,
+  RiCalendarScheduleLine,
+  RiCheckLine,
+  RiExternalLinkLine,
+} from "@remixicon/react";
 import { toast } from "sonner";
 import {
   retryOrderAction,
@@ -199,7 +204,7 @@ const BillingView = ({ canPay, currentPlanId }: BillingViewProps) => {
                   <ul className="space-y-1.5">
                     {plan.features.map((feature) => (
                       <li key={feature} className="flex items-center gap-2 text-sm">
-                        <Check className="size-4 shrink-0 text-success" aria-hidden="true" />
+                        <RiCheckLine className="size-4 shrink-0 text-success" aria-hidden="true" />
                         {PLAN_FEATURE_LABELS[feature]}
                       </li>
                     ))}
@@ -220,7 +225,7 @@ const BillingView = ({ canPay, currentPlanId }: BillingViewProps) => {
                         </>
                       ) : (
                         <>
-                          <CreditCard className="size-4" aria-hidden="true" />
+                          <RiBankCardLine className="size-4" aria-hidden="true" />
                           {isCurrent ? "Renew" : "Choose plan"}
                         </>
                       )}
@@ -317,7 +322,7 @@ const BillingView = ({ canPay, currentPlanId }: BillingViewProps) => {
                                 onClick={() => handleRetry(row.reference!)}
                                 disabled={isRetrying}
                               >
-                                <ExternalLink className="size-3.5" aria-hidden="true" />
+                                <RiExternalLinkLine className="size-3.5" aria-hidden="true" />
                                 Retry
                               </Button>
                             )}
@@ -332,7 +337,7 @@ const BillingView = ({ canPay, currentPlanId }: BillingViewProps) => {
           )}
 
           <p className="mt-3 flex items-start gap-2 text-xs text-muted-foreground">
-            <CalendarClock className="mt-0.5 size-3.5 shrink-0" aria-hidden="true" />
+            <RiCalendarScheduleLine className="mt-0.5 size-3.5 shrink-0" aria-hidden="true" />
             A payment is only ever confirmed by the gateway calling us back, not by the browser
             returning — so a plan activates a moment after you are sent back here.
           </p>

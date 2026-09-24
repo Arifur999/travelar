@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useForm } from "@tanstack/react-form";
 import { useMutation } from "@tanstack/react-query";
-import { MailCheck } from "lucide-react";
+import { RiMailCheckLine } from "@remixicon/react";
 import { toast } from "sonner";
 import { forgotPasswordAction } from "@/app/(authLayout)/forgot-password/_action";
 import AppField from "@/components/shared/form/AppField";
@@ -47,7 +47,7 @@ const ForgotPasswordForm = () => {
     return (
       <div className="space-y-5 text-center" role="status">
         <span className="mx-auto flex size-12 items-center justify-center rounded-full bg-primary/10 text-primary">
-          <MailCheck className="size-6" aria-hidden="true" />
+          <RiMailCheckLine className="size-6" aria-hidden="true" />
         </span>
         <div className="space-y-2">
           <p className="font-medium">Check your inbox</p>

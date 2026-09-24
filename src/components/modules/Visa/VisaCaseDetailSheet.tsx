@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { HandCoins, Plus, RefreshCcw, Trash2 } from "lucide-react";
+import { RiAddLine, RiDeleteBin6Line, RiHandCoinLine, RiRefreshLine } from "@remixicon/react";
 import { toast } from "sonner";
 import {
   addVisaDocumentAction,
@@ -163,7 +163,7 @@ const VisaCaseDetailSheet = ({
                 onClick={() => setIsPaymentOpen(true)}
                 disabled={current.dueAmount <= 0}
               >
-                <HandCoins className="size-4" aria-hidden="true" />
+                <RiHandCoinLine className="size-4" aria-hidden="true" />
                 Take payment
               </Button>
               <Button
@@ -173,7 +173,7 @@ const VisaCaseDetailSheet = ({
                 onClick={() => setIsStatusOpen(true)}
                 disabled={isFinal}
               >
-                <RefreshCcw className="size-4" aria-hidden="true" />
+                <RiRefreshLine className="size-4" aria-hidden="true" />
                 Move forward
               </Button>
               <InvoiceButton kind="visa" id={current.id} />
@@ -306,7 +306,7 @@ const VisaCaseDetailSheet = ({
                         }}
                         aria-label={`Remove ${document.title}`}
                       >
-                        <Trash2 className="size-3.5" aria-hidden="true" />
+                        <RiDeleteBin6Line className="size-3.5" aria-hidden="true" />
                       </Button>
                     </li>
                   ))}
@@ -332,7 +332,7 @@ const VisaCaseDetailSheet = ({
                       onClick={handleAddDocument}
                       disabled={isAdding || newDocument.trim().length < 2}
                     >
-                      <Plus className="size-3.5" aria-hidden="true" />
+                      <RiAddLine className="size-3.5" aria-hidden="true" />
                       Add
                     </Button>
                   </li>
@@ -384,7 +384,7 @@ const VisaCaseDetailSheet = ({
                                 onClick={() => setDeletingPayment(payment)}
                                 aria-label={`Reverse payment of ${formatCurrency(payment.amount)}`}
                               >
-                                <Trash2 className="size-3.5" aria-hidden="true" />
+                                <RiDeleteBin6Line className="size-3.5" aria-hidden="true" />
                               </Button>
                             </td>
                           )}

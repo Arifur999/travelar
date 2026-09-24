@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { Send } from "lucide-react";
+import { RiSendPlaneLine } from "@remixicon/react";
 import { toast } from "sonner";
 import {
   replyToTicketAction,
@@ -323,7 +323,7 @@ const AdminSupportView = ({ initialQueryString }: { initialQueryString: string }
                 disabled={isSending || reply.trim().length === 0}
                 aria-label="Send reply"
               >
-                <Send className="size-4" aria-hidden="true" />
+                <RiSendPlaneLine className="size-4" aria-hidden="true" />
               </Button>
             </div>
           </div>

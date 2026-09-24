@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useForm } from "@tanstack/react-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { Copy, Eye, EyeOff, RefreshCw } from "lucide-react";
+import { RiEyeLine, RiEyeOffLine, RiFileCopyLine, RiRefreshLine } from "@remixicon/react";
 import { toast } from "sonner";
 import { createTeamMemberAction } from "@/app/(dashboardLayout)/dashboard/team/_action";
 import AppField from "@/components/shared/form/AppField";
@@ -187,9 +187,9 @@ const AddMemberFormModal = ({ open, onOpenChange, viewer }: AddMemberFormModalPr
                       aria-label={showPassword ? "Hide password" : "Show password"}
                     >
                       {showPassword ? (
-                        <EyeOff className="size-4" aria-hidden="true" />
+                        <RiEyeOffLine className="size-4" aria-hidden="true" />
                       ) : (
-                        <Eye className="size-4" aria-hidden="true" />
+                        <RiEyeLine className="size-4" aria-hidden="true" />
                       )}
                     </button>
                   }
@@ -205,7 +205,7 @@ const AddMemberFormModal = ({ open, onOpenChange, viewer }: AddMemberFormModalPr
                       setShowPassword(true);
                     }}
                   >
-                    <RefreshCw className="size-3.5" aria-hidden="true" />
+                    <RiRefreshLine className="size-3.5" aria-hidden="true" />
                     Generate
                   </Button>
                   <Button
@@ -215,7 +215,7 @@ const AddMemberFormModal = ({ open, onOpenChange, viewer }: AddMemberFormModalPr
                     disabled={isPending || !field.state.value}
                     onClick={copyPassword}
                   >
-                    <Copy className="size-3.5" aria-hidden="true" />
+                    <RiFileCopyLine className="size-3.5" aria-hidden="true" />
                     Copy
                   </Button>
                 </div>

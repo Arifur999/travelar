@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { RefreshCw } from "lucide-react";
+import { RiRefreshLine } from "@remixicon/react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -55,7 +55,7 @@ const DashboardHome = ({ features }: { features: PlanFeature[] }) => {
         <CardContent className="flex flex-col items-center gap-3 py-10 text-center">
           <p className="text-sm text-muted-foreground">Your figures could not be loaded just now.</p>
           <Button size="sm" variant="outline" onClick={() => refetch()} disabled={isRefetching}>
-            <RefreshCw className={isRefetching ? "size-4 animate-spin" : "size-4"} aria-hidden="true" />
+            <RiRefreshLine className={isRefetching ? "size-4 animate-spin" : "size-4"} aria-hidden="true" />
             Try again
           </Button>
         </CardContent>

@@ -3,7 +3,7 @@
 import { useForm } from "@tanstack/react-form";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { Megaphone } from "lucide-react";
+import { RiMegaphoneLine } from "@remixicon/react";
 import { toast } from "sonner";
 import {
   createAnnouncementAction,
@@ -171,7 +171,7 @@ const AdminAnnouncementsView = ({ queryString }: { queryString: string }) => {
                   disabled={!canSubmit}
                   className="w-auto"
                 >
-                  <Megaphone className="size-4" aria-hidden="true" />
+                  <RiMegaphoneLine className="size-4" aria-hidden="true" />
                   Publish
                 </AppSubmitButton>
               )}

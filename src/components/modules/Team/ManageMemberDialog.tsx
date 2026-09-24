@@ -4,7 +4,14 @@ import { useState } from "react";
 import { useForm } from "@tanstack/react-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { Copy, KeyRound, Lock, RefreshCw, ShieldAlert, Unlock } from "lucide-react";
+import {
+  RiFileCopyLine,
+  RiKey2Line,
+  RiLockLine,
+  RiLockUnlockLine,
+  RiRefreshLine,
+  RiShieldFlashLine,
+} from "@remixicon/react";
 import { toast } from "sonner";
 import {
   resetTeamMemberPasswordAction,
@@ -181,7 +188,7 @@ const ManageMemberDialog = ({ open, onOpenChange, member, viewer }: ManageMember
 
           {blocker ? (
             <div className="flex items-start gap-3 rounded-lg border bg-muted/40 p-3 text-sm">
-              <ShieldAlert className="mt-0.5 size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+              <RiShieldFlashLine className="mt-0.5 size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
               <p>{blocker}</p>
             </div>
           ) : (
@@ -268,9 +275,9 @@ const ManageMemberDialog = ({ open, onOpenChange, member, viewer }: ManageMember
                     onClick={() => setIsConfirmingStatus(true)}
                   >
                     {isBlocked ? (
-                      <Unlock className="size-3.5" aria-hidden="true" />
+                      <RiLockUnlockLine className="size-3.5" aria-hidden="true" />
                     ) : (
-                      <Lock className="size-3.5" aria-hidden="true" />
+                      <RiLockLine className="size-3.5" aria-hidden="true" />
                     )}
                     {isBlocked ? "Reactivate" : "Block"}
                   </Button>
@@ -309,7 +316,7 @@ const ManageMemberDialog = ({ open, onOpenChange, member, viewer }: ManageMember
                       onClick={() => setNewPassword(generateTemporaryPassword())}
                       aria-label="Generate a password"
                     >
-                      <RefreshCw className="size-4" aria-hidden="true" />
+                      <RiRefreshLine className="size-4" aria-hidden="true" />
                     </Button>
                     <Button
                       type="button"
@@ -319,7 +326,7 @@ const ManageMemberDialog = ({ open, onOpenChange, member, viewer }: ManageMember
                       onClick={copyNewPassword}
                       aria-label="Copy the password"
                     >
-                      <Copy className="size-4" aria-hidden="true" />
+                      <RiFileCopyLine className="size-4" aria-hidden="true" />
                     </Button>
                   </div>
                   {passwordError && (
@@ -335,7 +342,7 @@ const ManageMemberDialog = ({ open, onOpenChange, member, viewer }: ManageMember
                     disabled={isBusy || newPassword.length < 8}
                     onClick={handleReset}
                   >
-                    <KeyRound className="size-3.5" aria-hidden="true" />
+                    <RiKey2Line className="size-3.5" aria-hidden="true" />
                     {isResetting ? "Resetting..." : "Reset password"}
                   </Button>
                 </div>

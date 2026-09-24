@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { UserPlus } from "lucide-react";
+import { RiUserAddLine } from "@remixicon/react";
 import { toast } from "sonner";
 import { removeTeamMemberAction } from "@/app/(dashboardLayout)/dashboard/team/_action";
 import ConfirmDialog from "@/components/shared/ConfirmDialog";
@@ -140,7 +140,7 @@ const TeamTable = ({ initialQueryString, viewer }: TeamTableProps) => {
         toolbarAction={
           isAdmin ? (
             <Button type="button" onClick={() => setIsAddOpen(true)}>
-              <UserPlus className="size-4" aria-hidden="true" />
+              <RiUserAddLine className="size-4" aria-hidden="true" />
               Add member
             </Button>
           ) : undefined

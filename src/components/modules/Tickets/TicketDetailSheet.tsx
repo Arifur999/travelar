@@ -3,7 +3,12 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { CalendarSync, HandCoins, RefreshCcw, Trash2 } from "lucide-react";
+import {
+  RiCalendarTodoLine,
+  RiDeleteBin6Line,
+  RiHandCoinLine,
+  RiRefreshLine,
+} from "@remixicon/react";
 import { toast } from "sonner";
 import { deleteTicketPaymentAction } from "@/app/(dashboardLayout)/dashboard/tickets/_action";
 import ConfirmDialog from "@/components/shared/ConfirmDialog";
@@ -155,7 +160,7 @@ const TicketDetailSheet = ({
                 onClick={() => setIsPaymentOpen(true)}
                 disabled={current.dueAmount <= 0}
               >
-                <HandCoins className="size-4" aria-hidden="true" />
+                <RiHandCoinLine className="size-4" aria-hidden="true" />
                 Take payment
               </Button>
               <Button
@@ -165,7 +170,7 @@ const TicketDetailSheet = ({
                 onClick={() => setIsDateChangeOpen(true)}
                 disabled={isFinal}
               >
-                <CalendarSync className="size-4" aria-hidden="true" />
+                <RiCalendarTodoLine className="size-4" aria-hidden="true" />
                 {current.dateChangedAt ? "Update date change" : "Change date"}
               </Button>
               <Button
@@ -175,7 +180,7 @@ const TicketDetailSheet = ({
                 onClick={() => setIsStatusOpen(true)}
                 disabled={isFinal}
               >
-                <RefreshCcw className="size-4" aria-hidden="true" />
+                <RiRefreshLine className="size-4" aria-hidden="true" />
                 Change status
               </Button>
               <InvoiceButton kind="ticket" id={current.id} />
@@ -306,7 +311,7 @@ const TicketDetailSheet = ({
                                 onClick={() => setDeletingPayment(payment)}
                                 aria-label={`Reverse payment of ${formatCurrency(payment.amount)}`}
                               >
-                                <Trash2 className="size-3.5" aria-hidden="true" />
+                                <RiDeleteBin6Line className="size-3.5" aria-hidden="true" />
                               </Button>
                             </td>
                           )}

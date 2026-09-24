@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { History, RefreshCw, Undo2 } from "lucide-react";
+import { RiArrowGoBackLine, RiHistoryLine, RiRefreshLine } from "@remixicon/react";
 import { toast } from "sonner";
 import {
   getImportRunsAction,
@@ -153,7 +153,7 @@ const ImportHistory = ({ onSelect, liveElsewhere }: ImportHistoryProps) => {
         </CardHeader>
         <CardContent>
           <Button type="button" variant="outline" onClick={() => void refetch()}>
-            <RefreshCw className="size-4" aria-hidden="true" />
+            <RiRefreshLine className="size-4" aria-hidden="true" />
             Try again
           </Button>
         </CardContent>
@@ -168,7 +168,7 @@ const ImportHistory = ({ onSelect, liveElsewhere }: ImportHistoryProps) => {
       <Card>
         <CardHeader>
           <div className="flex items-center gap-2">
-            <History className="size-5 text-muted-foreground" aria-hidden="true" />
+            <RiHistoryLine className="size-5 text-muted-foreground" aria-hidden="true" />
             <CardTitle className="text-base">What you have uploaded before</CardTitle>
           </div>
           <CardDescription>
@@ -235,7 +235,7 @@ const ImportHistory = ({ onSelect, liveElsewhere }: ImportHistoryProps) => {
                           disabled={run.status === "RUNNING" || run.status === "REVERTED"}
                           onClick={() => setUndoing(run)}
                         >
-                          <Undo2 className="size-4" aria-hidden="true" />
+                          <RiArrowGoBackLine className="size-4" aria-hidden="true" />
                           Undo
                         </Button>
                       </td>

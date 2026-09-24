@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { Pencil, Plus, Trash2 } from "lucide-react";
+import { RiAddLine, RiDeleteBin6Line, RiPencilLine } from "@remixicon/react";
 import { toast } from "sonner";
 import { deleteCategoryAction } from "@/app/(dashboardLayout)/dashboard/expenses/_action";
 import ConfirmDialog from "@/components/shared/ConfirmDialog";
@@ -76,7 +76,7 @@ const CategoryBreakdown = () => {
             </CardDescription>
           </div>
           <Button type="button" size="sm" variant="outline" onClick={() => setIsCreateOpen(true)}>
-            <Plus className="size-4" aria-hidden="true" />
+            <RiAddLine className="size-4" aria-hidden="true" />
             Add category
           </Button>
         </CardHeader>
@@ -124,7 +124,7 @@ const CategoryBreakdown = () => {
                             onClick={() => setEditing(category)}
                             aria-label={`Edit ${row.name}`}
                           >
-                            <Pencil className="size-3.5" aria-hidden="true" />
+                            <RiPencilLine className="size-3.5" aria-hidden="true" />
                           </Button>
                           <Button
                             type="button"
@@ -134,7 +134,7 @@ const CategoryBreakdown = () => {
                             onClick={() => setDeleting(category)}
                             aria-label={`Delete ${row.name}`}
                           >
-                            <Trash2 className="size-3.5" aria-hidden="true" />
+                            <RiDeleteBin6Line className="size-3.5" aria-hidden="true" />
                           </Button>
                         </span>
                       )}

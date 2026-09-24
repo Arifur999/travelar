@@ -2,7 +2,7 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { MailCheck, Play } from "lucide-react";
+import { RiMailCheckLine, RiPlayLine } from "@remixicon/react";
 import { toast } from "sonner";
 import { runSubscriptionLifecycleAction } from "@/app/(dashboardLayout)/admin/dashboard/_action";
 import { Button } from "@/components/ui/button";
@@ -52,7 +52,7 @@ const SubscriptionLifecycleCard = () => {
       <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div className="space-y-1.5">
           <CardTitle className="flex items-center gap-2">
-            <MailCheck className="size-4 text-primary" aria-hidden="true" />
+            <RiMailCheckLine className="size-4 text-primary" aria-hidden="true" />
             Subscription emails and expiry
           </CardTitle>
           <CardDescription>
@@ -62,7 +62,7 @@ const SubscriptionLifecycleCard = () => {
           </CardDescription>
         </div>
         <Button type="button" variant="outline" size="sm" onClick={handleRun} disabled={isPending} className="shrink-0">
-          <Play className="size-3.5" aria-hidden="true" />
+          <RiPlayLine className="size-3.5" aria-hidden="true" />
           {isPending ? "Running..." : "Run now"}
         </Button>
       </CardHeader>

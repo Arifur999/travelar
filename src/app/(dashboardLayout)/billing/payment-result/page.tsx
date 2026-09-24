@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { CheckCircle2, CircleSlash, HelpCircle, XCircle } from "lucide-react";
+import {
+  RiCheckboxCircleLine,
+  RiCloseCircleLine,
+  RiForbidLine,
+  RiQuestionLine,
+} from "@remixicon/react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getOrderStatus } from "@/services/billing.services";
@@ -22,19 +27,19 @@ export const metadata: Metadata = { title: "Payment result" };
  */
 const RESULTS = {
   success: {
-    icon: CheckCircle2,
+    icon: RiCheckboxCircleLine,
     tone: "text-success",
     title: "Payment received",
     body: "Your plan activates as soon as the gateway confirms it with us, which is usually immediate.",
   },
   failed: {
-    icon: XCircle,
+    icon: RiCloseCircleLine,
     tone: "text-destructive",
     title: "Payment failed",
     body: "Nothing was charged. You can start again from the billing page.",
   },
   cancelled: {
-    icon: CircleSlash,
+    icon: RiForbidLine,
     tone: "text-muted-foreground",
     title: "Payment cancelled",
     body: "You stopped before paying, so nothing was charged.",
@@ -42,7 +47,7 @@ const RESULTS = {
 } as const;
 
 const UNKNOWN = {
-  icon: HelpCircle,
+  icon: RiQuestionLine,
   tone: "text-muted-foreground",
   title: "Payment result",
   body: "We could not tell how this attempt ended. The recorded status below is what actually happened.",

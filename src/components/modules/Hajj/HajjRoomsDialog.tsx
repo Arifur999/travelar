@@ -3,7 +3,7 @@
 import { useForm } from "@tanstack/react-form";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { Plus, Trash2 } from "lucide-react";
+import { RiAddLine, RiDeleteBin6Line } from "@remixicon/react";
 import { toast } from "sonner";
 import {
   createHajjRoomAction,
@@ -183,7 +183,7 @@ const HajjRoomsDialog = ({ open, onOpenChange, batch }: HajjRoomsDialogProps) =>
                   }}
                   aria-label={`Remove room ${room.roomNumber}`}
                 >
-                  <Trash2 className="size-3.5" aria-hidden="true" />
+                  <RiDeleteBin6Line className="size-3.5" aria-hidden="true" />
                 </Button>
               </li>
             ))}
@@ -261,7 +261,7 @@ const HajjRoomsDialog = ({ open, onOpenChange, batch }: HajjRoomsDialogProps) =>
                 disabled={!canSubmit}
                 className="w-auto"
               >
-                <Plus className="size-4" aria-hidden="true" />
+                <RiAddLine className="size-4" aria-hidden="true" />
                 Add room
               </AppSubmitButton>
             )}

@@ -4,7 +4,7 @@ import { useCallback, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "@tanstack/react-form";
 import { useMutation } from "@tanstack/react-query";
-import { Eye, EyeOff } from "lucide-react";
+import { RiEyeLine, RiEyeOffLine } from "@remixicon/react";
 import { toast } from "sonner";
 import { changePasswordAction } from "@/app/(dashboardLayout)/change-password/_action";
 import AppField from "@/components/shared/form/AppField";
@@ -74,9 +74,9 @@ const ChangePasswordForm = () => {
       aria-label={showPassword ? "Hide passwords" : "Show passwords"}
     >
       {showPassword ? (
-        <EyeOff className="size-4" aria-hidden="true" />
+        <RiEyeOffLine className="size-4" aria-hidden="true" />
       ) : (
-        <Eye className="size-4" aria-hidden="true" />
+        <RiEyeLine className="size-4" aria-hidden="true" />
       )}
     </Button>
   );

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Filter, X } from "lucide-react";
+import { RiCloseLine, RiFilter3Line } from "@remixicon/react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -253,7 +253,7 @@ const DataTableFilters = ({
   return (
     <div className="space-y-3">
       <div className="flex flex-wrap items-center gap-2">
-        <Filter className="size-4 text-muted-foreground" aria-hidden="true" />
+        <RiFilter3Line className="size-4 text-muted-foreground" aria-hidden="true" />
 
         {configs.map((config) => {
           const value = values[config.filterId];
@@ -341,7 +341,7 @@ const DataTableFilters = ({
                 onClick={() => onFilterChange(config.filterId, undefined)}
                 aria-label={`Remove ${config.label} filter`}
               >
-                <X className="size-3" aria-hidden="true" />
+                <RiCloseLine className="size-3" aria-hidden="true" />
               </Button>
             </Badge>
           ))}

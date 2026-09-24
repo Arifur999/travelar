@@ -1,4 +1,4 @@
-import { type LucideIcon } from "lucide-react";
+import { type RemixiconComponentType } from "@remixicon/react";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
@@ -33,7 +33,7 @@ interface StatsCardProps {
   title: string;
   /** Pre-formatted. Pass formatCurrency(...) or formatNumber(...), not a raw number. */
   value: string;
-  icon?: LucideIcon;
+  icon?: RemixiconComponentType;
   accent?: StatsCardAccent;
   /** Small caption under the value — a comparison, a count, a date range. */
   hint?: string;

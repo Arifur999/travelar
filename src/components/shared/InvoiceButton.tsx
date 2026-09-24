@@ -1,4 +1,4 @@
-import { FileText } from "lucide-react";
+import { RiFileTextLine } from "@remixicon/react";
 import { Button } from "@/components/ui/button";
 import { type InvoiceKind } from "@/types/invoice.types";
 
@@ -16,7 +16,7 @@ interface InvoiceButtonProps {
 const InvoiceButton = ({ kind, id }: InvoiceButtonProps) => (
   <Button asChild size="sm" variant="outline">
     <a href={`/dashboard/invoices/${kind}/${id}`} target="_blank" rel="noopener noreferrer">
-      <FileText className="size-4" aria-hidden="true" />
+      <RiFileTextLine className="size-4" aria-hidden="true" />
       Invoice
     </a>
   </Button>

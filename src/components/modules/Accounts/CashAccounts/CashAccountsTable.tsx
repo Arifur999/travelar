@@ -3,7 +3,13 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { Landmark, Plus, TrendingDown, TrendingUp, Wallet } from "lucide-react";
+import {
+  RiAddLine,
+  RiArrowDownCircleLine,
+  RiArrowUpCircleLine,
+  RiBankLine,
+  RiWallet3Line,
+} from "@remixicon/react";
 import { toast } from "sonner";
 import { deleteCashAccountAction } from "@/app/(dashboardLayout)/dashboard/accounts/_action";
 import ConfirmDialog from "@/components/shared/ConfirmDialog";
@@ -74,28 +80,28 @@ const CashAccountsTable = () => {
         <StatsCard
           title="Total balance"
           value={formatCurrency(summary?.totalBalance ?? 0)}
-          icon={Wallet}
+          icon={RiWallet3Line}
           accent="primary"
           hint="Active accounts only"
         />
         <StatsCard
           title="Money in"
           value={formatCurrency(accounts.reduce((sum, a) => sum + a.totalIn, 0))}
-          icon={TrendingUp}
+          icon={RiArrowUpCircleLine}
           accent="success"
           hint="All postings, all time"
         />
         <StatsCard
           title="Money out"
           value={formatCurrency(accounts.reduce((sum, a) => sum + a.totalOut, 0))}
-          icon={TrendingDown}
+          icon={RiArrowDownCircleLine}
           accent="destructive"
           hint="All postings, all time"
         />
         <StatsCard
           title="Accounts"
           value={formatNumber(summary?.activeAccounts ?? 0)}
-          icon={Landmark}
+          icon={RiBankLine}
           accent="ledger"
           hint={
             summary && summary.totalAccounts !== summary.activeAccounts
@@ -113,7 +119,7 @@ const CashAccountsTable = () => {
         emptyMessage="No accounts yet. Add cash in hand and each bank account you use."
         toolbarAction={
           <Button type="button" onClick={() => setIsCreateOpen(true)}>
-            <Plus className="size-4" aria-hidden="true" />
+            <RiAddLine className="size-4" aria-hidden="true" />
             Add account
           </Button>
         }

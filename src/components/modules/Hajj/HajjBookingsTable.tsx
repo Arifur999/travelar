@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { HandCoins, MoonStar, Plus, Wallet } from "lucide-react";
+import { RiAddLine, RiHandCoinLine, RiMoonClearLine, RiWallet3Line } from "@remixicon/react";
 import { toast } from "sonner";
 import { deleteHajjBookingAction } from "@/app/(dashboardLayout)/dashboard/hajj/_action";
 import ConfirmDialog from "@/components/shared/ConfirmDialog";
@@ -156,20 +156,20 @@ const HajjBookingsTable = ({ initialQueryString, isAdmin }: HajjBookingsTablePro
         <StatsCard
           title="Billed"
           value={formatCurrency(summary?.totalRevenue ?? 0)}
-          icon={MoonStar}
+          icon={RiMoonClearLine}
           accent="hajj"
           hint="Live bookings only"
         />
         <StatsCard
           title="Collected"
           value={formatCurrency(summary?.totalPaid ?? 0)}
-          icon={HandCoins}
+          icon={RiHandCoinLine}
           accent="success"
         />
         <StatsCard
           title="Outstanding"
           value={formatCurrency(summary?.totalDue ?? 0)}
-          icon={Wallet}
+          icon={RiWallet3Line}
           accent={summary && summary.totalDue > 0 ? "destructive" : "success"}
         />
       </div>
@@ -202,7 +202,7 @@ const HajjBookingsTable = ({ initialQueryString, isAdmin }: HajjBookingsTablePro
         }}
         toolbarAction={
           <Button type="button" onClick={() => setIsCreateOpen(true)}>
-            <Plus className="size-4" aria-hidden="true" />
+            <RiAddLine className="size-4" aria-hidden="true" />
             New booking
           </Button>
         }

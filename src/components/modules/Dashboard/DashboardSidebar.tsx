@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ChevronRight, Lock, Plane } from "lucide-react";
+import { RiArrowRightSLine, RiLockLine, RiPlaneLine } from "@remixicon/react";
 import {
   Collapsible,
   CollapsibleContent,
@@ -123,7 +123,7 @@ const DashboardSidebar = ({ userInfo, features }: DashboardSidebarProps) => {
               >
                 <Icon aria-hidden="true" />
                 <span className="flex-1 truncate">{item.title}</span>
-                <Lock className="size-3.5 shrink-0" aria-hidden="true" />
+                <RiLockLine className="size-3.5 shrink-0" aria-hidden="true" />
               </Link>
             </SidebarMenuButton>
           </TooltipTrigger>
@@ -170,7 +170,7 @@ const DashboardSidebar = ({ userInfo, features }: DashboardSidebarProps) => {
               >
                 <item.icon aria-hidden="true" />
                 <span className="flex-1 truncate">{item.title}</span>
-                <Lock className="size-3.5 shrink-0" aria-hidden="true" />
+                <RiLockLine className="size-3.5 shrink-0" aria-hidden="true" />
               </Link>
             </SidebarMenuSubButton>
           </TooltipTrigger>
@@ -199,7 +199,7 @@ const DashboardSidebar = ({ userInfo, features }: DashboardSidebarProps) => {
             <SidebarMenuButton asChild size="lg" tooltip="Travelar">
               <Link href={home} onClick={closeOnMobile}>
                 <span className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                  <Plane className="size-4" aria-hidden="true" />
+                  <RiPlaneLine className="size-4" aria-hidden="true" />
                 </span>
                 <span className="grid flex-1 text-left leading-tight">
                   <span className="truncate font-semibold">Travelar</span>
@@ -249,7 +249,7 @@ const DashboardSidebar = ({ userInfo, features }: DashboardSidebarProps) => {
                             >
                               <item.icon aria-hidden="true" />
                               <span className="flex-1 truncate">{item.title}</span>
-                              <ChevronRight
+                              <RiArrowRightSLine
                                 className="size-4 shrink-0 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90"
                                 aria-hidden="true"
                               />

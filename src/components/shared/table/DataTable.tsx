@@ -7,7 +7,7 @@ import {
   type RowData,
   type SortingState,
 } from "@tanstack/react-table";
-import { ArrowDown, ArrowUp, ChevronsUpDown, MoreHorizontal } from "lucide-react";
+import { RiArrowDownLine, RiArrowUpLine, RiExpandUpDownLine, RiMoreLine } from "@remixicon/react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -122,7 +122,7 @@ const DataTable = <TData extends RowData,>({
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon" className="size-8" aria-label="Row actions">
-                <MoreHorizontal className="size-4" aria-hidden="true" />
+                <RiMoreLine className="size-4" aria-hidden="true" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
@@ -247,11 +247,11 @@ const DataTable = <TData extends RowData,>({
                           >
                             <table.FlexRender header={header} />
                             {sortDirection === "asc" ? (
-                              <ArrowUp className="size-3.5" aria-hidden="true" />
+                              <RiArrowUpLine className="size-3.5" aria-hidden="true" />
                             ) : sortDirection === "desc" ? (
-                              <ArrowDown className="size-3.5" aria-hidden="true" />
+                              <RiArrowDownLine className="size-3.5" aria-hidden="true" />
                             ) : (
-                              <ChevronsUpDown
+                              <RiExpandUpDownLine
                                 className="size-3.5 opacity-50"
                                 aria-hidden="true"
                               />

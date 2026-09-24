@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { ArrowLeftRight, Plus } from "lucide-react";
+import { RiAddLine, RiArrowLeftRightLine } from "@remixicon/react";
 import { toast } from "sonner";
 import { deleteBalanceTransferAction } from "@/app/(dashboardLayout)/dashboard/transfers/_action";
 import ConfirmDialog from "@/components/shared/ConfirmDialog";
@@ -134,14 +134,14 @@ const TransfersTable = ({ initialQueryString }: { initialQueryString: string }) 
         <StatsCard
           title="Transferred all time"
           value={formatCurrency(summary?.totalAmount ?? 0)}
-          icon={ArrowLeftRight}
+          icon={RiArrowLeftRightLine}
           accent="ledger"
           hint="Nets to zero across your accounts — it never changes the total."
         />
         <StatsCard
           title="Transfers recorded"
           value={formatNumber(summary?.totalCount ?? 0)}
-          icon={ArrowLeftRight}
+          icon={RiArrowLeftRightLine}
           accent="primary"
         />
       </div>
@@ -174,7 +174,7 @@ const TransfersTable = ({ initialQueryString }: { initialQueryString: string }) 
         }}
         toolbarAction={
           <Button type="button" onClick={() => setIsCreateOpen(true)}>
-            <Plus className="size-4" aria-hidden="true" />
+            <RiAddLine className="size-4" aria-hidden="true" />
             New transfer
           </Button>
         }

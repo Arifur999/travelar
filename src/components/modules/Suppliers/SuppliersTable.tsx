@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { Plus } from "lucide-react";
+import { RiAddLine } from "@remixicon/react";
 import { toast } from "sonner";
 import { deleteSupplierAction } from "@/app/(dashboardLayout)/dashboard/suppliers/_action";
 import ConfirmDialog from "@/components/shared/ConfirmDialog";
@@ -60,7 +60,6 @@ const SuppliersTable = ({ initialQueryString }: { initialQueryString: string }) 
     queryFn: () => getSuppliers(effectiveQueryString),
   });
 
-
   const { mutateAsync: runDelete, isPending: isDeleting } = useMutation({
     mutationFn: (id: string) => deleteSupplierAction(id),
   });
@@ -107,7 +106,7 @@ const SuppliersTable = ({ initialQueryString }: { initialQueryString: string }) 
         }}
         toolbarAction={
           <Button type="button" onClick={() => setIsCreateOpen(true)}>
-            <Plus className="size-4" aria-hidden="true" />
+            <RiAddLine className="size-4" aria-hidden="true" />
             Add supplier
           </Button>
         }

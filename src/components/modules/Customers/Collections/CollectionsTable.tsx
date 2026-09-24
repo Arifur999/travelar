@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { HandCoins, Plus, TicketPercent } from "lucide-react";
+import { RiAddLine, RiCoupon3Line, RiHandCoinLine } from "@remixicon/react";
 import { toast } from "sonner";
 import { deleteDueReceiptAction } from "@/app/(dashboardLayout)/dashboard/collections/_action";
 import ConfirmDialog from "@/components/shared/ConfirmDialog";
@@ -140,21 +140,21 @@ const CollectionsTable = ({ initialQueryString }: { initialQueryString: string }
         <StatsCard
           title="Received all time"
           value={formatCurrency(summary?.totalReceived ?? 0)}
-          icon={HandCoins}
+          icon={RiHandCoinLine}
           accent="success"
           hint="Both legs of every split tender"
         />
         <StatsCard
           title="Discounted"
           value={formatCurrency(summary?.totalDiscount ?? 0)}
-          icon={TicketPercent}
+          icon={RiCoupon3Line}
           accent="ledger"
           hint="Written off, no money moved"
         />
         <StatsCard
           title="Receipts"
           value={formatNumber(summary?.totalCount ?? 0)}
-          icon={HandCoins}
+          icon={RiHandCoinLine}
           accent="primary"
         />
       </div>
@@ -187,7 +187,7 @@ const CollectionsTable = ({ initialQueryString }: { initialQueryString: string }
         }}
         toolbarAction={
           <Button type="button" onClick={() => setIsCreateOpen(true)}>
-            <Plus className="size-4" aria-hidden="true" />
+            <RiAddLine className="size-4" aria-hidden="true" />
             Receive money
           </Button>
         }
