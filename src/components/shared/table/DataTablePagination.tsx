@@ -143,7 +143,7 @@ const DataTablePagination = ({
             type="button"
             variant="outline"
             size="icon"
-            className="size-9"
+            className="size-10 rounded-full"
             onClick={() => goTo(1)}
             disabled={!canPrevious || disabled}
             aria-label="First page"
@@ -154,7 +154,7 @@ const DataTablePagination = ({
             type="button"
             variant="outline"
             size="icon"
-            className="size-9"
+            className="size-10 rounded-full"
             onClick={() => goTo(currentPage - 1)}
             disabled={!canPrevious || disabled}
             aria-label="Previous page"
@@ -172,7 +172,7 @@ const DataTablePagination = ({
                   type="button"
                   variant="ghost"
                   size="icon"
-                  className="size-9"
+                  className="size-10 rounded-full"
                   onClick={() => goTo(target)}
                   disabled={disabled}
                   aria-label={`Jump ${slot === "prev-jump" ? "back" : "forward"} ${JUMP} pages`}
@@ -188,7 +188,7 @@ const DataTablePagination = ({
                 type="button"
                 variant={slot === currentPage ? "default" : "outline"}
                 size="icon"
-                className={cn("size-9", slot === currentPage && "pointer-events-none")}
+                className={cn("size-10 rounded-full", slot === currentPage && "pointer-events-none")}
                 onClick={() => goTo(slot)}
                 disabled={disabled}
                 aria-label={`Page ${slot}`}
@@ -203,7 +203,7 @@ const DataTablePagination = ({
             type="button"
             variant="outline"
             size="icon"
-            className="size-9"
+            className="size-10 rounded-full"
             onClick={() => goTo(currentPage + 1)}
             disabled={!canNext || disabled}
             aria-label="Next page"
@@ -214,7 +214,7 @@ const DataTablePagination = ({
             type="button"
             variant="outline"
             size="icon"
-            className="size-9"
+            className="size-10 rounded-full"
             onClick={() => goTo(safePageCount)}
             disabled={!canNext || disabled}
             aria-label="Last page"

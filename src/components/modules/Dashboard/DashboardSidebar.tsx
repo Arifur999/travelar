@@ -61,7 +61,7 @@ interface DashboardSidebarProps {
 
 /** Marks a module that is listed but not built yet. */
 const SoonBadge = () => (
-  <span className="shrink-0 rounded-sm bg-muted px-1.5 py-0.5 text-[10px] leading-none font-medium tracking-wide text-muted-foreground uppercase">
+  <span className="shrink-0 rounded-sm bg-sidebar-accent px-1.5 py-0.5 text-[10px] leading-none font-medium tracking-wide text-sidebar-foreground/80 uppercase">
     Soon
   </span>
 );
@@ -94,7 +94,7 @@ const DashboardSidebar = ({ userInfo, features }: DashboardSidebarProps) => {
       return (
         <SidebarMenuButton
           disabled
-          className="text-muted-foreground/70"
+          className="text-sidebar-foreground/70"
           tooltip={`${item.title} — coming soon`}
         >
           <Icon aria-hidden="true" />
@@ -115,7 +115,7 @@ const DashboardSidebar = ({ userInfo, features }: DashboardSidebarProps) => {
       return (
         <Tooltip>
           <TooltipTrigger asChild>
-            <SidebarMenuButton asChild className="text-muted-foreground/70" tooltip={undefined}>
+            <SidebarMenuButton asChild className="text-sidebar-foreground/70" tooltip={undefined}>
               <Link
                 href="/dashboard/billing"
                 onClick={closeOnMobile}
@@ -148,7 +148,7 @@ const DashboardSidebar = ({ userInfo, features }: DashboardSidebarProps) => {
       return (
         <SidebarMenuSubButton
           aria-disabled="true"
-          className="text-muted-foreground/70"
+          className="text-sidebar-foreground/70"
           title={`${item.title} — coming soon`}
         >
           <item.icon aria-hidden="true" />
@@ -162,7 +162,7 @@ const DashboardSidebar = ({ userInfo, features }: DashboardSidebarProps) => {
       return (
         <Tooltip>
           <TooltipTrigger asChild>
-            <SidebarMenuSubButton asChild className="text-muted-foreground/70">
+            <SidebarMenuSubButton asChild className="text-sidebar-foreground/70">
               <Link
                 href="/dashboard/billing"
                 onClick={closeOnMobile}
@@ -192,18 +192,18 @@ const DashboardSidebar = ({ userInfo, features }: DashboardSidebarProps) => {
   };
 
   return (
-    <Sidebar collapsible="icon">
+    <Sidebar collapsible="icon" variant="floating">
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton asChild size="lg" tooltip="Travelar">
               <Link href={home} onClick={closeOnMobile}>
-                <span className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+                <span className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
                   <Plane className="size-4" aria-hidden="true" />
                 </span>
                 <span className="grid flex-1 text-left leading-tight">
                   <span className="truncate font-semibold">Travelar</span>
-                  <span className="truncate text-xs text-muted-foreground">
+                  <span className="truncate text-xs text-sidebar-foreground/70">
                     {userInfo.agency?.name ?? "Platform console"}
                   </span>
                 </span>
@@ -244,7 +244,7 @@ const DashboardSidebar = ({ userInfo, features }: DashboardSidebarProps) => {
                               // even with several sections open.
                               className={cn(
                                 isNavItemActive(item, pathname) &&
-                                  "bg-primary font-medium text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground data-[active=true]:bg-primary data-[active=true]:text-primary-foreground",
+                                  "bg-sidebar-primary font-medium text-sidebar-primary-foreground hover:bg-sidebar-primary/90 hover:text-sidebar-primary-foreground data-[active=true]:bg-sidebar-primary data-[active=true]:text-sidebar-primary-foreground",
                               )}
                             >
                               <item.icon aria-hidden="true" />
@@ -279,7 +279,7 @@ const DashboardSidebar = ({ userInfo, features }: DashboardSidebarProps) => {
       </SidebarContent>
 
       <SidebarFooter>
-        <p className="px-2 text-xs text-muted-foreground group-data-[collapsible=icon]:hidden">
+        <p className="px-2 text-xs text-sidebar-foreground/70 group-data-[collapsible=icon]:hidden">
           Signed in as {userInfo.name}
         </p>
       </SidebarFooter>

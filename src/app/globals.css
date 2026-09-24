@@ -173,14 +173,18 @@
   --chart-4: #c2410c;
   --chart-5: #4f46e5;
 
-  --sidebar: #ffffff;
-  --sidebar-foreground: #1f2937;
-  --sidebar-primary: #2196f3;
-  --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #e3f2fd;
-  --sidebar-accent-foreground: #0d47a1;
-  --sidebar-border: #bbdefb;
-  --sidebar-ring: #2196f3;
+  /* A deep blue panel, as on the reference dashboard, in the brand's own
+     colours: pale blue labels on #0D47A1 (8.63:1), a light blue pill for the
+     page you are on (#0D47A1 on #90CAF9 is 4.93:1) and a faint white wash for
+     hover, so hover and "you are here" cannot be mistaken for each other. */
+  --sidebar: #0d47a1;
+  --sidebar-foreground: #e3f2fd;
+  --sidebar-primary: #90caf9;
+  --sidebar-primary-foreground: #0d47a1;
+  --sidebar-accent: rgba(255, 255, 255, 0.12);
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: rgba(227, 242, 253, 0.18);
+  --sidebar-ring: #90caf9;
 }
 
 .dark {
@@ -247,12 +251,14 @@
   --chart-4: #fb923c;
   --chart-5: #818cf8;
 
-  --sidebar: #131c2e;
-  --sidebar-foreground: #e5e7eb;
+  /* Same shape on the dark theme, one shade off the page so the panel still
+     reads as a panel. */
+  --sidebar: #0f1a2f;
+  --sidebar-foreground: #e3f2fd;
   --sidebar-primary: #90caf9;
   --sidebar-primary-foreground: #0d47a1;
-  --sidebar-accent: #16233a;
-  --sidebar-accent-foreground: #e3f2fd;
+  --sidebar-accent: rgba(144, 202, 249, 0.14);
+  --sidebar-accent-foreground: #ffffff;
   --sidebar-border: rgba(144, 202, 249, 0.18);
   --sidebar-ring: #90caf9;
 }
