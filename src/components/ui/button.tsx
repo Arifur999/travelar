@@ -8,11 +8,11 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        // The brand gradient (globals.css), not a flat fill: the bright blue
-        // sits in the corner and the deep blue under the label, which is what
-        // keeps a white label readable — a flat #2196F3 would be 3.12:1.
+        // The brand gradient (globals.css), not a flat fill, and the same one
+        // in both themes — so the label is plain white rather than
+        // --primary-foreground, which flips to deep blue on a dark ground.
         default:
-          "bg-gradient-primary text-primary-foreground shadow-sm hover:shadow-md active:shadow-sm",
+          "bg-gradient-primary text-white shadow-sm hover:shadow-md active:shadow-sm",
         destructive:
           "bg-destructive text-white hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:bg-destructive/60 dark:focus-visible:ring-destructive/40",
         outline:
@@ -21,8 +21,8 @@ const buttonVariants = cva(
           "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost:
           "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
-        // primary-strong, not primary: a link is text, and #2196F3 on a light
-        // ground is 3.12:1.
+        // primary-strong, not primary: a link is text, and #207BF3 on a light
+        // ground is 4.05:1.
         link: "text-primary-strong underline-offset-4 hover:underline",
       },
       // One step up from shadcn's defaults: the old 36px button read as small

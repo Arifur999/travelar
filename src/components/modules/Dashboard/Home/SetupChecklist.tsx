@@ -28,10 +28,10 @@ const SetupChecklist = ({
 
   const done = steps.filter((step) => step.done).length;
 
-  // A white card with a blue edge: on the blue page ground a tinted card would
-  // melt into it.
+  // The page is white now, so the tinted panel is what stands out rather than
+  // what melts away.
   return (
-    <Card className="border-primary/40 bg-card">
+    <Card className="border-primary/40 bg-gradient-panel">
       <CardHeader>
         <CardTitle className="text-base">Finish setting up your workspace</CardTitle>
         <CardDescription>

@@ -70,48 +70,55 @@
   --radius-xl: calc(var(--radius) + 4px);
 }
 
-/* Travelar brand, from the agency's four blues:
+/* Travelar brand, from the brand sheet:
 
-     #E3F2FD  the ground the app sits on, and every tinted surface
-     #90CAF9  edges and the blue that carries on a dark ground
-     #2196F3  the brand blue: fills, rings, charts, the bright end of a button
-     #0D47A1  headings, links and anything blue that has to be read
+     #FFFFFF  the page — every screen starts on white
+     #CCE5FF  Sub Color: the pale end of the brand gradient, edges, tints
+     #207BF3  Main Color: the brand blue, and the deep end of the gradient
+     #16181E  Black: body copy
+     #0D47A1  the blue a run of text can be set in, where #207BF3 cannot
 
-   Which one a token gets is decided by contrast, measured, not by eye:
-   white on #2196F3 is 3.12:1 — fine behind an icon or a chart bar, too weak
-   for a label — while white on #0D47A1 is 8.63:1 and #0D47A1 on #E3F2FD is
-   7.56:1. So the bright blue fills and the deep blue speaks.
+   The gradient is the brand: #207BF3 -> #CCE5FF, the two stops on the sheet's
+   "Brand Blue" bar. It runs across every box on the page.
+
+   Which token gets which colour is decided by measured contrast, not by eye.
+   The one rule the sheet cannot bend: white on #207BF3 is 4.05:1 and white on
+   #CCE5FF is 1.29:1, so nothing white-on-brand may run the gradient all the
+   way out to the pale stop. Where a white label sits — the button, the
+   sidebar — the ramp carries on past the main colour into #0B4FA8 (7.78:1)
+   instead of turning back. Same hue, same sweep, a label you can read.
 
    Every token is defined here first; .dark below only overrides, so nothing
    can be left undefined in one theme. */
 :root {
   --radius: 0.625rem;
 
-  --background: #e3f2fd;
-  --foreground: #1f2937;
+  --background: #ffffff;
+  /* The sheet's Black, 17.74:1 on the page. */
+  --foreground: #16181e;
   /* Page and section headings. Body text stays near-black: a whole paragraph
      in brand blue is harder to read than it is memorable. */
   --heading: #0d47a1;
 
   --card: #ffffff;
-  --card-foreground: #1f2937;
+  --card-foreground: #16181e;
   --popover: #ffffff;
-  --popover-foreground: #1f2937;
+  --popover-foreground: #16181e;
 
-  --primary: #2196f3;
+  --primary: #207bf3;
   --primary-foreground: #ffffff;
-  /* The blue for text and links on a light ground, where #2196F3 would be
-     3.12:1 and unreadable. */
+  /* The blue for text and links on a light ground, where #207BF3 is 4.05:1 —
+     fine behind an icon, short of what a label needs. */
   --primary-strong: #0d47a1;
-  --secondary: #e3f2fd;
+  --secondary: #cce5ff;
   --secondary-foreground: #0d47a1;
 
-  --muted: #f1f6fd;
-  /* One step darker than the old grey: on the blue ground #6b7280 fell to
-     4.23:1, just under what a label needs. This is 6.62:1. */
+  --muted: #f2f8ff;
+  /* 7.56:1 on the white page and 5.84:1 at the deepest corner of a card, so a
+     hint under a field is readable wherever the wash puts it. */
   --muted-foreground: #4b5563;
 
-  --accent: #e3f2fd;
+  --accent: #cce5ff;
   --accent-foreground: #0d47a1;
 
   --destructive: #dc2626;
@@ -130,25 +137,35 @@
   --info: #2563eb;
   --info-foreground: #eff6ff;
 
-  --border: #bbdefb;
-  --input: #bbdefb;
-  --ring: #2196f3;
+  --border: #cce5ff;
+  --input: #cce5ff;
+  --ring: #207bf3;
 
-  /* Buttons. The bright blue stays in the corner and the deep blue is under
-     the label: at 20% across a button the mix is already 4.6:1 against white,
-     and 8.63:1 by the middle. A flat #2196F3 fill would have been 3.12:1. */
-  --gradient-primary: linear-gradient(135deg, #2196f3 0%, #0d47a1 55%);
-  --gradient-primary-hover: linear-gradient(135deg, #42a5f5 0%, #1257b5 65%);
+  /* The brand gradient as the sheet draws it: Main Color into Sub Color. For
+     surfaces that carry no small text — a hero tile, an icon chip, a
+     decorative header. */
+  --gradient-brand: linear-gradient(135deg, #207bf3 0%, #cce5ff 100%);
 
-  /* Boxes: the sky-blue wash from the brand sheet. It has to stay pale —
-     a card carries body text and figures at 12–14px, and #1F2937 needs
-     4.5:1, which it keeps on this (12.4:1 at the deepest corner). The vivid
-     blue of the brand sheet's hero cards lives on buttons instead, where the
-     label is white. */
-  --gradient-card: linear-gradient(160deg, #ffffff 0%, #f2f8fe 45%, #dcecfd 100%);
+  /* The same sweep where a white label has to be read, so it carries on past
+     the main colour instead of turning back to the pale one: 4.05:1 at the
+     top-left corner, 5.55:1 under the label, 7.78:1 at the far end. Running
+     out to #CCE5FF instead would put the label on 2.25:1 — invisible. */
+  --gradient-primary: linear-gradient(135deg, #207bf3 0%, #0b4fa8 100%);
+  --gradient-primary-hover: linear-gradient(135deg, #3b8df5 0%, #1560c6 100%);
+
+  /* The button's gradient on the sidebar, which is what it is: the same two
+     stops, turned upright for a tall panel and started one step down the ramp
+     so the topmost row clears 4.73:1 rather than 4.05:1. */
+  --gradient-sidebar: linear-gradient(180deg, #1b70e0 0%, #0b4fa8 100%);
+
+  /* Boxes: white into the sheet's Sub Color, which is the brand gradient at
+     the pale end of its range. A card carries body text and figures at
+     12–14px, so it has to stay light — #16181E holds 13.70:1 even at the
+     deepest corner, and a muted hint holds 5.84:1. */
+  --gradient-card: linear-gradient(160deg, #ffffff 0%, #eef6ff 55%, #cce5ff 100%);
   /* One step stronger, for a box that should read as a panel rather than a
      sheet of paper: stat tiles, empty states, the setup card. */
-  --gradient-panel: linear-gradient(160deg, #f4f9fe 0%, #dbeafd 60%, #cce5ff 100%);
+  --gradient-panel: linear-gradient(160deg, #f4f9ff 0%, #ddedff 55%, #bfdcff 100%);
 
   /* Per-module accents. Used for stat tiles, badges and module headers; the
      core chrome stays blue and white so the app reads as one product.
@@ -167,33 +184,35 @@
   /* The same five, so a chart and a badge for one thing cannot disagree.
      Only the first is the brand blue: the rest keep their own hues, because a
      pie of five blues cannot be read. */
-  --chart-1: #2196f3;
+  --chart-1: #207bf3;
   --chart-2: #9333ea;
   --chart-3: #047857;
   --chart-4: #c2410c;
   --chart-5: #4f46e5;
 
-  /* A deep blue panel, as on the reference dashboard, in the brand's own
-     colours: pale blue labels on #0D47A1 (8.63:1), a light blue pill for the
-     page you are on (#0D47A1 on #90CAF9 is 4.93:1) and a faint white wash for
-     hover, so hover and "you are here" cannot be mistaken for each other. */
-  --sidebar: #0d47a1;
-  --sidebar-foreground: #e3f2fd;
-  --sidebar-primary: #90caf9;
-  --sidebar-primary-foreground: #0d47a1;
-  --sidebar-accent: rgba(255, 255, 255, 0.12);
+  /* --sidebar is the colour under --gradient-sidebar, so the panel is still
+     solid if the gradient is ever overridden. White labels on it, a Sub Color
+     pill for the page you are on (#0B4FA8 on #CCE5FF is 7.21:1) and a faint
+     white wash for hover, so hover and "you are here" cannot be mistaken for
+     each other. Both themes use these: the sidebar is brand blue either way,
+     exactly like the button. */
+  --sidebar: #0b4fa8;
+  --sidebar-foreground: #ffffff;
+  --sidebar-primary: #cce5ff;
+  --sidebar-primary-foreground: #0b4fa8;
+  --sidebar-accent: rgba(255, 255, 255, 0.16);
   --sidebar-accent-foreground: #ffffff;
-  --sidebar-border: rgba(227, 242, 253, 0.18);
-  --sidebar-ring: #90caf9;
+  --sidebar-border: rgba(204, 229, 255, 0.24);
+  --sidebar-ring: #cce5ff;
 }
 
 .dark {
   --background: #0b1120;
   --foreground: #e5e7eb;
 
-  --card: #131c2e;
+  --card: #101a2c;
   --card-foreground: #e5e7eb;
-  --popover: #131c2e;
+  --popover: #101a2c;
   --popover-foreground: #e5e7eb;
 
   /* Roles swap: the light blue carries on the dark ground (#90CAF9 is 10.76:1
@@ -225,18 +244,18 @@
   --input: rgba(144, 202, 249, 0.22);
   --ring: #90caf9;
 
-  /* On the dark ground the button runs the other way: the two pale blues are
-     the surface and the deep blue is the label, so it stays bright against the
-     navy instead of sinking into it. Measured on the rendered button, the
-     label holds 4.93:1 at the darkest end and 7.56:1 at the lightest — a
-     #90CAF9 -> #42A5F5 gradient looked better but fell to 3.64:1. */
-  --gradient-primary: linear-gradient(135deg, #e3f2fd 0%, #90caf9 100%);
-  --gradient-primary-hover: linear-gradient(135deg, #ffffff 0%, #bbdefb 100%);
+  /* --gradient-primary, --gradient-primary-hover, --gradient-sidebar and
+     --gradient-brand are deliberately NOT overridden here. The brand gradient
+     is one gradient, and it reads on either ground: #207BF3 is 4.49:1 against
+     the dark page, so the button and the sidebar sit raised rather than sunk,
+     and their white labels keep the same 5.55:1 they have in daylight. An
+     earlier dark theme inverted them into pale blue slabs, which is a second
+     brand rather than one.
 
-  /* The same wash, in navy. Light text needs the card to stay dark, so this
-     leans on the blue rather than lightening it. */
-  --gradient-card: linear-gradient(160deg, #131c2e 0%, #15203a 55%, #16294a 100%);
-  --gradient-panel: linear-gradient(160deg, #15203a 0%, #16294a 60%, #173156 100%);
+     The box wash is the only gradient that has to flip, because light text
+     needs the box to stay dark. Same hue, wound down into navy. */
+  --gradient-card: linear-gradient(160deg, #101a2c 0%, #13233c 55%, #163156 100%);
+  --gradient-panel: linear-gradient(160deg, #13233c 0%, #163156 60%, #18406f 100%);
 
   --visa: #c084fc;
   --hajj: #34d399;
@@ -251,16 +270,8 @@
   --chart-4: #fb923c;
   --chart-5: #818cf8;
 
-  /* Same shape on the dark theme, one shade off the page so the panel still
-     reads as a panel. */
-  --sidebar: #0f1a2f;
-  --sidebar-foreground: #e3f2fd;
-  --sidebar-primary: #90caf9;
-  --sidebar-primary-foreground: #0d47a1;
-  --sidebar-accent: rgba(144, 202, 249, 0.14);
-  --sidebar-accent-foreground: #ffffff;
-  --sidebar-border: rgba(144, 202, 249, 0.18);
-  --sidebar-ring: #90caf9;
+  /* The sidebar tokens are not overridden either — see the gradient note
+     above. The panel is brand blue in both themes. */
 }
 
 @layer base {
@@ -298,6 +309,12 @@
   }
   .bg-gradient-panel {
     background-image: var(--gradient-panel);
+  }
+  .bg-gradient-brand {
+    background-image: var(--gradient-brand);
+  }
+  .bg-gradient-sidebar {
+    background-image: var(--gradient-sidebar);
   }
 }
 
