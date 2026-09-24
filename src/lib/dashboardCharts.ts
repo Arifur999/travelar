@@ -53,17 +53,54 @@ export const isTrendEmpty = (trend: ITrendMonth[], metric: TrendMetric) =>
   trend.every((m) => m[metric] === 0);
 
 /**
+ * One month against the one before it, as a percentage — or null when there is
+ * no fair comparison. From zero, any change is infinite, and "+∞%" helps
+ * nobody.
+ */
+const changeBetween = (previous: number, current: number): number | null =>
+  previous === 0 ? null : ((current - previous) / Math.abs(previous)) * 100;
+
+/**
  * Change from last month to this one, as a percentage — or null when there is
  * no fair comparison. The current month is still in progress, so this is
  * labelled "so far" wherever it is shown.
  */
 export const monthOverMonth = (trend: ITrendMonth[], metric: TrendMetric): number | null => {
   if (trend.length < 2) return null;
-  const previous = trend[trend.length - 2][metric];
-  const current = trend[trend.length - 1][metric];
-  // From zero, any change is infinite; saying "+∞%" helps nobody.
-  if (previous === 0) return null;
-  return ((current - previous) / Math.abs(previous)) * 100;
+  return changeBetween(trend[trend.length - 2][metric], trend[trend.length - 1][metric]);
+};
+
+export interface TrendHighlight {
+  /** "April 2026". */
+  label: string;
+  value: number;
+  /** Against the month before this one; null where there isn't one. */
+  change: number | null;
+  /** True for the month still in progress. */
+  isCurrent: boolean;
+}
+
+/**
+ * The two figures printed beside the chart: this month and the one before it,
+ * newest first.
+ *
+ * Built from the points rather than the raw months so the month names are
+ * formatted in exactly one place — the axis and these blocks disagreeing about
+ * what "Jan" means across a year boundary is the bug this avoids.
+ */
+export const buildTrendHighlights = (
+  points: TrendPoint[],
+  metric: TrendMetric,
+): TrendHighlight[] => {
+  const last = points.length - 1;
+  return [last, last - 1]
+    .filter((index) => index >= 0)
+    .map((index) => ({
+      label: points[index].fullLabel,
+      value: points[index][metric],
+      change: index > 0 ? changeBetween(points[index - 1][metric], points[index][metric]) : null,
+      isCurrent: points[index].isCurrent,
+    }));
 };
 
 export type SalesModule = "ticketing" | "visa" | "hajj" | "tours" | "hotels";

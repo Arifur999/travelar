@@ -1,14 +1,15 @@
 import { describe, expect, it } from "vitest";
 import {
   buildModuleRows,
-  totalSalesCount,
-  buildAccountBars,
-  buildNetPositionBars,
-  buildSalesMix,
-  buildTrendPoints,
-  isNetPositionEmpty,
-  isTrendEmpty,
-  monthOverMonth,
+  totalSalesCount,
+  buildAccountBars,
+  buildNetPositionBars,
+  buildSalesMix,
+  buildTrendHighlights,
+  buildTrendPoints,
+  isNetPositionEmpty,
+  isTrendEmpty,
+  monthOverMonth,
 } from "./dashboardCharts";
 import {
   type ICashFlow,
@@ -77,6 +78,73 @@ describe("monthOverMonth", () => {
   it("reads a recovery from a loss as an improvement", () => {
     // −1,000 to +500 is better, so the sign must be positive.
     expect(monthOverMonth([month(2026, 5, 0, -1000), month(2026, 6, 0, 500)], "profit")).toBe(150);
+  });
+});
+
+describe("buildTrendHighlights", () => {
+  const points = (...months: ITrendMonth[]) => buildTrendPoints(months);
+
+  it("gives this month and the one before it, newest first", () => {
+    const result = buildTrendHighlights(
+      points(month(2026, 4, 1000), month(2026, 5, 2000), month(2026, 6, 3000)),
+      "sales",
+    );
+
+    expect(result.map((h) => [h.label, h.value])).toEqual([
+      ["June 2026", 3000],
+      ["May 2026", 2000],
+    ]);
+  });
+
+  it("compares each month with the one before it, not with the same one twice", () => {
+    // May doubled April; June added half again on May.
+    const result = buildTrendHighlights(
+      points(month(2026, 4, 1000), month(2026, 5, 2000), month(2026, 6, 3000)),
+      "sales",
+    );
+
+    expect(result[0].change).toBe(50);
+    expect(result[1].change).toBe(100);
+  });
+
+  it("marks only the month still in progress", () => {
+    const result = buildTrendHighlights(
+      points(month(2026, 5, 2000), month(2026, 6, 3000)),
+      "sales",
+    );
+
+    expect(result.map((h) => h.isCurrent)).toEqual([true, false]);
+  });
+
+  it("offers no comparison for the oldest month it has", () => {
+    // May is the first point, so nothing precedes it to compare against.
+    const result = buildTrendHighlights(points(month(2026, 5, 2000), month(2026, 6, 3000)), "sales");
+
+    expect(result[1].change).toBeNull();
+  });
+
+  it("offers no comparison out of a zero month", () => {
+    const result = buildTrendHighlights(
+      points(month(2026, 4, 0), month(2026, 5, 0), month(2026, 6, 900)),
+      "sales",
+    );
+
+    expect(result[0].change).toBeNull();
+  });
+
+  it("returns one block from a single month and none from nothing", () => {
+    expect(buildTrendHighlights(points(month(2026, 6, 900)), "sales")).toHaveLength(1);
+    expect(buildTrendHighlights([], "sales")).toEqual([]);
+  });
+
+  it("reads the metric it is asked for", () => {
+    const result = buildTrendHighlights(
+      points(month(2026, 5, 9000, 0, 400), month(2026, 6, 9000, 0, 600)),
+      "expenses",
+    );
+
+    expect(result[0].value).toBe(600);
+    expect(result[0].change).toBe(50);
   });
 });
 
