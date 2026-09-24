@@ -14,6 +14,7 @@ import {
 import {
   buildTrendHighlights,
   buildTrendPoints,
+  firstMetricWithData,
   isTrendEmpty,
   type TrendMetric,
 } from "@/lib/dashboardCharts";
@@ -76,7 +77,9 @@ const changeIsGood = (change: number, metric: TrendMetric) =>
  * and the wash under the line is where the brand's sky blue does the work.
  */
 const TrendChart = ({ trend }: { trend: ITrendMonth[] }) => {
-  const [metric, setMetric] = useState<TrendMetric>("sales");
+  // Lazy, so it is read once on mount: a refetch must not pull the tab out
+  // from under someone who has just chosen one.
+  const [metric, setMetric] = useState<TrendMetric>(() => firstMetricWithData(trend));
   const points = useMemo(() => buildTrendPoints(trend), [trend]);
   const highlights = useMemo(() => buildTrendHighlights(points, metric), [points, metric]);
 

@@ -41,8 +41,9 @@ import {
 } from "@/lib/navItem";
 import { type NavItem } from "@/lib/navItem";
 import { cn } from "@/lib/utils";
-import { PLAN_FEATURE_LABELS, type PlanFeature } from "@/types/enums.types";
-import { type IUser } from "@/types/user.types";
+import { PLAN_FEATURE_LABELS } from "@/types/enums.types";
+import { type IMyFeatures, type IUser } from "@/types/user.types";
+import SidebarPlanCard from "./SidebarPlanCard";
 
 /**
  * Client component by design, and it imports the nav config directly rather
@@ -56,7 +57,7 @@ import { type IUser } from "@/types/user.types";
  */
 interface DashboardSidebarProps {
   userInfo: IUser;
-  features: PlanFeature[];
+  myFeatures: IMyFeatures | null;
 }
 
 /** Marks a module that is listed but not built yet. */
@@ -66,7 +67,8 @@ const SoonBadge = () => (
   </span>
 );
 
-const DashboardSidebar = ({ userInfo, features }: DashboardSidebarProps) => {
+const DashboardSidebar = ({ userInfo, myFeatures }: DashboardSidebarProps) => {
+  const features = myFeatures?.features ?? [];
   const pathname = usePathname();
   const { isMobile, setOpenMobile } = useSidebar();
 
@@ -279,6 +281,8 @@ const DashboardSidebar = ({ userInfo, features }: DashboardSidebarProps) => {
       </SidebarContent>
 
       <SidebarFooter>
+        <SidebarPlanCard myFeatures={myFeatures} role={userInfo.role} onNavigate={closeOnMobile} />
+
         <p className="px-2 text-xs text-sidebar-foreground/70 group-data-[collapsible=icon]:hidden">
           Signed in as {userInfo.name}
         </p>

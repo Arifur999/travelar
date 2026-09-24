@@ -31,7 +31,7 @@ const DashboardLayout = async ({ children }: { children: React.ReactNode }) => {
 
   return (
     <SidebarProvider>
-      <DashboardSidebar userInfo={userInfo} features={myFeatures?.features ?? []} />
+      <DashboardSidebar userInfo={userInfo} myFeatures={myFeatures} />
 
       <SidebarInset className="min-w-0">
         <DashboardNavbar userInfo={userInfo} />

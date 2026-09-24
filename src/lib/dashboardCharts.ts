@@ -52,6 +52,20 @@ export const buildTrendPoints = (trend: ITrendMonth[]): TrendPoint[] => {
 export const isTrendEmpty = (trend: ITrendMonth[], metric: TrendMetric) =>
   trend.every((m) => m[metric] === 0);
 
+/** Every metric the trend chart can draw, in the order it offers them. */
+export const TREND_METRICS: TrendMetric[] = ["sales", "profit", "expenses"];
+
+/**
+ * The metric the chart should open on: the first one with anything to draw.
+ *
+ * Sales is the right default for an agency that is selling. One whose sales
+ * predate the six-month window — a book of business imported from a
+ * spreadsheet, a quiet season — opened on an empty chart with two tabs beside
+ * it and nothing to say that either held figures.
+ */
+export const firstMetricWithData = (trend: ITrendMonth[]): TrendMetric =>
+  TREND_METRICS.find((metric) => !isTrendEmpty(trend, metric)) ?? "sales";
+
 /**
  * One month against the one before it, as a percentage — or null when there is
  * no fair comparison. From zero, any change is infinite, and "+∞%" helps

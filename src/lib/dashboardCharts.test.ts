@@ -6,6 +6,7 @@ import {
   buildNetPositionBars,
   buildSalesMix,
   buildTrendHighlights,
+  firstMetricWithData,
   buildTrendPoints,
   isNetPositionEmpty,
   isTrendEmpty,
@@ -328,5 +329,26 @@ describe("the module list", () => {
 
   it("counts sales across every module, not the first three", () => {
     expect(totalSalesCount(byModule)).toBe(15);
+  });
+});
+
+describe("firstMetricWithData", () => {
+  it("opens on sales when there are sales", () => {
+    expect(firstMetricWithData([month(2026, 5, 1000, 200, 50)])).toBe("sales");
+  });
+
+  it("falls through to the first metric that has anything", () => {
+    // Nothing sold in the window, but the agency has been paying bills.
+    expect(firstMetricWithData([month(2026, 5, 0, 0, 400)])).toBe("expenses");
+    expect(firstMetricWithData([month(2026, 5, 0, 300, 0)])).toBe("profit");
+  });
+
+  it("stays on sales when nothing at all has happened", () => {
+    expect(firstMetricWithData([month(2026, 5)])).toBe("sales");
+    expect(firstMetricWithData([])).toBe("sales");
+  });
+
+  it("counts a loss as something to draw", () => {
+    expect(firstMetricWithData([month(2026, 5, 0, -900, 0)])).toBe("profit");
   });
 });
