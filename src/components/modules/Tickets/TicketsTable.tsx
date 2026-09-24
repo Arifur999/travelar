@@ -7,6 +7,7 @@ import { RiAddLine, RiArrowUpCircleLine, RiPlaneLine, RiWallet3Line } from "@rem
 import { toast } from "sonner";
 import { deleteTicketAction } from "@/app/(dashboardLayout)/dashboard/tickets/_action";
 import ConfirmDialog from "@/components/shared/ConfirmDialog";
+import BreakdownDonut from "@/components/shared/chart/BreakdownDonut";
 import StatsCard from "@/components/shared/StatsCard";
 import DataTable from "@/components/shared/table/DataTable";
 import { Button } from "@/components/ui/button";
@@ -194,6 +195,22 @@ const TicketsTable = ({ initialQueryString, isAdmin }: TicketsTableProps) => {
           hint="Across every ticket, not this page"
         />
       </div>
+
+      <BreakdownDonut
+        title="Money on the counter"
+        description="Of everything billed, how much has come in."
+        slices={[
+          { key: "collected", label: "Collected", value: summary?.totalPaid ?? 0, color: "var(--chart-1)" },
+          {
+            key: "outstanding",
+            label: "Outstanding",
+            value: summary?.totalDue ?? 0,
+            color: "var(--destructive)",
+          },
+        ]}
+        centreCaption="billed"
+        emptyText="Nothing billed yet. Issue a ticket and this fills in."
+      />
 
       <DataTable<ITicket>
         data={data?.data.tickets ?? []}

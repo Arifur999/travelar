@@ -7,6 +7,7 @@ import { RiAddLine, RiFileCheckLine, RiHandCoinLine, RiWallet3Line } from "@remi
 import { toast } from "sonner";
 import { deleteVisaCaseAction } from "@/app/(dashboardLayout)/dashboard/visa/_action";
 import ConfirmDialog from "@/components/shared/ConfirmDialog";
+import BreakdownDonut from "@/components/shared/chart/BreakdownDonut";
 import StatsCard from "@/components/shared/StatsCard";
 import DataTable from "@/components/shared/table/DataTable";
 import { Button } from "@/components/ui/button";
@@ -172,6 +173,22 @@ const VisaCasesTable = ({ initialQueryString, isAdmin }: VisaCasesTableProps) =>
           hint="Across every case"
         />
       </div>
+
+      <BreakdownDonut
+        title="Money on the counter"
+        description="Of everything billed, how much has come in."
+        slices={[
+          { key: "collected", label: "Collected", value: summary?.totalPaid ?? 0, color: "var(--chart-1)" },
+          {
+            key: "outstanding",
+            label: "Outstanding",
+            value: summary?.totalDue ?? 0,
+            color: "var(--destructive)",
+          },
+        ]}
+        centreCaption="billed"
+        emptyText="Nothing billed yet. Open a case and this fills in."
+      />
 
       <DataTable<IVisaCase>
         data={data?.data.cases ?? []}

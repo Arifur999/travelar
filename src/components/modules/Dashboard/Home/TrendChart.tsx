@@ -202,7 +202,10 @@ const TrendChart = ({ trend }: { trend: ITrendMonth[] }) => {
                   />
                   <Area
                     dataKey={metric}
-                    type="natural"
+                    // monotone, not natural: a natural spline overshoots
+                    // between points, so a dip drew lower than the month that
+                    // made it and a run of zeroes fell below the axis.
+                    type="monotone"
                     stroke={`var(--color-${metric})`}
                     strokeWidth={2.5}
                     fill={`url(#${gradientId})`}

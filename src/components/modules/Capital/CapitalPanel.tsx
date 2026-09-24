@@ -10,12 +10,14 @@ import {
   deleteProfitWithdrawalAction,
 } from "@/app/(dashboardLayout)/dashboard/capital/_action";
 import ConfirmDialog from "@/components/shared/ConfirmDialog";
+import BreakdownDonut from "@/components/shared/chart/BreakdownDonut";
 import StatsCard from "@/components/shared/StatsCard";
 import DataTable from "@/components/shared/table/DataTable";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useRowActionModalState } from "@/hooks/useRowActionModalState";
 import { useServerManagedDataTable } from "@/hooks/useServerManagedDataTable";
+import { safeKey, seriesColor } from "@/lib/chartSlices";
 import { formatCurrency, formatNumber, formatPercent } from "@/lib/format";
 import {
   getCapitalFlows,
@@ -160,6 +162,19 @@ const CapitalPanel = ({ initialQueryString }: { initialQueryString: string }) =>
           hint="Does not reduce the stake"
         />
       </div>
+
+      <BreakdownDonut
+        title="Who owns the business"
+        description="Net capital per owner — what each has put in, less what they have taken back."
+        slices={owners.map((owner, index) => ({
+          key: safeKey(owner.ownerName, index),
+          label: owner.ownerName,
+          value: owner.netInvestment,
+          color: seriesColor(index),
+        }))}
+        centreCaption="net capital"
+        emptyText="No capital in the business yet. Record an investment and this fills in."
+      />
 
       {owners.length > 0 && (
         <Card>

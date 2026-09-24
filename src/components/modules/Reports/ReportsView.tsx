@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/select";
 import { formatCurrency } from "@/lib/format";
 import { cn } from "@/lib/utils";
+import MonthlyGoalChart from "./MonthlyGoalChart";
 import {
   getCashFlow,
   getCustomDashboard,
@@ -231,6 +232,10 @@ const ReportsView = () => {
           <OverviewPanel overview={overview} />
 
           {/* Month by month, yearly scope only. */}
+          {scope === "yearly" && yearly.data && (
+            <MonthlyGoalChart months={yearly.data.data.months} />
+          )}
+
           {scope === "yearly" && yearly.data && (
             <Card>
               <CardHeader>

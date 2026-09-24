@@ -16,6 +16,8 @@ import { POSTING_SOURCE_LABELS, type PostingSource } from "@/types/enums.types";
  * TRANSFER_OUT sit at the end because they net to zero across the agency and
  * are the one pair that never changes the total.
  */
+import SourceFlowChart from "./SourceFlowChart";
+
 const SOURCE_ORDER: PostingSource[] = [
   "OPENING",
   "INVESTMENT",
@@ -70,7 +72,16 @@ const BalanceDashboard = () => {
   );
 
   return (
-    <Card>
+    <>
+      {/* The same money the matrix below holds, grouped the other way: by what
+          put it in or took it out, rather than by which account it landed in.
+          Only rendered once the rows are in, so it does not flash an empty
+          state while the matrix shows its loader. */}
+      {!isLoading && rows.length > 0 && (
+        <SourceFlowChart rows={rows} order={SOURCE_ORDER} />
+      )}
+
+      <Card>
       <CardHeader>
         <CardTitle>Balance dashboard</CardTitle>
         <CardDescription>
@@ -162,7 +173,8 @@ const BalanceDashboard = () => {
           </div>
         )}
       </CardContent>
-    </Card>
+      </Card>
+    </>
   );
 };
 

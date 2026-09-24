@@ -10,6 +10,7 @@ import {
   RiWallet3Line,
 } from "@remixicon/react";
 import Loader from "@/components/shared/Loader";
+import BreakdownDonut from "@/components/shared/chart/BreakdownDonut";
 import StatsCard from "@/components/shared/StatsCard";
 import StatusBadge from "@/components/shared/cell/StatusBadge";
 import { Button } from "@/components/ui/button";
@@ -101,6 +102,17 @@ const PlatformOverview = () => {
           </Button>
         </div>
       )}
+
+      <BreakdownDonut
+        title="Where the revenue comes from"
+        description="Paid through the gateway against recorded by hand."
+        slices={[
+          { key: "online", label: "Online", value: stats.onlineRevenue, color: "var(--chart-1)" },
+          { key: "manual", label: "Recorded by hand", value: stats.manualRevenue, color: "var(--chart-2)" },
+        ]}
+        centreCaption="collected"
+        emptyText="No revenue recorded yet."
+      />
 
       <SubscriptionLifecycleCard />
 
