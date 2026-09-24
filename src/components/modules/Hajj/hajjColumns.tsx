@@ -93,12 +93,11 @@ export const hajjBookingsColumns: AppColumnDef<IHajjBooking>[] = [
     enableSorting: false,
     cell: ({ row }) => {
       const { received, total } = row.original.documentsProgress;
-      if (total === 0) return <span className="text-muted-foreground">—</span>;
 
       return (
         <Badge
           variant="outline"
-          className={received === total ? "border-success/30 text-success" : ""}
+          className={total > 0 && received === total ? "border-success/30 text-success" : ""}
         >
           {received}/{total}
         </Badge>

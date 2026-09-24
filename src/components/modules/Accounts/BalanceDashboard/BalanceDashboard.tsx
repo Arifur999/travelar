@@ -34,7 +34,9 @@ const SOURCE_ORDER: PostingSource[] = [
 
 const SignedAmount = ({ value }: { value: number }) => {
   if (value === 0) {
-    return <span className="text-muted-foreground/50">—</span>;
+    // 0, not a dash: an account that drew nothing from this source drew zero,
+    // and a money column with gaps in it is harder to read down.
+    return <span className="tabular-nums text-muted-foreground/60">{formatCurrency(0)}</span>;
   }
 
   return (

@@ -64,11 +64,13 @@ export const collectionsColumns: AppColumnDef<IDueReceived>[] = [
     enableSorting: false,
     cell: ({ row }) => {
       const discount = toNumber(row.original.discount);
-      if (discount === 0) return <span className="text-muted-foreground">—</span>;
 
       return (
         <div className="text-right">
-          <MoneyCell value={discount} className="text-info" />
+          <MoneyCell
+            value={discount}
+            className={discount === 0 ? "text-muted-foreground" : "text-info"}
+          />
           {row.original.discountCategory && (
             <p className="text-xs text-muted-foreground">{row.original.discountCategory}</p>
           )}

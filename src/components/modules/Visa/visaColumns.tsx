@@ -48,9 +48,7 @@ export const visaCasesColumns: AppColumnDef<IVisaCase>[] = [
     enableSorting: false,
     cell: ({ row }) => {
       const { received, total } = row.original.documentsProgress;
-      if (total === 0) return <span className="text-muted-foreground">—</span>;
-
-      const complete = received === total;
+      const complete = total > 0 && received === total;
       return (
         <Badge variant="outline" className={complete ? "border-success/30 text-success" : ""}>
           {received}/{total}

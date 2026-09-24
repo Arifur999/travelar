@@ -171,8 +171,6 @@ export const attendanceColumns: AppColumnDef<IEmployeeAttendance>[] = [
       const hours = toNumber(row.original.totalHours);
       const { startTime, endTime } = row.original;
 
-      if (hours === 0 && !startTime) return <span className="text-muted-foreground">—</span>;
-
       return (
         <div className="text-sm">
           <p className="tabular-nums">{hours.toFixed(2)}h</p>
