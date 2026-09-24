@@ -41,6 +41,7 @@ API scopes every business row on `agencyId`. The API lives in
   - **The page is white and the boxes carry the gradient.** `--background` is `#FFFFFF`; every box gets its wash from one of four gradient tokens, and none of them is ever inlined on a component:
     - `.bg-gradient-brand` — `#207BF3 → #CCE5FF`, the sheet's own gradient. Decoration only: a hero tile, an icon chip. No small text on it.
     - `.bg-gradient-primary` — the same sweep carried past the main colour into `#0B4FA8`, for the button, the default badge and anything else with a white label. **Never run a white label out to `#CCE5FF`: that is 1.29:1.**
+    - `.btn-primary` — the primary button's skin: a white bezel, the blue glow under it, and its icon in a white disc. The `default` button variant applies it; nothing else should.
     - `.bg-gradient-sidebar` — the button's gradient turned upright for the sidebar panel.
     - `.bg-gradient-card` / `.bg-gradient-panel` — white into `#CCE5FF`, for boxes that carry body text. `Card` already applies the first.
   - **`--primary` (#207BF3) fills; `--primary-strong` (#0D47A1) is for text.** White on #207BF3 is 4.05:1 — fine behind an icon or a chart bar, short of what a label or a link needs.

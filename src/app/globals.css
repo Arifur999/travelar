@@ -313,6 +313,36 @@
   .bg-gradient-brand {
     background-image: var(--gradient-brand);
   }
+
+  /* The primary button, as the brand sheet draws it: a pill in the brand
+     gradient, a white bezel so it reads as a raised key on either ground, a
+     soft blue glow under it, and its icon in a white disc. The three pieces
+     live here rather than on the component so they cannot drift apart, and
+     the bezel is a box-shadow rather than a border so it costs no layout. */
+  .btn-primary {
+    box-shadow:
+      0 0 0 2px #ffffff,
+      0 6px 18px -6px rgba(32, 123, 243, 0.6);
+  }
+  .btn-primary:hover:not(:disabled) {
+    box-shadow:
+      0 0 0 2px #ffffff,
+      0 10px 26px -8px rgba(32, 123, 243, 0.85);
+  }
+  /* content-box, so the disc is the icon plus a ring of padding whatever size
+     the caller gave the icon. The ink is #0B4FA8 and not --primary-strong:
+     the disc is white in both themes, and that token turns pale blue in the
+     dark one. An icon-only button is already a disc, so it is left alone. */
+  .btn-primary:not([data-size^="icon"]):not([data-size="xs"]) > svg {
+    box-sizing: content-box;
+    padding: 0.4375rem;
+    border-radius: 9999px;
+    background: #ffffff;
+    color: #0b4fa8;
+  }
+  .btn-primary[data-size="sm"] > svg {
+    padding: 0.3125rem;
+  }
   .bg-gradient-sidebar {
     background-image: var(--gradient-sidebar);
   }
