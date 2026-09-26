@@ -137,7 +137,17 @@
   --info: #2563eb;
   --info-foreground: #eff6ff;
 
-  --border: #cce5ff;
+  /* A hairline, not a stripe. #CCE5FF is the Sub Color at full strength, and
+     on a page of cards, tables and inputs that is a lot of saturated blue
+     drawn around everything. This is the same hue, stepped back, so a boundary
+     reads as an edge rather than as decoration. Dark mode already does this —
+     its border is the brand blue at 18% opacity. */
+  --border: #e3eefb;
+  /* Left at the Sub Color on purpose, where --border was lightened. A card's
+     edge is decoration and can be a hairline; a field's edge is how you know
+     there is a field, and this one is already only 1.29:1 on white. Making it
+     fainter to match would have taken something already marginal and made it
+     worse. */
   --input: #cce5ff;
   --ring: #207bf3;
 
@@ -158,11 +168,17 @@
      so the topmost row clears 4.73:1 rather than 4.05:1. */
   --gradient-sidebar: linear-gradient(180deg, #1b70e0 0%, #0b4fa8 100%);
 
-  /* Boxes: white into the sheet's Sub Color, which is the brand gradient at
-     the pale end of its range. A card carries body text and figures at
-     12–14px, so it has to stay light — #16181E holds 13.70:1 even at the
-     deepest corner, and a muted hint holds 5.84:1. */
-  --gradient-card: linear-gradient(160deg, #ffffff 0%, #eef6ff 55%, #cce5ff 100%);
+  /* Boxes: white into the palest end of the brand gradient.
+
+     It used to run all the way to #CCE5FF, the sheet's Sub Color. On one card
+     that reads as brand; on a screen of eight it reads as blue, and a tile
+     deliberately filled with the brand gradient had nothing to stand out
+     against — every neighbour was already blue. Ending one stop earlier keeps
+     the wash and gives the accent somewhere to land.
+
+     Contrast only improves by lightening: #16181E was 13.70:1 at the deepest
+     corner and a muted hint 5.84:1, both measured against the old dark end. */
+  --gradient-card: linear-gradient(160deg, #ffffff 0%, #fafcff 55%, #eef6ff 100%);
   /* One step stronger, for a box that should read as a panel rather than a
      sheet of paper: stat tiles, empty states, the setup card. */
   --gradient-panel: linear-gradient(160deg, #f4f9ff 0%, #ddedff 55%, #bfdcff 100%);

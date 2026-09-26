@@ -219,9 +219,11 @@ const DataTable = <TData extends RowData,>({
         />
       )}
 
-      <div className="relative rounded-lg border bg-card">
+      {/* overflow-hidden so the new header strip is clipped by the corners
+          rather than squaring them off. The scroll container is the child. */}
+      <div className="relative overflow-hidden rounded-2xl border bg-card">
         {showOverlay && (
-          <div className="absolute inset-0 z-10 flex items-center justify-center rounded-lg bg-background/60 backdrop-blur-[1px]">
+          <div className="absolute inset-0 z-10 flex items-center justify-center rounded-2xl bg-background/60 backdrop-blur-[1px]">
             <Loader size={32} label="Loading records" />
           </div>
         )}
