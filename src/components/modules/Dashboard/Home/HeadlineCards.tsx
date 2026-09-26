@@ -14,12 +14,8 @@ import {
 } from "@/lib/format";
 import { type IDashboardSummary } from "@/types/dashboard.types";
 
-/** "+12% vs last month so far" — the month is still running, so it says so. */
-const changeHint = (change: number | null) => {
-  if (change === null) return null;
-  const sign = change > 0 ? "+" : "";
-  return `${sign}${formatPercent(change, 0)} vs last month so far`;
-};
+/** The month is still running, so the comparison says "so far". */
+const SO_FAR = "vs last month so far";
 
 /** The four numbers an owner looks for first. */
 const HeadlineCards = ({ summary }: { summary: IDashboardSummary }) => {
@@ -30,9 +26,11 @@ const HeadlineCards = ({ summary }: { summary: IDashboardSummary }) => {
   const margin = calculateMarginPercent(thisMonth.actualProfit, thisMonth.actualSales);
   const accountCount = cashFlow.accounts.length;
 
+  const salesDelta = monthOverMonth(trend, "sales");
+  const profitDelta = monthOverMonth(trend, "profit");
   const salesHint = [
     `${formatNumber(salesCount)} ${salesCount === 1 ? "sale" : "sales"}`,
-    changeHint(monthOverMonth(trend, "sales")),
+    salesDelta === null ? null : SO_FAR,
   ]
     .filter(Boolean)
     .join(" · ");
@@ -51,11 +49,15 @@ const HeadlineCards = ({ summary }: { summary: IDashboardSummary }) => {
         }
       />
 
+      {/* The one filled tile in the group. Sales is what an owner looks for
+          first, so it is the one that does not need finding. */}
       <StatsCard
         title="Sales this month"
         value={formatCurrency(thisMonth.actualSales, { whole: true })}
         icon={RiArrowUpCircleLine}
         accent="primary"
+        filled
+        delta={salesDelta}
         hint={salesHint}
       />
 
@@ -64,6 +66,7 @@ const HeadlineCards = ({ summary }: { summary: IDashboardSummary }) => {
         value={formatCurrency(thisMonth.actualProfit, { whole: true })}
         icon={RiFundsBoxLine}
         accent={thisMonth.actualProfit < 0 ? "destructive" : "success"}
+        delta={profitDelta}
         // Margin is null without sales — "0.0%" would read as a measured zero.
         hint={margin === null ? "No sales yet this month" : `${formatPercent(margin)} margin`}
       />

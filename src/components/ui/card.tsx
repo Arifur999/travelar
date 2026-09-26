@@ -9,7 +9,10 @@ function Card({ className, ...props }: React.ComponentProps<"div">) {
         // bg-card stays as the base colour underneath, so a card is still
         // solid if the gradient is ever overridden; bg-gradient-card paints
         // the brand's sky-blue wash over it (globals.css).
-        "flex flex-col gap-6 rounded-xl border bg-card bg-gradient-card py-6 text-card-foreground shadow-sm",
+        // rounded-2xl and a shadow you have to look for: the reference set
+        // this was polished against leans on generous corners and almost no
+        // elevation, which reads as calm rather than as a stack of boxes.
+        "flex flex-col gap-6 rounded-2xl border bg-card bg-gradient-card py-6 text-card-foreground shadow-xs",
         className
       )}
       {...props}
