@@ -7,6 +7,7 @@ import {
   RiCalendarScheduleLine,
   RiCheckLine,
   RiExternalLinkLine,
+  RiTimeLine,
 } from "@remixicon/react";
 import { toast } from "sonner";
 import {
@@ -18,13 +19,16 @@ import StatusBadge from "@/components/shared/cell/StatusBadge";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { formatCurrency, formatDate, formatNumber } from "@/lib/format";
+import { formatCurrency, formatDate, formatDateTime, formatNumber } from "@/lib/format";
+import { type IPlan } from "@/types/user.types";
 import { cn } from "@/lib/utils";
 import {
   getAvailablePlans,
+  getMyPendingManualPayment,
   getMySubscription,
   getPaymentHistory,
 } from "@/services/billing.services";
+import BkashPaymentModal from "./BkashPaymentModal";
 import {
   AGENCY_STATUS_LABELS,
   AGENCY_STATUS_TONES,
@@ -42,6 +46,8 @@ interface BillingViewProps {
 
 const BillingView = ({ canPay, currentPlanId }: BillingViewProps) => {
   const [pendingPlanId, setPendingPlanId] = useState<string | null>(null);
+  /** The plan the bKash dialog is open for, or null when it is closed. */
+  const [payingFor, setPayingFor] = useState<IPlan | null>(null);
 
   const { data: subscriptionData, isLoading } = useQuery({
     queryKey: ["my-subscription"],
@@ -58,6 +64,15 @@ const BillingView = ({ canPay, currentPlanId }: BillingViewProps) => {
     queryFn: () => getPaymentHistory(),
   });
 
+  // What this agency has already claimed and is waiting on. Shown as a banner
+  // and used to keep the plan buttons quiet: one claim at a time is all the
+  // API accepts, so offering a second is offering an error.
+  const { data: pendingPaymentData } = useQuery({
+    queryKey: ["pending-manual-payment"],
+    queryFn: () => getMyPendingManualPayment(),
+  });
+
+  const awaitingReview = pendingPaymentData?.data ?? null;
   const subscription = subscriptionData?.data;
   const plans = plansData?.data ?? [];
   const history = historyData?.data ?? [];
@@ -115,6 +130,25 @@ const BillingView = ({ canPay, currentPlanId }: BillingViewProps) => {
 
   return (
     <div className="space-y-6">
+      {awaitingReview && (
+        <Card className="border-info/40">
+          <CardHeader>
+            <div className="flex flex-wrap items-center gap-2">
+              <RiTimeLine className="size-5 text-info" aria-hidden="true" />
+              <CardTitle className="text-base">We are checking your bKash payment</CardTitle>
+            </div>
+            <CardDescription>
+              {/* Said plainly, because the gap between paying and the plan
+                  turning on is where somebody decides the app is broken. */}
+              You sent {formatCurrency(awaitingReview.amount)} for {awaitingReview.planName} on{" "}
+              {formatDateTime(awaitingReview.createdAt)}, transaction{" "}
+              <span className="font-mono">{awaitingReview.senderReference}</span>. Your plan starts
+              as soon as we have matched it against our bKash statement.
+            </CardDescription>
+          </CardHeader>
+        </Card>
+      )}
+
       {subscription && (
         <Card>
           <CardHeader>
@@ -211,25 +245,30 @@ const BillingView = ({ canPay, currentPlanId }: BillingViewProps) => {
                   </ul>
 
                   {canPay ? (
-                    <Button
-                      type="button"
-                      className="w-full"
-                      variant={isCurrent ? "outline" : "default"}
-                      onClick={() => handleCheckout(plan.id)}
-                      disabled={pendingPlanId !== null}
-                    >
-                      {pendingPlanId === plan.id ? (
-                        <>
-                          <Loader size={16} onDark label="Opening checkout" />
-                          <span className="animate-pulse">Opening checkout...</span>
-                        </>
-                      ) : (
-                        <>
-                          <RiBankCardLine className="size-4" aria-hidden="true" />
-                          {isCurrent ? "Renew" : "Choose plan"}
-                        </>
-                      )}
-                    </Button>
+                    <div className="space-y-2">
+                      <Button
+                        type="button"
+                        className="w-full"
+                        variant={isCurrent ? "outline" : "default"}
+                        onClick={() => setPayingFor(plan)}
+                        disabled={awaitingReview !== null}
+                      >
+                        <RiBankCardLine className="size-4" aria-hidden="true" />
+                        {isCurrent ? "Renew" : "Choose plan"}
+                      </Button>
+
+                      {/* The card gateway is still here for a platform that has
+                          credentials for one. bKash is the button because it is
+                          how these agencies actually pay. */}
+                      <button
+                        type="button"
+                        onClick={() => handleCheckout(plan.id)}
+                        disabled={pendingPlanId !== null || awaitingReview !== null}
+                        className="w-full text-xs text-muted-foreground underline-offset-2 hover:underline disabled:opacity-50"
+                      >
+                        {pendingPlanId === plan.id ? "Opening card checkout..." : "Pay by card instead"}
+                      </button>
+                    </div>
                   ) : (
                     <p className="text-xs text-muted-foreground">
                       Only an agency admin can change the plan.
@@ -343,6 +382,7 @@ const BillingView = ({ canPay, currentPlanId }: BillingViewProps) => {
           </p>
         </CardContent>
       </Card>
+      <BkashPaymentModal plan={payingFor} onOpenChange={() => setPayingFor(null)} />
     </div>
   );
 };

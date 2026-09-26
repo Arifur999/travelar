@@ -55,3 +55,34 @@ export interface ISubscriptionOrder {
 export interface ICheckoutPayload {
   planId: string;
 }
+
+/**
+ * Where to send a bKash payment.
+ *
+ * `available` is false when the platform has no bKash number configured — the
+ * screen says so rather than asking somebody to send money to nowhere.
+ */
+export interface IManualPaymentInfo {
+  number: string;
+  available: boolean;
+}
+
+/** A bKash payment the agency has claimed and an operator has not read yet. */
+export interface IPendingManualPayment {
+  id: string;
+  planName: string;
+  amount: number;
+  senderNumber: string | null;
+  senderReference: string | null;
+  createdAt: string;
+}
+
+/** What comes back from claiming one. Nothing is paid for yet. */
+export interface IManualPaymentReceipt {
+  id: string;
+  status: "PENDING";
+  planName: string;
+  amount: number;
+  senderReference: string | null;
+  createdAt: string;
+}
