@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { RiCheckLine, RiFileCopyLine } from "@remixicon/react";
@@ -129,21 +128,23 @@ const BkashPaymentModal = ({ plan, onOpenChange }: BkashPaymentModalProps) => {
           </div>
         ) : !info?.available ? (
           <p className="rounded-lg border border-warning/40 bg-warning/10 p-3 text-sm">
-            Paying by bKash is not set up on this server yet. Ask your administrator to add the
-            bKash number.
+            Paying by bKash is not set up yet. Ask whoever runs the platform to add the bKash
+            number and QR.
           </p>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="flex justify-center">
-              {/* The agency's own QR, served from the app rather than fetched,
-                  so it is there before the dialog has finished opening. */}
-              <Image
-                src="/bkash.jpg"
+              {/* Served through a route handler rather than a static file:
+                  the operator uploads it from the admin screen, so it is not
+                  something that ships with the app. next/image would want a
+                  known width and a loader for a URL that changes. */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/api/bkash-qr"
                 alt="bKash QR code for this account"
                 width={220}
                 height={220}
-                className="rounded-lg border"
-                priority
+                className="size-55 rounded-lg border object-contain"
               />
             </div>
 

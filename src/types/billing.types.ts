@@ -64,6 +64,8 @@ export interface ICheckoutPayload {
  */
 export interface IManualPaymentInfo {
   number: string;
+  /** The operator has uploaded a QR. The image itself comes from /api/bkash-qr. */
+  hasQr: boolean;
   available: boolean;
 }
 
@@ -85,4 +87,26 @@ export interface IManualPaymentReceipt {
   amount: number;
   senderReference: string | null;
   createdAt: string;
+}
+
+/** The operator's view of where subscription money is sent. */
+export interface IPaymentSettings {
+  bkashNumber: string;
+  hasQr: boolean;
+  qrSetAt: string | null;
+  updatedAt: string | null;
+}
+
+/** One bKash claim waiting for somebody to read a receipt. */
+export interface IManualPaymentForReview {
+  id: string;
+  status: "PENDING" | "SUCCESS" | "FAILED" | "CANCELLED";
+  amount: number;
+  senderNumber: string | null;
+  senderReference: string | null;
+  createdAt: string;
+  reviewedAt: string | null;
+  reviewNote: string | null;
+  plan: { id: string; name: string; durationDays: number };
+  agency: { id: string; name: string; phone: string | null; email: string | null };
 }

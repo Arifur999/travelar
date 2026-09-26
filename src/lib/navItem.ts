@@ -361,6 +361,7 @@ export const platformNavGroups: NavGroup[] = [
       { title: "Overview", href: "/admin/dashboard", icon: RiDashboardLine, exact: true },
       { title: "Agencies", href: "/admin/dashboard/agencies", icon: RiBuilding2Line },
       { title: "Plans", href: "/admin/dashboard/plans", icon: RiStackLine },
+      { title: "Payments", href: "/admin/dashboard/payments", icon: RiBankCardLine },
     ],
   },
   {

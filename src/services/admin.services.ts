@@ -2,6 +2,10 @@
 
 import { httpClient } from "@/lib/axios/httpClient";
 import {
+  type IManualPaymentForReview,
+  type IPaymentSettings,
+} from "@/types/billing.types";
+import {
   type IActivityLogEntry,
   type IAdminAgency,
   type IAdminAgencyDetail,
@@ -85,5 +89,45 @@ export const getPlatformStats = async () => {
 export const getActivityLog = async (queryString?: string) => {
   return await httpClient.get<IActivityLogEntry[]>(
     `/admin/activity-log${queryString ? `?${queryString}` : ""}`,
+  );
+};
+
+/**
+ * Where subscription money is sent, and the bKash claims waiting on it.
+ *
+ * SUPER_ADMIN only on the API: approving one of these grants a paid plan, so
+ * it is the platform operator who does it and nobody inside an agency.
+ */
+export const getPaymentSettings = async () => {
+  return await httpClient.get<IPaymentSettings>("/admin/payment-settings");
+};
+
+export const updatePaymentSettings = async (payload: { bkashNumber: string }) => {
+  return await httpClient.patch<IPaymentSettings>("/admin/payment-settings", payload);
+};
+
+export const uploadPaymentQr = async (formData: FormData) => {
+  return await httpClient.postFormData<IPaymentSettings>(
+    "/admin/payment-settings/qr",
+    formData,
+  );
+};
+
+export const getManualPayments = async (statusFilter?: string) => {
+  return await httpClient.get<IManualPaymentForReview[]>(
+    statusFilter
+      ? `/admin/manual-payments?status=${encodeURIComponent(statusFilter)}`
+      : "/admin/manual-payments",
+  );
+};
+
+/** Approving renews the plan there and then; refusing frees the agency to retry. */
+export const reviewManualPayment = async (
+  id: string,
+  payload: { approve: boolean; note?: string },
+) => {
+  return await httpClient.post<{ id: string; approved: boolean }>(
+    `/admin/manual-payments/${encodeURIComponent(id)}/review`,
+    payload,
   );
 };
