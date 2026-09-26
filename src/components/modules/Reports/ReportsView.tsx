@@ -85,7 +85,7 @@ const ReportsView = () => {
     <div className="space-y-6">
       {/* Cash position — the same reconciliation the spreadsheet's Cash Flow
           tab does, and independent of the period being viewed. */}
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 xl:gap-5">
         <StatsCard
           title="In accounts"
           value={formatCurrency(flow?.accountBalance ?? 0)}
@@ -109,7 +109,6 @@ const ReportsView = () => {
           title="Net position"
           value={formatCurrency(flow?.netCashFlow ?? 0)}
           icon={RiWallet3Line}
-          accent="ledger"
           hint={
             flow
               ? `${formatCurrency(flow.difference)} beyond owners' capital`

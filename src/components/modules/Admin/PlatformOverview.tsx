@@ -51,7 +51,7 @@ const PlatformOverview = () => {
 
   return (
     <div className="space-y-6">
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 xl:gap-5">
         <StatsCard
           title="Agencies"
           value={formatNumber(stats.totalAgencies)}
@@ -72,14 +72,14 @@ const PlatformOverview = () => {
           title="Revenue to date"
           value={formatCurrency(stats.totalRevenue)}
           icon={RiWallet3Line}
-          accent="ledger"
           hint={`${formatCurrency(stats.onlineRevenue)} online · ${formatCurrency(stats.manualRevenue)} manual`}
         />
         <StatsCard
           title="Open tickets"
           value={formatNumber(stats.openTickets)}
           icon={RiLifebuoyLine}
-          accent={stats.openTickets > 0 ? "expense" : "success"}
+          // Open tickets are not a win, so the tile only turns when there are none.
+          accent={stats.openTickets > 0 ? "primary" : "success"}
           hint="Open or in progress"
         />
       </div>

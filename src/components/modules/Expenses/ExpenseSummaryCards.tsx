@@ -16,24 +16,21 @@ const ExpenseSummaryCards = () => {
   const dashboard = data?.data;
 
   return (
-    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 xl:gap-5">
       <StatsCard
         title="Spent all time"
         value={formatCurrency(dashboard?.totalExpenses ?? 0)}
         icon={RiReceiptLine}
-        accent="expense"
       />
       <StatsCard
         title="This month"
         value={formatCurrency(dashboard?.thisMonthTotal ?? 0)}
         icon={RiCalendar2Line}
-        accent="expense"
       />
       <StatsCard
         title="This year"
         value={formatCurrency(dashboard?.thisYearTotal ?? 0)}
         icon={RiCalendar2Line}
-        accent="ledger"
       />
       <StatsCard
         title="Biggest category"

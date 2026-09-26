@@ -26,7 +26,7 @@ const WalletSummaryCards = () => {
   const summary = data?.data;
 
   return (
-    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 xl:gap-5">
       <StatsCard
         title="Held for customers"
         value={formatCurrency(summary?.totalHeld ?? 0)}
@@ -44,14 +44,12 @@ const WalletSummaryCards = () => {
         title="Paid in"
         value={formatCurrency(summary?.paidIn ?? 0)}
         icon={RiArrowLeftDownLine}
-        accent="ledger"
         hint="Collections from these customers"
       />
       <StatsCard
         title="Used up"
         value={formatCurrency(summary?.usedUp ?? 0)}
         icon={RiArrowRightUpLine}
-        accent="expense"
         hint="Settled against tickets, visas and packages"
       />
     </div>

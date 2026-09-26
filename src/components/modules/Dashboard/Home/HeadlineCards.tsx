@@ -36,12 +36,12 @@ const HeadlineCards = ({ summary }: { summary: IDashboardSummary }) => {
     .join(" · ");
 
   return (
-    <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+    <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4 xl:gap-5">
       <StatsCard
         title="Cash in hand"
         value={formatCurrency(cashFlow.accountBalance, { whole: true })}
         icon={RiWallet3Line}
-        accent={cashFlow.accountBalance < 0 ? "destructive" : "ledger"}
+        accent={cashFlow.accountBalance < 0 ? "destructive" : "primary"}
         hint={
           accountCount === 0
             ? "No cash accounts yet"
@@ -75,7 +75,6 @@ const HeadlineCards = ({ summary }: { summary: IDashboardSummary }) => {
         title="Customers owe you"
         value={formatCurrency(cashFlow.customerDue, { whole: true })}
         icon={RiHandCoinLine}
-        accent="visa"
         hint={`You owe suppliers ${formatCurrency(cashFlow.supplierPayable, { whole: true })}`}
       />
     </div>

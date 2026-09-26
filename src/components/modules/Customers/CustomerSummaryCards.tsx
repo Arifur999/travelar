@@ -16,7 +16,7 @@ const CustomerSummaryCards = () => {
   const summary = data?.data.summary;
 
   return (
-    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 xl:gap-5">
       <StatsCard
         title="Outstanding due"
         value={formatCurrency(summary?.totalCurrentDue ?? 0)}
@@ -46,7 +46,6 @@ const CustomerSummaryCards = () => {
         title="Customers"
         value={formatNumber(summary?.totalCustomers ?? 0)}
         icon={RiGroupLine}
-        accent="ledger"
         hint={
           summary?.totalOpeningDue
             ? `${formatCurrency(summary.totalOpeningDue)} carried in`

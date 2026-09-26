@@ -135,7 +135,6 @@ const TransfersTable = ({ initialQueryString }: { initialQueryString: string }) 
           title="Transferred all time"
           value={formatCurrency(summary?.totalAmount ?? 0)}
           icon={RiArrowLeftRightLine}
-          accent="ledger"
           hint="Nets to zero across your accounts — it never changes the total."
         />
         <StatsCard

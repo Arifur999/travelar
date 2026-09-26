@@ -135,12 +135,11 @@ const TourBookingsTable = ({ initialQueryString, isAdmin }: TourBookingsTablePro
 
   return (
     <>
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 xl:gap-5">
         <StatsCard
           title="Billed"
           value={formatCurrency(summary?.totalRevenue ?? 0)}
           icon={RiRoadMapLine}
-          accent="tour"
           hint="Live bookings only"
         />
         <StatsCard

@@ -19,7 +19,7 @@ const SupplierSummaryCards = () => {
   const summary = data?.data.summary;
 
   return (
-    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 xl:gap-5">
       <StatsCard
         title="Owed to suppliers"
         value={formatCurrency(summary?.totalCurrentPayable ?? 0)}
@@ -44,7 +44,6 @@ const SupplierSummaryCards = () => {
         title="Suppliers"
         value={formatNumber(summary?.totalSuppliers ?? 0)}
         icon={RiTruckLine}
-        accent="ledger"
         hint={
           summary?.totalOpeningPayable
             ? `${formatCurrency(summary.totalOpeningPayable)} carried in`

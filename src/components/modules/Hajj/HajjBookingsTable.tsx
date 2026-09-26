@@ -158,7 +158,6 @@ const HajjBookingsTable = ({ initialQueryString, isAdmin }: HajjBookingsTablePro
           title="Billed"
           value={formatCurrency(summary?.totalRevenue ?? 0)}
           icon={RiMoonClearLine}
-          accent="hajj"
           hint="Live bookings only"
         />
         <StatsCard

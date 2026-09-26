@@ -22,7 +22,7 @@ const EmployeeSummaryCards = () => {
   const attendanceSummary = attendanceSummaryData?.data;
 
   return (
-    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 xl:gap-5">
       <StatsCard
         title="Active staff"
         value={formatNumber(summary?.activeCount ?? 0)}
@@ -38,13 +38,11 @@ const EmployeeSummaryCards = () => {
         title="Salary paid"
         value={formatCurrency(summary?.totalSalary ?? 0)}
         icon={RiCashLine}
-        accent="expense"
       />
       <StatsCard
         title="Bonus paid"
         value={formatCurrency(summary?.totalBonus ?? 0)}
         icon={RiCashLine}
-        accent="ledger"
       />
       <StatsCard
         title="Attendance"

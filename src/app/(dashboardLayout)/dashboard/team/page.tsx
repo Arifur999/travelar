@@ -53,10 +53,10 @@ const TeamPage = async ({ searchParams }: { searchParams: PageSearchParams }) =>
       />
 
       {team && (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 xl:gap-5">
           <StatsCard title="Members" value={formatNumber(team.total)} icon={RiGroupLine} />
-          <StatsCard title="Admins" value={formatNumber(team.admins)} icon={RiShieldCheckLine} accent="ledger" />
-          <StatsCard title="Staff" value={formatNumber(team.staff)} icon={RiTeamLine} accent="hajj" />
+          <StatsCard title="Admins" value={formatNumber(team.admins)} icon={RiShieldCheckLine} />
+          <StatsCard title="Staff" value={formatNumber(team.staff)} icon={RiTeamLine} />
           <StatsCard
             title="Blocked"
             value={formatNumber(team.blocked)}

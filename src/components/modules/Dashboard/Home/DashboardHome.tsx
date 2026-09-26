@@ -16,7 +16,7 @@ import TrendChart from "./TrendChart";
 
 const HomeSkeleton = () => (
   <div className="space-y-4" aria-busy="true" aria-label="Loading your figures">
-    <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+    <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4 xl:gap-5">
       {Array.from({ length: 4 }, (_, i) => (
         <Skeleton key={i} className="h-23 rounded-xl" />
       ))}

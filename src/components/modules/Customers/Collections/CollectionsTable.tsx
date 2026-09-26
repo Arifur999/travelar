@@ -148,7 +148,6 @@ const CollectionsTable = ({ initialQueryString }: { initialQueryString: string }
           title="Discounted"
           value={formatCurrency(summary?.totalDiscount ?? 0)}
           icon={RiCoupon3Line}
-          accent="ledger"
           hint="Written off, no money moved"
         />
         <StatsCard

@@ -156,7 +156,6 @@ const VisaCasesTable = ({ initialQueryString, isAdmin }: VisaCasesTableProps) =>
           title="Billed"
           value={formatCurrency(summary?.totalRevenue ?? 0)}
           icon={RiFileCheckLine}
-          accent="visa"
           hint="Service + embassy fees"
         />
         <StatsCard

@@ -229,7 +229,7 @@ const ImportRunProgress = ({ importId, onSettled }: ImportRunProgressProps) => {
 
       <CardContent className="space-y-5">
         {counts.length > 0 && (
-          <dl className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <dl className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 xl:gap-5">
             {counts.map(([key, label]) => (
               <div key={key} className="rounded-lg border p-3">
                 <dt className="text-xs text-muted-foreground">{label}</dt>
